@@ -2,7 +2,7 @@ layout liberamente ispirato da https://themesbrand.com/velzon/html/saas/dashboar
 
 ## TO DO LIST
 
-- creare git repo per tutto il progetto
+- X creare git repo per tutto il progetto
 - formattare le form dentro il layout
 - aggiungere le traduzioni a tutte le form
 - andare avanti con le correzioni degli appunti

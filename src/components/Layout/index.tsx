@@ -15,15 +15,27 @@ import styled from "styled-components";
 
 import "antd/dist/antd.css";
 
-const { Content } = Layout;
-
 const LayoutStyled = styled(Layout)`
   height: 100vh;
   z-index: 1;
 `;
 
+const ContentStyled = styled(Layout.Content)`
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 2em 5em;
+  overflow: auto;
+`;
+
 type Props = {
   children?: JSX.Element | JSX.Element[];
+};
+
+const defaultClaimData = {
+  company_code: "abc-123_ighriguhreh",
+  codice_ramo: "87cgdbcd",
+  codice_ramo_sinistro: "ijfapid89",
 };
 
 const AppLayout: React.FC<Props> = (props: Props) => {
@@ -36,7 +48,7 @@ const AppLayout: React.FC<Props> = (props: Props) => {
         <Sider />
         <Layout>
           <Header />
-          <Content>
+          <ContentStyled>
             <Routes>
               <Route path={urls.home} element={<div>home...</div>} />
               <Route
@@ -58,11 +70,11 @@ const AppLayout: React.FC<Props> = (props: Props) => {
                 }
               />
               <Route path={urls.policy_manualInsert} element={<PolicyManualInsert />} />
-              <Route path={urls.new_claim} element={<NewClaim />} />
+              <Route path={urls.new_claim} element={<NewClaim claim={defaultClaimData} />} />
             </Routes>
 
             {children}
-          </Content>
+          </ContentStyled>
         </Layout>
       </BrowserRouter>
     </LayoutStyled>

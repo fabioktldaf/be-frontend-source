@@ -1,6 +1,6 @@
 import React from "react";
 import { Button, Checkbox, Form, Input, DatePicker, Select, Switch } from "antd";
-import { Col, Row, RowSpacer, CenteredRow } from "../Containers";
+import { Col, Row, RowSpacer, CenteredRow } from "../../style/containers";
 
 import styled from "styled-components";
 

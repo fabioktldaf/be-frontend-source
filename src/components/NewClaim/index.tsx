@@ -1,85 +1,97 @@
-import React from "react";
+import React, { useState } from "react";
+import { Button, Row, Tabs } from "antd";
+import { HiOutlineSave } from "react-icons/hi";
+import { FormContainer, FormTitle, FormContent, FormActions, FormActionButton, FormSendButton } from "../../style/form";
+import { CenteredRow } from "../../style/containers";
+import Barem from "./Barem";
+import CardData from "./CardData";
+import Responsability from "./Responsability";
+import ClaimData from "./ClaimData";
+import AffectedThing from "./AffectedThing";
+import AffectedVehicle from "./AffectedVehicle";
+import DamagedPart from "./DamagedPart";
+import NotDamagedPart from "./NotDamagedPart";
 import styled from "styled-components";
-import { Form, Input, Button, DatePicker } from "antd";
-import { Row, RowSpacer } from "../Containers";
 
-const FormAddSinistro = styled(Form)`
-  padding: 2em 4em;
-  margin: 2em;
-  box-shadow: 0 0 5px #aaa;
-  border-radius: 5px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+const SaveIconStyled = styled(HiOutlineSave)`
+  font-size: 1.2em;
+  color: #555;
+  margin: -3px 0.25em 0 0;
 `;
 
-const FormInput = styled(Form.Item)`
-  flex: 1;
-`;
+const getNewClaimNumber = () => Date.now().toString();
 
-const FormDatePicker = styled(DatePicker)`
-  flex: 1;
-`;
+const getTodayDate = () => {
+  const now = new Date();
+  const day = now.getUTCDate();
+  const month = now.getUTCMonth() + 1;
+  const year = now.getUTCFullYear();
 
-const NewClaim = () => {
-  return (
-    <FormAddSinistro layout="vertical">
-      <h2>Apertura Sinistro</h2>
-      <Row>
-        <FormInput
-          label="Targa"
-          name="targa"
-          tooltip="Inserisci la targa"
-          rules={[{ pattern: new RegExp("^[a-zA-Z0-9]*$"), message: "Solo alfanumerici" }]}
-        >
-          <Input placeholder="targa..." />
-        </FormInput>
-        <RowSpacer />
-        <FormInput
-          label="Nome"
-          name="nome"
-          tooltip="Inserisci nome e cognome o la ragione sociale"
-          rules={[{ pattern: new RegExp("^[a-zA-Z0-9]*$"), message: "Solo alfanumerici" }]}
-        >
-          <Input placeholder="nome e cognome o ragione sociale..." />
-        </FormInput>
-      </Row>
-      <Row>
-        <FormInput
-          label="Numero Polizza"
-          name="numero_polizza"
-          tooltip="Inserisci il numero di polizza"
-          rules={[{ pattern: new RegExp("^[a-zA-Z0-9]*$"), message: "Solo alfanumerici" }]}
-        >
-          <Input placeholder="numero di polizza..." />
-        </FormInput>
-        <RowSpacer />
-        <FormInput label="Data e Ora del Sinistro" name="data_sinistro" tooltip="Data e ora del sinistro">
-          <FormDatePicker showTime />
-        </FormInput>
-      </Row>
-    </FormAddSinistro>
-  );
+  return `${day < 10 ? "0" : ""}${day}/${month < 10 ? "0" : ""}${month}/${year}`;
 };
 
-/**
- * Targa  
+export type ClaimDataType = {
+  codice_compagnia: string;
+  codice_ramo: string;
+  codice_ramo_sinistro: string;
+  numero_sinistro: string;
+  data_registrazione: string;
+};
 
-Cognome e Nome  
+type NewClaimProps = {
+  claim: {
+    company_code: string;
+    codice_ramo: string;
+    codice_ramo_sinistro: string;
+  };
+};
 
-Numero polizza 
+const NewClaim = (props: NewClaimProps) => {
+  const [claim, setClaim] = useState<ClaimDataType>({
+    codice_compagnia: props.claim.company_code,
+    codice_ramo: props.claim.codice_ramo,
+    codice_ramo_sinistro: props.claim.codice_ramo_sinistro,
+    numero_sinistro: getNewClaimNumber(),
+    data_registrazione: getTodayDate(),
+  });
 
-Codice Fiscale  
-
-Targa controparte 
-
-Data Accadimento sinistro 
-
-Numero sinistro  
-
-Cinquina 
- * 
- */
+  return (
+    <FormContainer layout="vertical">
+      <FormTitle>
+        Apertura Sinistro
+        <FormActions>
+          <FormActionButton icon={<SaveIconStyled />} size="small">
+            Salva
+          </FormActionButton>
+        </FormActions>
+      </FormTitle>
+      <FormContent>
+        <Tabs defaultActiveKey="1" tabPosition="left">
+          <Tabs.TabPane tab="Dati Sinistro" key="1">
+            <ClaimData claim={claim} />
+            <CardData />
+          </Tabs.TabPane>
+          <Tabs.TabPane tab="Responsabilità" key="2">
+            <Barem />
+            <Responsability />
+          </Tabs.TabPane>
+          <Tabs.TabPane tab="Partite" key="3">
+            <DamagedPart />
+            <NotDamagedPart />
+          </Tabs.TabPane>
+          <Tabs.TabPane tab="Colpiti" key="4">
+            <AffectedVehicle />
+            <AffectedThing />
+          </Tabs.TabPane>
+        </Tabs>
+      </FormContent>
+      <CenteredRow>
+        <FormSendButton type="primary" size="large">
+          Invia
+        </FormSendButton>
+      </CenteredRow>
+    </FormContainer>
+  );
+};
 
 export default NewClaim;

@@ -25,3 +25,16 @@ export const CenteredRow = styled.div`
   justify-content: center;
   display: flex;
 `;
+
+export const Hr = styled.div`
+  height: 1px;
+  border-top: 1px solid #eee;
+  width: 100%;
+  margin: 1em 0;
+`;
+
+export const Hidden = styled.div`
+  width: 0px;
+  height: 0px;
+  overflow: hidden;
+`;

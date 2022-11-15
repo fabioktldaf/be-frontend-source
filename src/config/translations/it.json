@@ -4,5 +4,24 @@
   "sideMenu_policy": "Polizza",
   "sideMenu_policy_manualInsert": "Inserimento Manuale",
   "sideMenu_searchByFields": "Cerca Per Campi",
-  "sideMenu_searchFulltext": "Cerca Fulltext"
+  "sideMenu_searchFulltext": "Cerca Fulltext",
+
+  "barem_label_17": "Non aveva osservato il segnale",
+  "barem_label_16": "Proveniva da destra",
+  "barem_label_15": "Invadeva la sede stradale riservata alla circolazione in senso",
+  "barem_label_14": "Retrocedeva",
+  "barem_label_13": "Girava a sinistra",
+  "barem_label_12": "Girava a destra",
+  "barem_label_11": "Sorpassava",
+  "barem_label_10": "Cambiava di fila",
+  "barem_label_9": "Procedeva nello stesso senso ma in una fila diversa",
+  "barem_label_8": "Tamponava procedendo nello stesso senso o nella stessa fila",
+  "barem_label_7": "Circolava su una piazza a senso rotatorio",
+  "barem_label_6": "Si immetteva in una piazza a senso rotatorio",
+  "barem_label_5": "Entrava in un parcheggio, in un luogo privato, in una strada vicinale",
+  "barem_label_4": "Usciva da un parcheggio, da un luogo privato, da una strada vicinale",
+  "barem_label_3": "Stava parcheggiando",
+  "barem_label_2": "Ripartiva dopo una sosta / Apriva una portiera",
+  "barem_label_1": "Veicolo in sosta o in fermata",
+  "barem_label_0": ""
 }
