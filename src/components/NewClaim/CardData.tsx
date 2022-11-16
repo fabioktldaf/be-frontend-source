@@ -1,61 +1,112 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { Input, Button, Select } from "antd";
+import { Input, InputNumber, Button, Select, Switch } from "antd";
 import { Row, RowSpacer, Hidden } from "../../style/containers";
 import { FormSubTitle, FormInput, FormDatePicker, FormTextArea } from "../../style/form";
+import { HrStyled } from "./ClaimData";
 
-const CardDataStyled = styled.div``;
+const CardDataStyled = styled.div`
+  margin-bottom: 2em;
+`;
 
-type VehicoleNumberType = "1" | "2" | "3" | "---";
+const TrStyled = styled.tr`
+  &:hover {
+    background-color: #f5f5f5;
+  }
+`;
+
+const TdQuestion = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 30em;
+  padding-left: 1em;
+`;
+
+const TdRight = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+  width: 14em;
+  margin: 1em 0;
+`;
+
+const TdVehicleLabel = styled.td`
+  width: 6em;
+`;
+
+const CardCheck = styled.div<{ isCard: boolean }>`
+  color: ${(props) => (props.isCard ? "#888" : "red")};
+  background-color: ${(props) => (props.isCard ? "lightgreen" : "lightyellow")};
+  font-size: 0.8em;
+  width: 5em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 1em;
+  border-radius: 10em;
+`;
+
+const vehicleTypes = [
+  { value: "---", label: "---" },
+  { value: "A", label: "AUTOVETTURA" },
+  { value: "B", label: "AUTOBUS" },
+  { value: "C", label: "AUTOCARRI" },
+  { value: "M", label: "MOTOCICLI" },
+  { value: "Q", label: "MOTOCARRI" },
+  { value: "T", label: "MACCHINE OPERATRICI" },
+  { value: "W", label: "CICLOMOTORI" },
+  { value: "R", label: "RIMORCHI" },
+  { value: "S", label: "MACCHINE AGRICOLE" },
+];
+
 type VehicoleTypeType = "A" | "B" | "C" | "M" | "Q" | "T" | "W" | "R" | "S" | "---";
-type PlaceOfOccurrenceType = "Italia" | "San Marino" | "Vaticano" | "Esteri" | "---";
-type DateOfOccurrance = "Entro 2 anni" | "Superiore a 2 anni" | "---";
 type ClaimType = "CARD" | "NO CARD" | "---";
 
-type StepperDataType = {
-  numeroVeicoliCoinvolti: VehicoleNumberType;
+export type StepperDataType = {
+  numeroVeicoliCoinvolti: number;
   veicoloAVisibile: boolean;
   tipoVeicoloA: VehicoleTypeType;
   veicoloBVisibile: boolean;
   tipoVeicoloB: VehicoleTypeType;
-  luogoAccadimentoVisibile: boolean;
-  luogoAccadimento: PlaceOfOccurrenceType;
-  dataAccadimentoVisibile: boolean;
-  dataAccadimento: DateOfOccurrance;
+  collisioneVisibile: boolean;
+  collisione: boolean;
+  inItaliaVisibile: boolean;
+  inItalia: boolean;
   tipoSinistro: ClaimType;
 };
 
-type SteppedChangeDataType =
-  | "vehicles_number"
-  | "vehicle_a_type"
-  | "vehicle_b_type"
-  | "place_of_occurrence"
-  | "date_of_occurrence";
+export type SteppedChangeDataType = "vehicles_number" | "vehicle_a_type" | "vehicle_b_type" | "collision" | "inItaly";
 
-const CardData = () => {
+interface CardDataProps {
+  onClaimTypeChanged: (details: StepperDataType) => void;
+}
+
+const CardData = (props: CardDataProps) => {
   const [stepperData, setStepperData] = useState<StepperDataType>({
-    numeroVeicoliCoinvolti: "---",
+    numeroVeicoliCoinvolti: 0,
     veicoloAVisibile: false,
     tipoVeicoloA: "---",
     veicoloBVisibile: false,
     tipoVeicoloB: "---",
-    luogoAccadimentoVisibile: false,
-    luogoAccadimento: "---",
-    dataAccadimentoVisibile: false,
-    dataAccadimento: "---",
+    collisioneVisibile: false,
+    collisione: false,
+    inItaliaVisibile: false,
+    inItalia: false,
     tipoSinistro: "---",
   });
 
-  const [numeroVeicoliCoinvolti, setNumeroVeicoliCoinvolti] = useState<VehicoleNumberType>();
-  const [tipoVeicoloA, setTipoVeicoloA] = useState<VehicoleTypeType>("---");
-  const [tipoVeicoloB, setTipoVeicoloB] = useState<VehicoleTypeType>("---");
-  const [luogoAccadimento, setLuogoAccadimento] = useState<PlaceOfOccurrenceType>("---");
-  const [dataAccadimento, setDataAccadimento] = useState<DateOfOccurrance>("---");
-  const [tipoSinistro, setTipoSinistro] = useState<ClaimType>("---");
+  useEffect(() => {
+    props.onClaimTypeChanged(stepperData);
+  }, [stepperData]);
 
   const handleChangeStepperData = (val: any, field: SteppedChangeDataType) => {
+    console.log("val ", val);
+    console.log("field ", field);
+
     if (field === "vehicles_number") {
-      if (val === "2") {
+      if (val === 2) {
         setStepperData(
           Object.assign({}, stepperData, {
             numeroVeicoliCoinvolti: val,
@@ -69,10 +120,10 @@ const CardData = () => {
           tipoVeicoloA: "---",
           veicoloBVisibile: false,
           tipoVeicoloB: "---",
-          luogoAccadimentoVisibile: false,
-          luogoAccadimento: "---",
-          dataAccadimentoVisibile: false,
-          dataAccadimento: "---",
+          collisioneVisibile: false,
+          collisione: false,
+          inItaliaVisibile: false,
+          inItalia: false,
           tipoSinistro: "NO CARD",
         });
       }
@@ -84,11 +135,11 @@ const CardData = () => {
             tipoVeicoloA: val,
             veicoloBVisibile: true,
             tipoVeicoloB: "---",
-            luogoAccadimentoVisibile: false,
-            luogoAccadimento: "---",
-            dataAccadimentoVisibile: false,
-            dataAccadimento: "---",
-            tipoSinistro: "NO CARD",
+            collisioneVisibile: false,
+            collisione: false,
+            inItaliaVisibile: false,
+            inItalia: false,
+            tipoSinistro: "---",
           })
         );
       } else {
@@ -98,10 +149,10 @@ const CardData = () => {
           tipoVeicoloA: val,
           veicoloBVisibile: false,
           tipoVeicoloB: "---",
-          luogoAccadimentoVisibile: false,
-          luogoAccadimento: "---",
-          dataAccadimentoVisibile: false,
-          dataAccadimento: "---",
+          collisioneVisibile: false,
+          collisione: false,
+          inItaliaVisibile: false,
+          inItalia: false,
           tipoSinistro: "NO CARD",
         });
       }
@@ -111,11 +162,11 @@ const CardData = () => {
         setStepperData(
           Object.assign({}, stepperData, {
             tipoVeicoloB: val,
-            luogoAccadimentoVisibile: true,
-            luogoAccadimento: "---",
-            dataAccadimentoVisibile: false,
-            dataAccadimento: "---",
-            tipoSinistro: "NO CARD",
+            collisioneVisibile: true,
+            collisione: false,
+            inItaliaVisibile: false,
+            inItalia: false,
+            tipoSinistro: "---",
           })
         );
       } else {
@@ -125,22 +176,22 @@ const CardData = () => {
           tipoVeicoloA: stepperData.tipoVeicoloA,
           veicoloBVisibile: stepperData.veicoloBVisibile,
           tipoVeicoloB: val,
-          luogoAccadimentoVisibile: false,
-          luogoAccadimento: "---",
-          dataAccadimentoVisibile: false,
-          dataAccadimento: "---",
+          collisioneVisibile: false,
+          collisione: false,
+          inItaliaVisibile: false,
+          inItalia: false,
           tipoSinistro: "NO CARD",
         });
       }
     }
-    if (field === "place_of_occurrence") {
-      if (["Italia", "San Marino", "Vaticano"].indexOf(val) >= 0) {
+    if (field === "collision") {
+      if (val) {
         setStepperData(
           Object.assign({}, stepperData, {
-            luogoAccadimento: val,
-            dataAccadimentoVisibile: true,
-            dataAccadimento: "---",
-            tipoSinistro: "NO CARD",
+            collisione: val,
+            inItaliaVisibile: true,
+            inItalia: false,
+            tipoSinistro: "---",
           })
         );
       } else {
@@ -150,19 +201,19 @@ const CardData = () => {
           tipoVeicoloA: stepperData.tipoVeicoloA,
           veicoloBVisibile: stepperData.veicoloBVisibile,
           tipoVeicoloB: stepperData.tipoVeicoloB,
-          luogoAccadimentoVisibile: stepperData.luogoAccadimentoVisibile,
-          luogoAccadimento: val,
-          dataAccadimentoVisibile: false,
-          dataAccadimento: "---",
+          collisioneVisibile: stepperData.collisioneVisibile,
+          collisione: val,
+          inItaliaVisibile: false,
+          inItalia: false,
           tipoSinistro: "NO CARD",
         });
       }
     }
-    if (field === "date_of_occurrence") {
-      if (val === "Entro 2 anni") {
+    if (field === "inItaly") {
+      if (val) {
         setStepperData(
           Object.assign({}, stepperData, {
-            dataAccadimento: val,
+            inItalia: val,
             tipoSinistro: "CARD",
           })
         );
@@ -173,149 +224,114 @@ const CardData = () => {
           tipoVeicoloA: stepperData.tipoVeicoloA,
           veicoloBVisibile: stepperData.veicoloBVisibile,
           tipoVeicoloB: stepperData.tipoVeicoloB,
-          luogoAccadimentoVisibile: stepperData.luogoAccadimentoVisibile,
-          luogoAccadimento: stepperData.luogoAccadimento,
-          dataAccadimentoVisibile: stepperData.luogoAccadimentoVisibile,
-          dataAccadimento: val,
+          collisioneVisibile: stepperData.collisioneVisibile,
+          collisione: stepperData.collisione,
+          inItaliaVisibile: stepperData.inItaliaVisibile,
+          inItalia: false,
           tipoSinistro: "NO CARD",
         });
       }
     }
   };
 
-  console.log("StepperData ", stepperData);
+  const renderCardNoCard = (val: boolean) => <CardCheck isCard={val}>{val ? "CARD" : "NO CARD"}</CardCheck>;
 
   return (
     <CardDataStyled>
-      <FormSubTitle>Dati Card</FormSubTitle>
-      <Row>
-        <FormInput label="Numero Veicoli" name="numero_veicoli" tooltip="Quanti veicoli sono stati coinvolti?">
-          <Select
-            defaultValue="---"
-            onChange={(val) => handleChangeStepperData(val, "vehicles_number")}
-            options={[
-              { value: "---", label: "---" },
-              { value: "1", label: "1" },
-              { value: "2", label: "2" },
-              { value: "3", label: "3 o pù" },
-            ]}
-          />
-        </FormInput>
-        <RowSpacer />
-      </Row>
-      <Row>
-        {stepperData.veicoloAVisibile && (
-          <FormInput label="Tipo Veicolo A" name="tipo_veicolo_a" tooltip="Tipo del veicolo A">
-            <Select
-              defaultValue="---"
-              onChange={(val) => handleChangeStepperData(val, "vehicle_a_type")}
-              options={[
-                { value: "---", label: "---" },
-                { value: "A", label: "AUTOVETTURA" },
-                { value: "B", label: "AUTOBUS" },
-                { value: "C", label: "AUTOCARRI" },
-                { value: "M", label: "MOTOCICLI" },
-                { value: "Q", label: "MOTOCARRI" },
-                { value: "T", label: "MACCHINE OPERATRICI" },
-                { value: "W", label: "CICLOMOTORI" },
-                { value: "R", label: "RIMORCHI" },
-                { value: "S", label: "MACCHINE AGRICOLE" },
-              ]}
-            />
-            <Hidden>{stepperData.tipoVeicoloA}</Hidden>
-          </FormInput>
-        )}
-        <RowSpacer />
-
-        {stepperData.veicoloBVisibile && (
-          <FormInput label="Tipo Veicolo B" name="tipo_veicolo_b" tooltip="Tipo del veicolo B">
-            <Select
-              defaultValue="---"
-              onChange={(val) => handleChangeStepperData(val, "vehicle_b_type")}
-              options={[
-                { value: "---", label: "---" },
-                { value: "A", label: "AUTOVETTURA" },
-                { value: "B", label: "AUTOBUS" },
-                { value: "C", label: "AUTOCARRI" },
-                { value: "M", label: "MOTOCICLI" },
-                { value: "Q", label: "MOTOCARRI" },
-                { value: "T", label: "MACCHINE OPERATRICI" },
-                { value: "W", label: "CICLOMOTORI" },
-                { value: "R", label: "RIMORCHI" },
-                { value: "S", label: "MACCHINE AGRICOLE" },
-              ]}
-            />
-            <Hidden>{stepperData.tipoVeicoloB}</Hidden>
-          </FormInput>
-        )}
-      </Row>
-      <Row>
-        {stepperData.luogoAccadimentoVisibile && (
-          <FormInput label="Luogo Accadimento" name="luogo_accadimento" tooltip="Luogo accadimento del sinistro">
-            <Select
-              defaultValue="---"
-              onChange={(val) => handleChangeStepperData(val, "place_of_occurrence")}
-              options={[
-                { value: "---", label: "---" },
-                { value: "Italia", label: "Italia" },
-                { value: "San Marino", label: "San Marino" },
-                { value: "Vaticano", label: "Vaticano" },
-                { value: "Esteri", label: "Esteri" },
-              ]}
-            />
-            <Hidden>{stepperData.luogoAccadimento}</Hidden>
-          </FormInput>
-        )}
-        <RowSpacer />
-        {stepperData.dataAccadimentoVisibile && (
-          <FormInput label="Data Accadimento" name="data_accadimento" tooltip="Data accadimento del sinistro">
-            <Select
-              defaultValue="---"
-              onChange={(val) => handleChangeStepperData(val, "date_of_occurrence")}
-              options={[
-                { value: "---", label: "---" },
-                { value: "Entro 2 anni", label: "Entro 2 anni" },
-                { value: "Superiore a 2 anni", label: "Superiore a 2 anni" },
-              ]}
-            />
-            <Hidden>{stepperData.dataAccadimento}</Hidden>
-          </FormInput>
-        )}
-      </Row>
-
-      <Row>
-        <FormInput label="Tipo Firma" name="tipo_firma" tooltip="Seleziona il tipo firma">
-          <Select
-            defaultValue="---"
-            options={[
-              { value: "---", label: "---" },
-              { value: "monofirma", label: "Monofirma" },
-              { value: "firma_congiunta", label: "Firma Congiunta" },
-            ]}
-          />
-        </FormInput>
-        <RowSpacer />
-        <FormInput label="Classificazione" name="classificazione" tooltip="Seleziona la classificazione">
-          <Select
-            defaultValue="---"
-            options={[
-              { value: "---", label: "---" },
-              { value: " ", label: " " },
-              { value: "1", label: "1" },
-              { value: "2", label: "2" },
-              { value: "3", label: "3" },
-              { value: "4", label: "4" },
-              { value: "N", label: "N" },
-            ]}
-          />
-        </FormInput>
-        <RowSpacer />
-      </Row>
-      <Row>
-        <FormInput label="Nota Ania" name="nota_ania" tooltip="Inserisci una nota utente">
-          <FormTextArea placeholder="nota utente ..." rows={5} maxLength={1000} />
-        </FormInput>
-      </Row>
+      <table>
+        <tbody>
+          <TrStyled>
+            <td>
+              <TdQuestion>Quanti veicoli sono stati coinvolti?</TdQuestion>
+            </td>
+            <TdVehicleLabel></TdVehicleLabel>
+            <td>
+              <TdRight>
+                <FormInput name="numero_veicoli" style={{ marginBottom: 0, textAlign: "right" }}>
+                  <InputNumber max={100} min={0} onChange={(val) => handleChangeStepperData(val, "vehicles_number")} />
+                </FormInput>
+              </TdRight>
+            </td>
+            <td>{renderCardNoCard(stepperData.veicoloAVisibile)}</td>
+          </TrStyled>
+          {(stepperData.veicoloAVisibile || stepperData.veicoloBVisibile) && (
+            <TrStyled>
+              <td>
+                <TdQuestion>Quale tipo di veicoli sono stati coinvolti?</TdQuestion>
+              </td>
+              <TdVehicleLabel>Veicolo A</TdVehicleLabel>
+              <td>
+                <TdRight>
+                  <FormInput name="tipo_veicolo_a" style={{ marginBottom: 0 }}>
+                    <Select
+                      defaultValue="---"
+                      onChange={(val) => handleChangeStepperData(val, "vehicle_a_type")}
+                      options={vehicleTypes}
+                    />
+                    <Hidden>{stepperData.tipoVeicoloA}</Hidden>
+                  </FormInput>
+                </TdRight>
+              </td>
+              <td>{renderCardNoCard(stepperData.veicoloBVisibile)}</td>
+            </TrStyled>
+          )}
+          {stepperData.veicoloBVisibile && (
+            <TrStyled>
+              <td></td>
+              <TdVehicleLabel>Veicolo B</TdVehicleLabel>
+              <td>
+                <TdRight>
+                  <FormInput name="tipo_veicolo_b" style={{ marginBottom: 0 }}>
+                    <Select
+                      defaultValue="---"
+                      onChange={(val) => handleChangeStepperData(val, "vehicle_b_type")}
+                      options={vehicleTypes}
+                    />
+                    <Hidden>{stepperData.tipoVeicoloB}</Hidden>
+                  </FormInput>
+                </TdRight>
+              </td>
+              <td>{renderCardNoCard(stepperData.collisioneVisibile)}</td>
+            </TrStyled>
+          )}
+          {stepperData.collisioneVisibile && (
+            <TrStyled>
+              <td>
+                <TdQuestion>C'è stata una collisione?</TdQuestion>
+              </td>
+              <TdVehicleLabel></TdVehicleLabel>
+              <td>
+                <TdRight>
+                  <Switch
+                    unCheckedChildren={"No"}
+                    checkedChildren={"Si"}
+                    onChange={(val) => handleChangeStepperData(val, "collision")}
+                  />
+                </TdRight>
+              </td>
+              <td>{renderCardNoCard(stepperData.inItaliaVisibile)}</td>
+            </TrStyled>
+          )}
+          {stepperData.inItaliaVisibile && (
+            <TrStyled>
+              <td>
+                <TdQuestion>Il luogo di accadimento è in Italia, San Marino o Vaticano?</TdQuestion>
+              </td>
+              <TdVehicleLabel></TdVehicleLabel>
+              <td>
+                <TdRight>
+                  <Switch
+                    unCheckedChildren={"No"}
+                    checkedChildren={"Si"}
+                    onChange={(val) => handleChangeStepperData(val, "inItaly")}
+                  />
+                </TdRight>
+              </td>
+              <td>{renderCardNoCard(stepperData.tipoSinistro === "CARD")}</td>
+            </TrStyled>
+          )}
+        </tbody>
+      </table>
     </CardDataStyled>
   );
 };

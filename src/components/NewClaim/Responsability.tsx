@@ -10,6 +10,36 @@ const Responsability = () => {
   return (
     <ResponsabilityStyled>
       <FormSubTitle>Responsabilità</FormSubTitle>
+
+      <Row>
+        <FormInput label="Tipo Firma" name="tipo_firma" tooltip="Seleziona il tipo firma">
+          <Select
+            defaultValue="---"
+            options={[
+              { value: "---", label: "---" },
+              { value: "monofirma", label: "Monofirma" },
+              { value: "firma_congiunta", label: "Firma Congiunta" },
+            ]}
+          />
+        </FormInput>
+        <RowSpacer />
+        <FormInput label="Classificazione" name="classificazione" tooltip="Seleziona la classificazione">
+          <Select
+            defaultValue="---"
+            options={[
+              { value: "---", label: "---" },
+              { value: " ", label: " " },
+              { value: "1", label: "1" },
+              { value: "2", label: "2" },
+              { value: "3", label: "3" },
+              { value: "4", label: "4" },
+              { value: "N", label: "N" },
+            ]}
+          />
+        </FormInput>
+        <RowSpacer />
+      </Row>
+
       <Row>
         <FormInput
           label="Ruolo Responsabilità"

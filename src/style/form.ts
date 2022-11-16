@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { Form, DatePicker, Button, Input } from "antd";
+import { Form, DatePicker, Button, Input, TimePicker } from "antd";
 
 export const FormContainer = styled(Form)`
   width: 100%;
@@ -61,6 +61,10 @@ export const FormInput = styled(Form.Item)`
 export const FormTextArea = styled(Input.TextArea)``;
 
 export const FormDatePicker = styled(DatePicker)`
+  flex: 1;
+`;
+
+export const FormTimePicker = styled(TimePicker)`
   flex: 1;
 `;
 

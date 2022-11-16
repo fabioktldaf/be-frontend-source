@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { Button, Row, Tabs } from "antd";
+import { Button, Row, Tabs, Tooltip } from "antd";
 import { HiOutlineSave } from "react-icons/hi";
+import { MdContentCopy } from "react-icons/md";
 import { FormContainer, FormTitle, FormContent, FormActions, FormActionButton, FormSendButton } from "../../style/form";
 import { CenteredRow } from "../../style/containers";
 import Barem from "./Barem";
-import CardData from "./CardData";
 import Responsability from "./Responsability";
 import ClaimData from "./ClaimData";
 import AffectedThing from "./AffectedThing";
@@ -17,6 +17,17 @@ const SaveIconStyled = styled(HiOutlineSave)`
   font-size: 1.2em;
   color: #555;
   margin: -3px 0.25em 0 0;
+`;
+
+const PolicyNumberStyled = styled.div`
+  display: flex;
+  align-items: center;
+  margin-left: 1em;
+`;
+
+const PolicyNumberCopyStyled = styled(MdContentCopy)`
+  margin-left: 0.5em;
+  cursor: pointer;
 `;
 
 const getNewClaimNumber = () => Date.now().toString();
@@ -46,6 +57,29 @@ type NewClaimProps = {
   };
 };
 
+type HeaderProps = {
+  policy_number: string;
+};
+
+const Header = (props: HeaderProps) => {
+  return (
+    <FormTitle>
+      Apertura Sinistro
+      <PolicyNumberStyled>
+        N° {props.policy_number}{" "}
+        <Tooltip title={"Clicca per copiare il numero di polizza"}>
+          <PolicyNumberCopyStyled onClick={() => navigator.clipboard.writeText(props.policy_number)} />
+        </Tooltip>
+      </PolicyNumberStyled>
+      <FormActions>
+        <FormActionButton icon={<SaveIconStyled />} size="small">
+          Salva
+        </FormActionButton>
+      </FormActions>
+    </FormTitle>
+  );
+};
+
 const NewClaim = (props: NewClaimProps) => {
   const [claim, setClaim] = useState<ClaimDataType>({
     codice_compagnia: props.claim.company_code,
@@ -57,19 +91,11 @@ const NewClaim = (props: NewClaimProps) => {
 
   return (
     <FormContainer layout="vertical">
-      <FormTitle>
-        Apertura Sinistro
-        <FormActions>
-          <FormActionButton icon={<SaveIconStyled />} size="small">
-            Salva
-          </FormActionButton>
-        </FormActions>
-      </FormTitle>
+      <Header policy_number={claim.numero_sinistro} />
       <FormContent>
         <Tabs defaultActiveKey="1" tabPosition="left">
           <Tabs.TabPane tab="Dati Sinistro" key="1">
             <ClaimData claim={claim} />
-            <CardData />
           </Tabs.TabPane>
           <Tabs.TabPane tab="Responsabilità" key="2">
             <Barem />
