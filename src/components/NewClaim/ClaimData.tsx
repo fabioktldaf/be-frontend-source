@@ -64,6 +64,10 @@ const ClaimData = (props: ClaimDataProps) => {
         <Collapse.Panel header={"DETTAGLIO DATI SINISTRO"} key="1">
           <CollapsePanelContentStyled>
             <ReadonlyField>
+              <LabelStyled>Numero Polizza :</LabelStyled>
+              <ReadonlyValue>{props.claim.numero_polizza}</ReadonlyValue>
+            </ReadonlyField>
+            <ReadonlyField>
               <LabelStyled>Codice Compagnia :</LabelStyled>
               <ReadonlyValue>{props.claim.codice_compagnia}</ReadonlyValue>
             </ReadonlyField>

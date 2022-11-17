@@ -7,7 +7,7 @@ import PolicyManualInsert from "../PolicyManualInsert";
 import NewClaim from "../NewClaim";
 
 import { Layout } from "antd";
-import { urls } from "../../config/const";
+import { Urls } from "../../config/const";
 
 import Sider from "./Sider";
 import Header from "./Header";
@@ -50,9 +50,9 @@ const AppLayout: React.FC<Props> = (props: Props) => {
           <Header />
           <ContentStyled>
             <Routes>
-              <Route path={urls.home} element={<div>home...</div>} />
+              <Route path={Urls.home} element={<div>home...</div>} />
               <Route
-                path={urls.policy_searchFulltext}
+                path={Urls.policy_searchFulltext}
                 element={
                   <>
                     <FullSearch />
@@ -61,7 +61,7 @@ const AppLayout: React.FC<Props> = (props: Props) => {
                 }
               />
               <Route
-                path={urls.policy_searchByfields}
+                path={Urls.policy_searchByfields}
                 element={
                   <>
                     <SearchByFields />
@@ -69,8 +69,8 @@ const AppLayout: React.FC<Props> = (props: Props) => {
                   </>
                 }
               />
-              <Route path={urls.policy_manualInsert} element={<PolicyManualInsert />} />
-              <Route path={urls.new_claim} element={<NewClaim claim={defaultClaimData} />} />
+              <Route path={Urls.policy_manualInsert} element={<PolicyManualInsert />} />
+              <Route path={Urls.new_claim} element={<NewClaim claim={defaultClaimData} />} />
             </Routes>
 
             {children}

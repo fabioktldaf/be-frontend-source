@@ -4,7 +4,6 @@ import { HiOutlineSave } from "react-icons/hi";
 import { MdContentCopy } from "react-icons/md";
 import { FormContainer, FormTitle, FormContent, FormActions, FormActionButton, FormSendButton } from "../../style/form";
 import { CenteredRow } from "../../style/containers";
-import Barem from "./Barem";
 import Responsability from "./Responsability";
 import ClaimData from "./ClaimData";
 import AffectedThing from "./AffectedThing";
@@ -42,6 +41,7 @@ const getTodayDate = () => {
 };
 
 export type ClaimDataType = {
+  numero_polizza: string;
   codice_compagnia: string;
   codice_ramo: string;
   codice_ramo_sinistro: string;
@@ -82,6 +82,7 @@ const Header = (props: HeaderProps) => {
 
 const NewClaim = (props: NewClaimProps) => {
   const [claim, setClaim] = useState<ClaimDataType>({
+    numero_polizza: "AB-12345789",
     codice_compagnia: props.claim.company_code,
     codice_ramo: props.claim.codice_ramo,
     codice_ramo_sinistro: props.claim.codice_ramo_sinistro,
@@ -98,16 +99,11 @@ const NewClaim = (props: NewClaimProps) => {
             <ClaimData claim={claim} />
           </Tabs.TabPane>
           <Tabs.TabPane tab="Responsabilità" key="2">
-            <Barem />
-            <Responsability />
+            <Responsability isCard={true} />
           </Tabs.TabPane>
           <Tabs.TabPane tab="Partite" key="3">
             <DamagedPart />
             <NotDamagedPart />
-          </Tabs.TabPane>
-          <Tabs.TabPane tab="Colpiti" key="4">
-            <AffectedVehicle />
-            <AffectedThing />
           </Tabs.TabPane>
         </Tabs>
       </FormContent>

@@ -4,6 +4,7 @@ import { Input, InputNumber, Button, Select, Switch } from "antd";
 import { Row, RowSpacer, Hidden } from "../../style/containers";
 import { FormSubTitle, FormInput, FormDatePicker, FormTextArea } from "../../style/form";
 import { HrStyled } from "./ClaimData";
+import { VehicleTypeOptions } from "../../config/const";
 
 const CardDataStyled = styled.div`
   margin-bottom: 2em;
@@ -19,7 +20,7 @@ const TdQuestion = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  width: 30em;
+  width: 20em;
   padding-left: 1em;
 `;
 
@@ -33,7 +34,9 @@ const TdRight = styled.div`
 `;
 
 const TdVehicleLabel = styled.td`
-  width: 6em;
+  width: 8em;
+  padding-right: 1em;
+  text-align: right;
 `;
 
 const CardCheck = styled.div<{ isCard: boolean }>`
@@ -47,19 +50,6 @@ const CardCheck = styled.div<{ isCard: boolean }>`
   margin: 0 1em;
   border-radius: 10em;
 `;
-
-const vehicleTypes = [
-  { value: "---", label: "---" },
-  { value: "A", label: "AUTOVETTURA" },
-  { value: "B", label: "AUTOBUS" },
-  { value: "C", label: "AUTOCARRI" },
-  { value: "M", label: "MOTOCICLI" },
-  { value: "Q", label: "MOTOCARRI" },
-  { value: "T", label: "MACCHINE OPERATRICI" },
-  { value: "W", label: "CICLOMOTORI" },
-  { value: "R", label: "RIMORCHI" },
-  { value: "S", label: "MACCHINE AGRICOLE" },
-];
 
 type VehicoleTypeType = "A" | "B" | "C" | "M" | "Q" | "T" | "W" | "R" | "S" | "---";
 type ClaimType = "CARD" | "NO CARD" | "---";
@@ -266,7 +256,7 @@ const CardData = (props: CardDataProps) => {
                     <Select
                       defaultValue="---"
                       onChange={(val) => handleChangeStepperData(val, "vehicle_a_type")}
-                      options={vehicleTypes}
+                      options={VehicleTypeOptions}
                     />
                     <Hidden>{stepperData.tipoVeicoloA}</Hidden>
                   </FormInput>
@@ -285,7 +275,7 @@ const CardData = (props: CardDataProps) => {
                     <Select
                       defaultValue="---"
                       onChange={(val) => handleChangeStepperData(val, "vehicle_b_type")}
-                      options={vehicleTypes}
+                      options={VehicleTypeOptions}
                     />
                     <Hidden>{stepperData.tipoVeicoloB}</Hidden>
                   </FormInput>
