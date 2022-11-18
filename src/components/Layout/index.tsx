@@ -14,6 +14,7 @@ import Header from "./Header";
 import styled from "styled-components";
 
 import "antd/dist/antd.css";
+import { FormContainer } from "../../style/form";
 
 const LayoutStyled = styled(Layout)`
   height: 100vh;
@@ -54,19 +55,19 @@ const AppLayout: React.FC<Props> = (props: Props) => {
               <Route
                 path={Urls.policy_searchFulltext}
                 element={
-                  <>
+                  <FormContainer layout="vertical" style={{ padding: "1em 3em" }}>
                     <FullSearch />
                     <SearchResults />
-                  </>
+                  </FormContainer>
                 }
               />
               <Route
                 path={Urls.policy_searchByfields}
                 element={
-                  <>
+                  <FormContainer layout="vertical" style={{ padding: "1em 3em" }}>
                     <SearchByFields />
                     <SearchResults />
-                  </>
+                  </FormContainer>
                 }
               />
               <Route path={Urls.policy_manualInsert} element={<PolicyManualInsert />} />

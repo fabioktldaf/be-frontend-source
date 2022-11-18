@@ -7,6 +7,8 @@ import { RiDeleteBinFill } from "react-icons/ri";
 
 import DamagedPartPerson from "./DamagedPartPerson";
 import DamagedPartVehicle from "./DamagedPartVehicle";
+import SearchSubject from "../SearchSubject";
+import { HrStyled } from "./ClaimData";
 
 const DamagedPartStyled = styled.div`
   margin-bottom: 2em;
@@ -33,10 +35,18 @@ type PartChangeType = "damage_type" | "";
 
 type TipoDannoType = "" | "Persone" | "Cose" | "Veicolo" | "Ubicazione" | "Generico";
 
+type SubjectPersonalDataType = {
+  isOpen: boolean;
+  personalData: {
+    id: number;
+  };
+};
+
 export type PartDamagedDetailsPerson = {
   nature: string;
   location: string;
   note: string;
+  personalData?: SubjectPersonalDataType;
 };
 
 export type PartDamagedDetailsVehicle = {
@@ -70,6 +80,10 @@ const DamagedPart = () => {
     isOpen: false,
     part: undefined,
     index: -1,
+  });
+  const [partModalPerson, setPartModalPerson] = useState<SubjectPersonalDataType>({
+    isOpen: false,
+    personalData: { id: 0 },
   });
 
   const handlePartModalOk = () => {
@@ -171,7 +185,19 @@ const DamagedPart = () => {
     }
   };
 
-  console.log("dettaglio danni persona ", partModal.part?.dettagli_danni_persona);
+  const handleModalPartPersonCancel = () => {
+    setPartModalPerson((prev) => ({
+      isOpen: false,
+      personalData: { id: 0 },
+    }));
+  };
+
+  const handleModalPartPersonOk = () => {
+    setPartModalPerson((prev) => ({
+      isOpen: false,
+      personalData: { id: 0 },
+    }));
+  };
 
   return (
     <>
@@ -301,15 +327,27 @@ const DamagedPart = () => {
         {partModal.part?.tipo_danno === "Persone" && (
           <>
             <FormSubTitle>Dettaglio danni alla persona</FormSubTitle>
-
+            <Row>
+              <Button
+                type="primary"
+                size="small"
+                onClick={() => setPartModalPerson({ isOpen: true, personalData: { id: 0 } })}
+              >
+                Seleziona soggetto
+              </Button>{" "}
+            </Row>
             <Row>
               <Col>
                 {partModal.part?.dettagli_danni_persona.map((d, i) => (
-                  <Row>
-                    <DamagedPartPerson index={i} details={partModal.part?.dettagli_danni_persona[i]!} />
-                    <RiDeleteBinFill onClick={() => handleRemoveDamageDetails(i)} />
-                  </Row>
+                  <Col>
+                    <Row>
+                      <DamagedPartPerson index={i} details={partModal.part?.dettagli_danni_persona[i]!} />
+                      <RiDeleteBinFill onClick={() => handleRemoveDamageDetails(i)} />
+                    </Row>
+                    <HrStyled />
+                  </Col>
                 ))}
+
                 {partModal.part?.dettagli_danni_persona.length! < 3 && (
                   <Button type="primary" size="small" onClick={handleAddDamagePersonDetails}>
                     +
@@ -329,6 +367,14 @@ const DamagedPart = () => {
             </Row>
           </>
         )}
+      </Modal>
+      <Modal
+        title={"Seleziona il soggetto della partita di danno"}
+        open={partModalPerson.isOpen}
+        onCancel={handleModalPartPersonCancel}
+        onOk={handleModalPartPersonOk}
+      >
+        <SearchSubject />
       </Modal>
     </>
   );
