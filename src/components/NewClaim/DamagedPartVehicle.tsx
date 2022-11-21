@@ -6,49 +6,60 @@ import { FormSubTitle, FormInput } from "../../style/form";
 import { RiDeleteBinFill } from "react-icons/ri";
 
 import { useTranslation } from "react-i18next";
-import { VehicleTypeOptions } from "../../config/const";
+import { vehicleCollisionPoints, VehicleTypeOptions } from "../../config/const";
 import { PartDamagedDetailsVehicle } from "./DamagedPart";
 
 const DamagedPartVehicleStyled = styled.div``;
 
 interface DamagedPartVehicleProps {
   details: PartDamagedDetailsVehicle;
+  readOnly?: boolean;
 }
+
+export const plateFormats = [
+  { value: "---", label: "---" },
+  {
+    value: "T",
+    label: "Targa Italia",
+  },
+  {
+    value: "X",
+    label: "Targg Prova",
+  },
+  {
+    value: "Y",
+    label: "Targg Provvisorie",
+  },
+  {
+    value: "J",
+    label: "Targa Filobus",
+  },
+];
 
 const DamagedPartVehicle = (props: DamagedPartVehicleProps) => {
   const { t } = useTranslation();
 
+  const renderCollisionPoint = (code: string) => {
+    const cp = vehicleCollisionPoints.find((p) => p.code === code);
+    return <div>{`${cp!.code} - ${cp!.label}`}</div>;
+  };
   return (
     <DamagedPartVehicleStyled>
       <FormInput label="Targa" name={`targa`} tooltip="Targa del veicolo">
-        <Input maxLength={10} />
+        {props.readOnly ? <div>{props.details.plate}</div> : <Input maxLength={10} />}
       </FormInput>
       <FormInput label="Formato della targa" name={`fomato_targa`} tooltip="Formato della targa">
-        <Select
-          defaultValue="---"
-          options={[
-            {
-              value: "Targhe Italia",
-              label: "Targhe Italia",
-            },
-            {
-              value: "Targhe Prova",
-              label: "Targhe Prova",
-            },
-            {
-              value: "Targhe Provvisorie",
-              label: "Targhe Provvisorie",
-            },
-            {
-              value: "Targhe Filobus",
-              label: "Targhe Filobus",
-            },
-          ]}
-        />
+        {props.readOnly ? <div>{props.details.format}</div> : <Select defaultValue="---" options={plateFormats} />}
       </FormInput>
       <FormInput label="Tipo veicolo" name={`tipo_veicolo`} tooltip="Tipo del veicolo">
-        <Select defaultValue="---" options={VehicleTypeOptions} />
+        {props.readOnly ? <div>{props.details.type}</div> : <Select defaultValue="---" options={VehicleTypeOptions} />}
       </FormInput>
+
+      {props.details.collisionPoints?.length > 0 && (
+        <FormInput label="Punti di impatto" name={`punti_impatto`} tooltip="Punti di impatto del veicolo">
+          {props.details.collisionPoints?.map((c) => renderCollisionPoint(c))}
+        </FormInput>
+      )}
     </DamagedPartVehicleStyled>
   );
 };

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { Form, Input, Button, Select, Modal, Divider } from "antd";
 import { Col, Row, RowSpacer } from "../../style/containers";
@@ -72,14 +72,14 @@ const BaremModalFooterButtons = styled.div`
 `;
 
 const ResponsabilityTypes = {
-  card: [
+  noCard: [
     { value: "---", label: "---" },
     { value: "4", label: "Passivo" },
     { value: "5", label: "Attivo" },
   ],
-  noCard: [
+  card: [
     { value: "---", label: "---" },
-    { value: "1", label: "Definito" },
+    { value: "1", label: "Debitore" },
     { value: "2", label: "Concorsuale" },
     { value: "3", label: "Gestionario" },
   ],
@@ -98,6 +98,14 @@ const Responsability = (props: ResponsabilityProps) => {
   const [baremVehicleA, setBaremVehicleA] = useState<number | undefined>();
   const [baremVehicleB, setBaremVehicleB] = useState<number | undefined>();
   const [baremResult, setBaremResult] = useState("NC");
+  const [motivoForzatura, setMotivoForzatura] = useState("");
+  const [tipoResponsabilità, setTipoResponsabilità] = useState("---");
+
+  useEffect(() => {
+    console.log("motivo forzatura ", motivoForzatura);
+    if (motivoForzatura === "---") setTipoResponsabilità("1");
+    else setTipoResponsabilità("2");
+  }, [motivoForzatura]);
 
   const handleBaremsModalCancel = () => {
     setBaremModalOpen(false);
@@ -108,23 +116,32 @@ const Responsability = (props: ResponsabilityProps) => {
   };
 
   const handleChangeVehicleValue = (vehicle: "A" | "B", val: number) => {
+    let bRes: string | null = null;
+
     if (vehicle === "A") {
       setBaremVehicleA(val);
       if (baremVehicleB) {
-        setBaremResult(Barems[val][baremVehicleB]);
+        bRes = Barems[val][baremVehicleB];
       }
     }
     if (vehicle === "B") {
       setBaremVehicleB(val);
       if (baremVehicleA) {
-        setBaremResult(Barems[baremVehicleA][val]);
+        bRes = Barems[baremVehicleA][val];
       }
+    }
+
+    if (bRes) {
+      setBaremResult(bRes);
+      const newTipoResp = bRes === "T" ? "1" : bRes === "C" ? "2" : bRes === "R" ? "3" : "";
+      console.log("tipo responsabilità ", newTipoResp);
+      setTipoResponsabilità(newTipoResp);
     }
   };
 
   return (
     <ResponsabilityStyled>
-      <FormSubTitle>Barem</FormSubTitle>
+      <FormSubTitle>Ripartizione Responsabilità (Barèmes)</FormSubTitle>
       <Row>
         <FormInput
           label="Caso Circostanza"
@@ -144,8 +161,8 @@ const Responsability = (props: ResponsabilityProps) => {
             </BaremOpenModal>
             {["R", "C", "T"].indexOf(baremResult) > -1 && (
               <Col>
-                <Row>Veicolo A : {t(`barem_label_${baremVehicleA}`)}</Row>
-                <Row>Veicolo B : {t(`barem_label_${baremVehicleB}`)}</Row>
+                <Row>Veicolo Nostro : {t(`barem_label_${baremVehicleA}`)}</Row>
+                <Row>Veicolo Controparte : {t(`barem_label_${baremVehicleB}`)}</Row>
               </Col>
             )}
           </BaremContainer>
@@ -185,8 +202,8 @@ const Responsability = (props: ResponsabilityProps) => {
               <thead>
                 <tr>
                   <BaremTdHeader>CIRCOSTANZA DEL SINISTRO</BaremTdHeader>
-                  <BaremTdHeader>VEICOLO A</BaremTdHeader>
-                  <BaremTdHeader>VEICOLO B</BaremTdHeader>
+                  <BaremTdHeader>VEICOLO Nostro</BaremTdHeader>
+                  <BaremTdHeader>VEICOLO Controparte</BaremTdHeader>
                 </tr>
               </thead>
               <tbody>
@@ -211,11 +228,12 @@ const Responsability = (props: ResponsabilityProps) => {
         </FormInput>
         <RowSpacer />
       </Row>
-      {["T", "C"].indexOf(baremResult) !== -1 && (
+      {baremResult === "T" && (
         <Row>
           <FormInput label="Motivo Forzatura" name="motivo_forzatura" tooltip="Seleziona il motivo della forzatura">
             <Select
               defaultValue="---"
+              onChange={(val) => setMotivoForzatura(val)}
               options={[
                 { value: "---", label: "---" },
                 { value: "1", label: "Mancato rispetto limiti velocità" },
@@ -229,35 +247,35 @@ const Responsability = (props: ResponsabilityProps) => {
       <FormSubTitle>Responsabilità</FormSubTitle>
 
       <Row>
+        {tipoResponsabilità && (
+          <FormInput label="Tipo Responsabilità" name="tipo_responsabilità">
+            {ResponsabilityTypes.card.find((r) => r.value === tipoResponsabilità)?.label}
+          </FormInput>
+        )}
+        <RowSpacer />
+        {props.isCard && (
+          <FormInput label="Percentual Responsabilità" name="percentuale_responsabilità">
+            {tipoResponsabilità === "3"
+              ? "0%"
+              : tipoResponsabilità === "2"
+              ? "50%"
+              : tipoResponsabilità === "1"
+              ? "100%"
+              : ""}
+          </FormInput>
+        )}
+      </Row>
+      <Row>
         <FormInput label="Tipo Firma" name="tipo_firma" tooltip="Seleziona il tipo firma">
           <Select
             defaultValue="---"
             options={[
               { value: "---", label: "---" },
               { value: "monofirma", label: "Monofirma" },
-              { value: "firma_congiunta", label: "Firma Congiunta" },
+              { value: "firma_congiunta", label: "Doppia Firma" },
             ]}
           />
         </FormInput>
-        <RowSpacer />
-        <FormInput
-          label="Tipo Responsabilità"
-          name="tipo_responsabilità"
-          tooltip="Seleziona il tip di responsabilità"
-          rules={[{ required: true, message: "Il tipo di responsabilità è obbligatorio" }]}
-        >
-          <Select defaultValue="---" options={props.isCard ? ResponsabilityTypes.card : ResponsabilityTypes.noCard} />
-        </FormInput>
-      </Row>
-      <Row>
-        {props.isCard && (
-          <div style={{ display: "flex" }}>
-            <div style={{ marginRight: "1em" }}>Percentuale Responsabilità :</div>
-            {baremResult === "R" ? "0%" : baremResult === "C" ? "50%" : baremResult === "T" ? "100%" : ""}
-          </div>
-        )}
-
-        <RowSpacer />
       </Row>
     </ResponsabilityStyled>
   );

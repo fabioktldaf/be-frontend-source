@@ -1,10 +1,12 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { Input, Select, Switch, Collapse, Button } from "antd";
 import { Row, RowSpacer } from "../../style/containers";
 import { FormInput, FormDatePicker, FormSubTitle, FormTextArea, FormTimePicker } from "../../style/form";
 import { ClaimDataType } from "./index";
 import CardData, { StepperDataType } from "./CardData";
+import moment from "moment";
 
 const ClaimDataStyled = styled.div``;
 
@@ -24,9 +26,33 @@ const ReadonlyField = styled.div`
   justify-content: flex-start;
   padding: 0.5em;
   border-bottom: dashed 1px #eee;
+  font-weight: 100;
   &:last-child {
     border-bottom: none;
   }
+  &:hover {
+    background-color: #f5f5f5;
+  }
+`;
+
+const DetailsGroupData = styled.div`
+  display: flex;
+  flex-direction: column;
+  padding: 0 1em;
+  margin-bottom: 2em;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+`;
+
+const DetailsGroupDataTitle = styled.div`
+  text-transform: uppercase;
+  font-size: 0.9em;
+`;
+
+const DetailsGroupDataValues = styled.div`
+  margin-left: 2em;
 `;
 
 const LabelStyled = styled.label`
@@ -43,6 +69,22 @@ export const HrStyled = styled.div`
   margin-bottom: 2em;
 `;
 
+const DateWarningMessage = styled.div`
+  color: red;
+  background-color: lightyellow;
+  margin: -1em 1em 2em 0;
+  text-align: center;
+  padding: 0.25em;
+`;
+
+const IsOwnerContractor = styled.div`
+  display: flex;
+  margin-top: 2em;
+`;
+
+const IsOwnerContractorMessage = styled.div`
+  margin-right: 2em;
+`;
 type ClaimDataProps = {
   claim: ClaimDataType;
 };
@@ -50,43 +92,143 @@ type ClaimDataProps = {
 const ClaimData = (props: ClaimDataProps) => {
   const [presenceOfWitnesses, setPresenceOfWitnesses] = useState(false);
   const [stepperData, setStepperData] = useState<StepperDataType>();
-
-  const operatingYear = props.claim.data_registrazione.slice(-4);
+  const [dataAccadimento, setDataAccadimento] = useState<moment.Moment | null>();
 
   const handleClaimTypeChanged = (_stepperData: StepperDataType) => {
     console.log("stepperData ", _stepperData);
     setStepperData(_stepperData);
   };
 
+  const checkDataAccadimento = () => {
+    if (!dataAccadimento) return true;
+
+    const startDate = moment(props.claim.polizza.data_effetto, "DD/MM/YYYY");
+    const endDate = moment(props.claim.polizza.data_scadenza, "DD/MM/YYYY");
+
+    return dataAccadimento?.isBetween(startDate, endDate);
+  };
+
   return (
     <ClaimDataStyled>
       <CollapseStyled>
-        <Collapse.Panel header={"DETTAGLIO DATI SINISTRO"} key="1">
+        <Collapse.Panel header={"DETTAGLIO DATI POLIZZA"} key="1">
           <CollapsePanelContentStyled>
-            <ReadonlyField>
-              <LabelStyled>Numero Polizza :</LabelStyled>
-              <ReadonlyValue>{props.claim.numero_polizza}</ReadonlyValue>
-            </ReadonlyField>
-            <ReadonlyField>
-              <LabelStyled>Codice Compagnia :</LabelStyled>
-              <ReadonlyValue>{props.claim.codice_compagnia}</ReadonlyValue>
-            </ReadonlyField>
-            <ReadonlyField>
-              <LabelStyled>Codice Ramo :</LabelStyled>
-              <ReadonlyValue>{props.claim.codice_ramo}</ReadonlyValue>
-            </ReadonlyField>
-            <ReadonlyField>
-              <LabelStyled>Codice Ramo Sinistro :</LabelStyled>
-              <ReadonlyValue>{props.claim.codice_ramo_sinistro}</ReadonlyValue>
-            </ReadonlyField>
-            <ReadonlyField>
-              <LabelStyled>Data Registrazione :</LabelStyled>
-              <ReadonlyValue>{props.claim.data_registrazione}</ReadonlyValue>
-            </ReadonlyField>
-            <ReadonlyField>
-              <LabelStyled>Anno di esercizio :</LabelStyled>
-              <ReadonlyValue>{operatingYear}</ReadonlyValue>
-            </ReadonlyField>
+            <DetailsGroupData>
+              <DetailsGroupDataTitle>POLIZZA</DetailsGroupDataTitle>
+              <DetailsGroupDataValues>
+                <ReadonlyField>
+                  <LabelStyled>Numero Polizza :</LabelStyled>
+                  <ReadonlyValue>
+                    <Link to={"#"}>{props.claim.polizza.numero_polizza}</Link>
+                  </ReadonlyValue>
+                </ReadonlyField>
+                <ReadonlyField>
+                  <LabelStyled>Data Effetto :</LabelStyled>
+                  <ReadonlyValue>{props.claim.polizza.data_effetto}</ReadonlyValue>
+                </ReadonlyField>
+                <ReadonlyField>
+                  <LabelStyled>Data Scadenza :</LabelStyled>
+                  <ReadonlyValue>{props.claim.polizza.data_scadenza}</ReadonlyValue>
+                </ReadonlyField>
+              </DetailsGroupDataValues>
+            </DetailsGroupData>
+            <DetailsGroupData>
+              <DetailsGroupDataTitle>PROPRIETARIO</DetailsGroupDataTitle>
+              {props.claim.proprietario.persona_fisica && (
+                <DetailsGroupDataValues>
+                  <ReadonlyField>
+                    <LabelStyled>Nome :</LabelStyled>
+                    <ReadonlyValue>
+                      <Link to={"#"}>
+                        {props.claim.proprietario.persona_fisica.cognome} {props.claim.proprietario.persona_fisica.nome}
+                      </Link>
+                    </ReadonlyValue>
+                  </ReadonlyField>
+                  <ReadonlyField>
+                    <LabelStyled>Codice Fiscale :</LabelStyled>
+                    <ReadonlyValue>{props.claim.proprietario.persona_fisica.codice_fiscale}</ReadonlyValue>
+                  </ReadonlyField>
+                  <ReadonlyField>
+                    <LabelStyled>Provincia di residenza :</LabelStyled>
+                    <ReadonlyValue>{props.claim.proprietario.persona_fisica.provincia_residenza}</ReadonlyValue>
+                  </ReadonlyField>
+                  <ReadonlyField>
+                    <LabelStyled>Comune di residenza :</LabelStyled>
+                    <ReadonlyValue>{props.claim.proprietario.persona_fisica.comune_residenza}</ReadonlyValue>
+                  </ReadonlyField>
+                </DetailsGroupDataValues>
+              )}
+              {props.claim.proprietario.persona_giuridica && (
+                <DetailsGroupDataValues>
+                  <ReadonlyField>
+                    <LabelStyled>Nome :</LabelStyled>
+                    <Link to={"#"}>{props.claim.proprietario.persona_giuridica.ragione_sociale}</Link>
+                    <ReadonlyValue></ReadonlyValue>
+                  </ReadonlyField>
+                  <ReadonlyField>
+                    <LabelStyled>Partita IVA :</LabelStyled>
+                    <ReadonlyValue>{props.claim.proprietario.persona_giuridica.partita_iva}</ReadonlyValue>
+                  </ReadonlyField>
+                  <ReadonlyField>
+                    <LabelStyled>Provincia sede legale :</LabelStyled>
+                    <ReadonlyValue>{props.claim.proprietario.persona_giuridica.provincia_sede_legale}</ReadonlyValue>
+                  </ReadonlyField>
+                  <ReadonlyField>
+                    <LabelStyled>Comune sede legale :</LabelStyled>
+                    <ReadonlyValue>{props.claim.proprietario.persona_giuridica.comune_sede_legale}</ReadonlyValue>
+                  </ReadonlyField>
+                </DetailsGroupDataValues>
+              )}
+            </DetailsGroupData>
+
+            <DetailsGroupData>
+              <DetailsGroupDataTitle>CONTRAENTE</DetailsGroupDataTitle>
+              {props.claim.contraente?.persona_fisica && (
+                <DetailsGroupDataValues>
+                  <ReadonlyField>
+                    <LabelStyled>Nome :</LabelStyled>
+                    <ReadonlyValue>
+                      <Link to={"#"}>
+                        {props.claim.contraente.persona_fisica.cognome} {props.claim.contraente.persona_fisica.nome}
+                      </Link>
+                    </ReadonlyValue>
+                  </ReadonlyField>
+                  <ReadonlyField>
+                    <LabelStyled>Codice Fiscale :</LabelStyled>
+                    <ReadonlyValue>{props.claim.contraente.persona_fisica.codice_fiscale}</ReadonlyValue>
+                  </ReadonlyField>
+                  <ReadonlyField>
+                    <LabelStyled>Provincia di residenza :</LabelStyled>
+                    <ReadonlyValue>{props.claim.contraente.persona_fisica.provincia_residenza}</ReadonlyValue>
+                  </ReadonlyField>
+                  <ReadonlyField>
+                    <LabelStyled>Comune di residenza :</LabelStyled>
+                    <ReadonlyValue>{props.claim.contraente.persona_fisica.comune_residenza}</ReadonlyValue>
+                  </ReadonlyField>
+                </DetailsGroupDataValues>
+              )}
+              {props.claim.contraente?.persona_giuridica && (
+                <DetailsGroupDataValues>
+                  <ReadonlyField>
+                    <LabelStyled>Nome :</LabelStyled>
+                    <Link to={"#"}>{props.claim.contraente.persona_giuridica.ragione_sociale}</Link>
+                    <ReadonlyValue></ReadonlyValue>
+                  </ReadonlyField>
+                  <ReadonlyField>
+                    <LabelStyled>Partita IVA :</LabelStyled>
+                    <ReadonlyValue>{props.claim.contraente.persona_giuridica.partita_iva}</ReadonlyValue>
+                  </ReadonlyField>
+                  <ReadonlyField>
+                    <LabelStyled>Provincia sede legale :</LabelStyled>
+                    <ReadonlyValue>{props.claim.contraente.persona_giuridica.provincia_sede_legale}</ReadonlyValue>
+                  </ReadonlyField>
+                  <ReadonlyField>
+                    <LabelStyled>Comune sede legale :</LabelStyled>
+                    <ReadonlyValue>{props.claim.contraente.persona_giuridica.comune_sede_legale}</ReadonlyValue>
+                  </ReadonlyField>
+                </DetailsGroupDataValues>
+              )}
+            </DetailsGroupData>
           </CollapsePanelContentStyled>
         </Collapse.Panel>
       </CollapseStyled>
@@ -96,6 +238,11 @@ const ClaimData = (props: ClaimDataProps) => {
       <HrStyled />
 
       <Row>
+        <FormInput label="Data Registrazione" name="data_registrazione">
+          {moment().format("DD/MM/YYYY")}
+        </FormInput>
+        <RowSpacer />
+
         <FormInput
           label="Data Pervenimento Denuncia"
           name="data_pervenimento_denuncia"
@@ -104,14 +251,15 @@ const ClaimData = (props: ClaimDataProps) => {
         >
           <FormDatePicker placeholder="data di pervenimento della denuncia ..." />
         </FormInput>
-        <RowSpacer />
+      </Row>
+      <Row>
         <FormInput
           label="Data Accadimento"
           name="data_accadimento"
           tooltip="Seleziona la data di accadimento..."
           rules={[{ required: true, message: "La data di accadimento è obbligatoria" }]}
         >
-          <FormDatePicker placeholder="data di accadimento ..." />
+          <FormDatePicker placeholder="data di accadimento ..." onChange={(val) => setDataAccadimento(val)} />
         </FormInput>
         <RowSpacer />
         <FormInput
@@ -123,6 +271,18 @@ const ClaimData = (props: ClaimDataProps) => {
           <FormTimePicker placeholder="ora di accadimento ..." format="HH:mm" />
         </FormInput>
       </Row>
+
+      {!checkDataAccadimento() && (
+        <DateWarningMessage>
+          La data di accadimento è fuori copertura
+          <span style={{ fontSize: "0.9em", marginLeft: "1em" }}>
+            (DAL {props.claim.polizza.data_effetto}
+            {` AL `}
+            {props.claim.polizza.data_scadenza})
+          </span>
+        </DateWarningMessage>
+      )}
+
       <Row>
         <FormInput
           label="Luogo Accadimento Sinistro"

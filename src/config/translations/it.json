@@ -6,9 +6,9 @@
   "sideMenu_searchByFields": "Cerca Per Campi",
   "sideMenu_searchFulltext": "Cerca Fulltext",
 
-  "barem_label_17": "Non aveva osservato il segnale",
+  "barem_label_17": "Non aveva osservato il segnale di precedenza o semaforo rosso",
   "barem_label_16": "Proveniva da destra",
-  "barem_label_15": "Invadeva la sede stradale riservata alla circolazione in senso",
+  "barem_label_15": "Invadeva la sede stradale riservata alla circolazione in senso inverso",
   "barem_label_14": "Retrocedeva",
   "barem_label_13": "Girava a sinistra",
   "barem_label_12": "Girava a destra",

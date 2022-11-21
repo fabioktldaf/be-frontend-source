@@ -51,6 +51,14 @@ const CardCheck = styled.div<{ isCard: boolean }>`
   border-radius: 10em;
 `;
 
+const CardNoCardResult = styled.div<{ isCard: boolean }>`
+  color: ${(props) => (props.isCard ? "#333" : "red")};
+  background-color: ${(props) => (props.isCard ? "#c0ffc0" : "lightyellow")};
+  margin: 1em;
+  text-align: center;
+  padding: 0.25em;
+`;
+
 type VehicoleTypeType = "A" | "B" | "C" | "M" | "Q" | "T" | "W" | "R" | "S" | "---";
 type ClaimType = "CARD" | "NO CARD" | "---";
 
@@ -322,6 +330,12 @@ const CardData = (props: CardDataProps) => {
           )}
         </tbody>
       </table>
+
+      {["CARD", "NO CARD"].indexOf(stepperData.tipoSinistro) > -1 && (
+        <CardNoCardResult isCard={stepperData.tipoSinistro === "CARD"}>
+          In base ai dati inseriti il sinistro risulta di tipo <b>{stepperData.tipoSinistro}</b>
+        </CardNoCardResult>
+      )}
     </CardDataStyled>
   );
 };

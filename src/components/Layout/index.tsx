@@ -34,9 +34,29 @@ type Props = {
 };
 
 const defaultClaimData = {
-  company_code: "abc-123_ighriguhreh",
-  codice_ramo: "87cgdbcd",
-  codice_ramo_sinistro: "ijfapid89",
+  numero_sinistro: Date.now().toString(),
+  polizza: {
+    numero_polizza: "AB-12345789",
+    data_effetto: "01/01/2022",
+    data_scadenza: "31/12/2022",
+  },
+  proprietario: {
+    persona_fisica: {
+      nome: "Mario",
+      cognome: "Rossi",
+      codice_fiscale: "RSSMRA73L09Z103F",
+      provincia_residenza: "Milano",
+      comune_residenza: "Rho",
+    },
+  },
+  contraente: {
+    persona_giuridica: {
+      ragione_sociale: "Acme Inc.",
+      partita_iva: "01960170684",
+      provincia_sede_legale: "Bologna",
+      comune_sede_legale: "Bologna",
+    },
+  },
 };
 
 const AppLayout: React.FC<Props> = (props: Props) => {

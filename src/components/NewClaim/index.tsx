@@ -29,8 +29,6 @@ const PolicyNumberCopyStyled = styled(MdContentCopy)`
   cursor: pointer;
 `;
 
-const getNewClaimNumber = () => Date.now().toString();
-
 const getTodayDate = () => {
   const now = new Date();
   const day = now.getUTCDate();
@@ -40,21 +38,41 @@ const getTodayDate = () => {
   return `${day < 10 ? "0" : ""}${day}/${month < 10 ? "0" : ""}${month}/${year}`;
 };
 
-export type ClaimDataType = {
+export type ClaimDataPolicyType = {
   numero_polizza: string;
-  codice_compagnia: string;
-  codice_ramo: string;
-  codice_ramo_sinistro: string;
-  numero_sinistro: string;
-  data_registrazione: string;
+  data_effetto: string;
+  data_scadenza: string;
+};
+
+export type ClaimDataSubjetcPersonType = {
+  nome: string;
+  cognome: string;
+  codice_fiscale: string;
+  provincia_residenza: string;
+  comune_residenza: string;
+};
+export type ClaimDataSubjetcCompanyType = {
+  ragione_sociale: string;
+  partita_iva: string;
+  provincia_sede_legale: string;
+  comune_sede_legale: string;
+};
+
+export type ClaimDataSubjetcType = {
+  persona_fisica?: ClaimDataSubjetcPersonType;
+  persona_giuridica?: ClaimDataSubjetcCompanyType;
+};
+
+export type ClaimDataType = {
+  numero_sinistro?: string;
+
+  polizza: ClaimDataPolicyType;
+  proprietario: ClaimDataSubjetcType;
+  contraente?: ClaimDataSubjetcType;
 };
 
 type NewClaimProps = {
-  claim: {
-    company_code: string;
-    codice_ramo: string;
-    codice_ramo_sinistro: string;
-  };
+  claim: ClaimDataType;
 };
 
 type HeaderProps = {
@@ -81,18 +99,11 @@ const Header = (props: HeaderProps) => {
 };
 
 const NewClaim = (props: NewClaimProps) => {
-  const [claim, setClaim] = useState<ClaimDataType>({
-    numero_polizza: "AB-12345789",
-    codice_compagnia: props.claim.company_code,
-    codice_ramo: props.claim.codice_ramo,
-    codice_ramo_sinistro: props.claim.codice_ramo_sinistro,
-    numero_sinistro: getNewClaimNumber(),
-    data_registrazione: getTodayDate(),
-  });
+  const [claim, setClaim] = useState<ClaimDataType>(props.claim);
 
   return (
     <FormContainer layout="vertical">
-      <Header policy_number={claim.numero_sinistro} />
+      <Header policy_number={claim.numero_sinistro!} />
       <FormContent>
         <Tabs defaultActiveKey="1" tabPosition="left">
           <Tabs.TabPane tab="Dati Sinistro" key="1">
