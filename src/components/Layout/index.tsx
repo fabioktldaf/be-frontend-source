@@ -12,9 +12,14 @@ import { Urls } from "../../config/const";
 import Sider from "./Sider";
 import Header from "./Header";
 import styled from "styled-components";
+import { Col } from "../../style/containers";
 
 import "antd/dist/antd.css";
 import { FormContainer } from "../../style/form";
+import NewClaimsSteps from "../NewClaim/NewClaimSteps";
+import CheckSendingANIA from "../NewClaim/CheckSendingANIA";
+import AdditionalData from "../NewClaim/AdditionalData";
+import Resume from "../NewClaim/Resume";
 
 const LayoutStyled = styled(Layout)`
   height: 100vh;
@@ -61,7 +66,7 @@ const defaultClaimData = {
 
 const AppLayout: React.FC<Props> = (props: Props) => {
   const { children } = props;
-  const [menuCollapsed, setMenuCollapsed] = useState(false);
+  const [newClaimCurrentStep, setNewClaimCurrentStep] = useState(0);
 
   return (
     <LayoutStyled>
@@ -91,7 +96,25 @@ const AppLayout: React.FC<Props> = (props: Props) => {
                 }
               />
               <Route path={Urls.policy_manualInsert} element={<PolicyManualInsert />} />
-              <Route path={Urls.new_claim} element={<NewClaim claim={defaultClaimData} />} />
+              <Route
+                path={Urls.new_claim}
+                element={
+                  <Col>
+                    <NewClaimsSteps current={newClaimCurrentStep} />
+                    {newClaimCurrentStep === 0 && (
+                      <NewClaim claim={defaultClaimData} onSend={() => setNewClaimCurrentStep(1)} />
+                    )}
+                    {newClaimCurrentStep === 1 && (
+                      <CheckSendingANIA
+                        onForward={() => setNewClaimCurrentStep(2)}
+                        onBackward={() => setNewClaimCurrentStep(0)}
+                      />
+                    )}
+                    {newClaimCurrentStep === 2 && <AdditionalData onSave={() => setNewClaimCurrentStep(3)} />}
+                    {newClaimCurrentStep === 3 && <Resume />}
+                  </Col>
+                }
+              />
             </Routes>
 
             {children}

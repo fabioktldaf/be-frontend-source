@@ -120,5 +120,18 @@
   "injuryLocation_73": "Alluce sinistro",
   "injuryLocation_74": "Alluce destro",
   "injuryLocation_75": "Altre dita sinistre",
-  "injuryLocation_76": "Altre dita destre"
+  "injuryLocation_76": "Altre dita destre",
+
+  "person_injury_front_head": "Testa",
+  "person_injury_front_trunc": "Busto",
+  "person_injury_front_arm_right": "Braccio Destro",
+  "person_injury_front_arm_left": "Braccio Sinistro",
+  "person_injury_front_leg_righ": "Gamba Destra",
+  "person_injury_front_leg_left": "Gamba Sinistra",
+  "person_injury_rear_head": "Testa",
+  "person_injury_rear_trunc": "Schiena",
+  "person_injury_rear_arm_right": "Braccio Destro",
+  "person_injury_rear_arm_left": "Braccio Sinistro",
+  "person_injury_rear_leg_right": "Gamba Destra",
+  "person_injury_rear_leg_left": "Gamba Sinistra"
 }

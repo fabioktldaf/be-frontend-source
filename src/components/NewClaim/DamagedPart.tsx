@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { Form, Input, Select, Button, DatePicker, Modal } from "antd";
-import { CenteredRow, Col, Row, RowSpacer } from "../../style/containers";
+import { CenteredRow, Col, Hidden, Row, RowSpacer } from "../../style/containers";
 import { FormSubTitle, FormInput } from "../../style/form";
 import { RiDeleteBinFill } from "react-icons/ri";
 
@@ -11,6 +11,9 @@ import SearchSubject from "../SearchSubject";
 import { HrStyled } from "./ClaimData";
 import { VehicleTypeOptions } from "../../config/const";
 import CarImpactSelector from "./CarImpactSelect";
+import { useTranslation } from "react-i18next";
+
+import { CgSmileSad } from "react-icons/cg";
 
 const DamagedPartStyled = styled.div`
   margin-bottom: 2em;
@@ -33,6 +36,41 @@ const PartSpacer = styled.div`
 
 const PartDeleteButton = styled(Button)``;
 
+const PersonDamageList = styled(Col)`
+  width: 25em;
+`;
+
+const PersonDamageListTitle = styled.div`
+  text-transform: uppercase;
+  margin-top: 5em;
+  font-size: 0.9em;
+`;
+
+const PersonDamageListSubtitle = styled.div`
+  text-transform: uppercase;
+  margin-left: 1em;
+  margin-top: 0.5em;
+  font-size: 0.9em;
+`;
+
+const PersonDamageListItem = styled.div`
+  margin-left: 2em;
+`;
+
+const OtherDamageItem = styled.div`
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  padding: 1em 0;
+  margin: 1em 0;
+`;
+
+const ButtonDeleteOtherDamage = styled(Button)`
+  font-size: 1.2em;
+  margin-bottom: 24px;
+  margin-left: 1em;
+`;
+
 const DamageTypeCard = [
   { value: "---", label: "---" },
   { value: "Person", label: "Persone" },
@@ -49,7 +87,12 @@ const DamageTypeNoCard = [
   { value: "Generic", label: "Generico" },
 ];
 
-type PartChangeType = "owner_damage_type" | "owner_collision_point";
+type PartChangeType =
+  | "owner_damage_type"
+  | "owner_collision_point"
+  | "owner_person_damage"
+  | "other_damage_type"
+  | "other_role_type";
 
 type PartChangeTypeType = "" | "Person" | "Thing" | "Vehicle" | "Location" | "Generic";
 
@@ -61,7 +104,7 @@ type SubjectPersonalDataType = {
 };
 
 export type PartDamagedDetailsPerson = {
-  localization: string;
+  localization: string[];
   note: string;
   personalData?: SubjectPersonalDataType;
 };
@@ -80,7 +123,7 @@ export type PartDamagedDetailsThing = {
 type DamagedType = {
   tipo_ruolo: string;
   tipo_danno: PartChangeTypeType;
-  dettagli_danni_persona?: PartDamagedDetailsPerson[];
+  dettagli_danni_persona?: PartDamagedDetailsPerson;
   dettagli_danni_veicolo?: PartDamagedDetailsVehicle;
   dettagli_danni_cose?: PartDamagedDetailsThing;
 };
@@ -89,7 +132,7 @@ type PartType = {
   subject: any;
   numero_pd: string;
   danni: DamagedType[];
-  danni_proprietario?: DamagedType;
+  danni_proprietario: DamagedType;
   data_pd: string;
 };
 
@@ -111,8 +154,14 @@ const OwnerRolesType = [
   },
 ];
 
-const NotOwnerRolesType = [
+const AllRolesType = [
   { value: "---", label: "---" },
+  { value: "CP", label: "CP - Conducente proprietario" },
+  { value: "TP", label: "TP - Trasportato proprietario" },
+  {
+    value: "NP",
+    label: "NP - Proprietario non presente sul veicolo",
+  },
   { value: "CN", label: "CN - Conducente non proprietario" },
   { value: "TN", label: "TN - Trasportato non proprietario" },
 
@@ -143,6 +192,7 @@ const NotOwnerRolesType = [
 ];
 
 const DamagedPart = () => {
+  const { t } = useTranslation();
   const [parts, setParts] = useState<PartType[]>([
     {
       subject: {},
@@ -151,6 +201,10 @@ const DamagedPart = () => {
       danni_proprietario: {
         tipo_ruolo: "",
         tipo_danno: "Vehicle",
+        dettagli_danni_persona: {
+          localization: [],
+          note: "",
+        },
         dettagli_danni_veicolo: {
           plate: "AB123DC",
           format: "Targa Italiana",
@@ -186,7 +240,20 @@ const DamagedPart = () => {
         subject: {},
         numero_pd: getNewDamagedPartNumber(),
         data_pd: "",
-        danni_proprietario: undefined,
+        danni_proprietario: {
+          tipo_ruolo: "",
+          tipo_danno: "",
+          dettagli_danni_persona: {
+            localization: [],
+            note: "",
+          },
+          dettagli_danni_veicolo: {
+            plate: "",
+            format: "",
+            type: "",
+            collisionPoints: [],
+          },
+        },
         danni: [],
       },
     ]);
@@ -195,39 +262,6 @@ const DamagedPart = () => {
   const handleRemoveDamagedPart = (index: number) => {
     setParts((prev) => prev.filter((p, i) => i !== index));
   };
-
-  const handleAddDamagePersonDetails = () => {
-    // setPartModal((prev) => ({
-    //   isOpen: prev.isOpen,
-    //   part: Object.assign({}, prev.part, {
-    //     dettagli_danni_persona: [
-    //       ...(prev.part?.dettagli_danni_persona || []),
-    //       {
-    //         location: "",
-    //         nature: "",
-    //         note: "",
-    //       },
-    //     ],
-    //   }),
-    //   index: prev.index,
-    // }));
-  };
-
-  // const handleRemoveDamageDetails = (index: number) => {
-  //   const newDettagliDanno = partModal.part?.dettagli_danni_persona.filter((d, i) => i !== index);
-
-  //   console.log("removing part details ", index);
-
-  //   console.log("newDettagliDanno ", newDettagliDanno);
-
-  //   setPartModal((prev) => ({
-  //     isOpen: prev.isOpen,
-  //     part: Object.assign({}, prev.part, {
-  //       dettagli_danno: prev.part?.dettagli_danni_persona.filter((d, i) => i !== index),
-  //     }),
-  //     index: prev.index,
-  //   }));
-  // };
 
   const showPartModal = (index: number) => {
     setPartModal({
@@ -246,31 +280,37 @@ const DamagedPart = () => {
   };
 
   const handleModalPartChange = (type: PartChangeType, val: any) => {
+    const updatedPart: PartType = Object.assign({}, partModal.part);
+
     if (type === "owner_damage_type") {
-      setPartModal(
-        (prev) =>
-          ({
-            isOpen: prev.isOpen,
-            index: prev.index,
-            part: Object.assign({}, prev.part, { danni_proprietario: { tipo_danno: val } }),
-          } as PartModalType)
-      );
+      updatedPart.danni_proprietario.tipo_danno = val;
     }
 
     if (type === "owner_collision_point") {
-      const part = Object.assign({}, partModal.part);
-
-      if (part.danni_proprietario?.dettagli_danni_veicolo?.collisionPoints)
-        part.danni_proprietario.dettagli_danni_veicolo.collisionPoints = val.sort((a: string, b: string) =>
-          a > b ? 1 : -1
-        );
-
-      setPartModal({
-        isOpen: partModal.isOpen,
-        index: partModal.index,
-        part,
-      } as PartModalType);
+      updatedPart!.danni_proprietario!.dettagli_danni_veicolo!.collisionPoints = val.sort((a: string, b: string) =>
+        a > b ? 1 : -1
+      );
     }
+
+    if (type === "owner_person_damage") {
+      updatedPart!.danni_proprietario!.dettagli_danni_persona!.localization = val;
+    }
+
+    if (type === "other_damage_type") {
+      updatedPart.danni[val.index].tipo_danno = val.value;
+    }
+
+    if (type === "other_role_type") {
+      updatedPart.danni[val.index].tipo_ruolo = val.value;
+    }
+
+    console.log("updatedPart ", updatedPart);
+
+    setPartModal({
+      isOpen: partModal.isOpen,
+      index: partModal.index,
+      part: updatedPart,
+    } as PartModalType);
   };
 
   const handleModalPartPersonCancel = () => {
@@ -288,16 +328,26 @@ const DamagedPart = () => {
   };
 
   const handleAddDamageType = () => {
-    setPartModal(
-      (prev) =>
-        ({
-          isOpen: prev.isOpen,
-          index: prev.index,
-          part: Object.assign({}, prev.part, {
-            danni: [...(prev.part?.danni || []), {} as DamagedType],
-          }),
-        } as PartModalType)
-    );
+    const updatedPart = Object.assign({}, partModal.part);
+    updatedPart.danni = [
+      ...(partModal.part?.danni || []),
+      {
+        tipo_ruolo: "",
+        tipo_danno: "",
+        dettagli_danni_persona: undefined,
+        dettagli_danni_veicolo: undefined,
+        dettagli_danni_cose: undefined,
+      } as DamagedType,
+    ];
+
+    setPartModal({ isOpen: partModal.isOpen, index: partModal.index, part: updatedPart });
+  };
+
+  const handleDeleteDamageType = (index: number) => {
+    const updatedPart = Object.assign({}, partModal.part);
+    updatedPart.danni = partModal.part?.danni.filter((d, i) => i !== index) || [];
+
+    setPartModal({ isOpen: partModal.isOpen, index: partModal.index, part: updatedPart });
   };
 
   const isPersonDamageType = () => {
@@ -392,10 +442,27 @@ const DamagedPart = () => {
         {isPersonDamageType() && (
           <>
             <FormSubTitle>Danni alla Persona</FormSubTitle>
-            <Row>
-              <Col>
-                <DamagedPartPersonSelect onChange={(localizatoins: string[]) => {}} />
-              </Col>
+            <Row style={{ height: "450px" }}>
+              <PersonDamageList>
+                <PersonDamageListTitle>Parti del Corpo Lesionate </PersonDamageListTitle>
+                <PersonDamageListSubtitle>Davanti </PersonDamageListSubtitle>
+                {partModal.part?.danni_proprietario?.dettagli_danni_persona?.localization
+                  ?.filter((l) => l.indexOf("front") !== -1)
+                  .map((l) => (
+                    <PersonDamageListItem>• {t(`person_injury_${l}`)}</PersonDamageListItem>
+                  ))}
+
+                <PersonDamageListSubtitle>Dietro </PersonDamageListSubtitle>
+                {partModal.part?.danni_proprietario?.dettagli_danni_persona?.localization
+                  ?.filter((l) => l.indexOf("rear") !== -1)
+                  .map((l) => (
+                    <PersonDamageListItem>• {t(`person_injury_${l}`)}</PersonDamageListItem>
+                  ))}
+              </PersonDamageList>
+
+              <DamagedPartPersonSelect
+                onChange={(localizations: string[]) => handleModalPartChange("owner_person_damage", localizations)}
+              />
             </Row>
           </>
         )}
@@ -407,149 +474,36 @@ const DamagedPart = () => {
         </Row>
 
         <FormSubTitle>ALTRI DANNI</FormSubTitle>
-        {partModal.part?.danni?.map((d, i) => (
-          <div></div>
-        ))}
-
+        <Col>
+          {partModal.part?.danni?.map((d, i) => (
+            <OtherDamageItem>
+              <Row>
+                <FormInput label="Tipo Ruolo" name={`tipo_ruolo_${i}`} tooltip="Seleziona il tipo ruolo">
+                  <Select
+                    defaultValue="---"
+                    options={AllRolesType}
+                    onChange={(val) => handleModalPartChange("other_role_type", { value: val, index: i })}
+                  />
+                </FormInput>
+                <RowSpacer />
+                <FormInput label="Tipo Danno" name={`tipo_danno_${i}`} tooltip="Seleziona il tipo danno">
+                  <Select
+                    defaultValue={partModal.index === 0 ? "Vehicle" : "---"}
+                    onChange={(val) => handleModalPartChange("other_damage_type", { value: val, index: i })}
+                    options={DamageTypeCard}
+                  />
+                </FormInput>
+                <ButtonDeleteOtherDamage type="primary" shape="circle" onClick={() => handleDeleteDamageType(i)}>
+                  <RiDeleteBinFill />
+                </ButtonDeleteOtherDamage>
+              </Row>
+              <HrStyled />
+            </OtherDamageItem>
+          ))}
+        </Col>
         <Button type="primary" size="small" onClick={handleAddDamageType}>
           +
         </Button>
-
-        {/* <Row>
-          <FormInput label="Tipo Ruolo" name="tipo_ruolo" tooltip="Seleziona il tipo ruolo">
-            <Select
-              defaultValue="---"
-              options={[
-                { value: "---", label: "---" },
-                { value: "CP - Conducente proprietario", label: "CP - Conducente proprietario" },
-                { value: "CN - Conducente non proprietario", label: "CN - Conducente non proprietario" },
-                { value: "TP - Trasportato proprietario", label: "TP - Trasportato proprietario" },
-                { value: "TN - Trasportato non proprietario", label: "TN - Trasportato non proprietario" },
-                {
-                  value: "NP - Proprietario non presente sul veicolo",
-                  label: "NP - Proprietario non presente sul veicolo",
-                },
-                {
-                  value: "CPC - Conducente proprietario controparte",
-                  label: "CPC - Conducente proprietario controparte",
-                },
-                {
-                  value: "CNC - Conducente non proprietario controparte",
-                  label: "CNC - Conducente non proprietario controparte",
-                },
-                {
-                  value: "TPC - Trasportato proprietario controparte",
-                  label: "TPC - Trasportato proprietario controparte",
-                },
-                {
-                  value: "TNC - Trasportato non proprietario controparte",
-                  label: "TNC - Trasportato non proprietario controparte",
-                },
-                {
-                  value: "NPC - Proprietario non presente sul veicolo",
-                  label: "NPC - Proprietario non presente sul veicolo",
-                },
-                {
-                  value: "TS - Terzo passante",
-                  label: "TS - Terzo passante",
-                },
-              ]}
-            />
-          </FormInput>
-          <RowSpacer />
-          <FormInput label="Tipo Danno" name="tipo_danno" tooltip="Seleziona il tipo danno">
-            <Select
-              defaultValue="---"
-              onChange={(val) => handleModalPartChange("damage_type", val)}
-              options={[
-                { value: "---", label: "---" },
-                { value: "Persone", label: "Persone" },
-                { value: "Cose", label: "Cose" },
-                { value: "Veicolo", label: "Veicolo" },
-                { value: "Ubicazione", label: "Ubicazione" },
-                { value: "Generico", label: "Generico" },
-              ]}
-            />
-          </FormInput>
-        </Row>
-        <Row>
-          <FormInput label="Stato Tipo Danno" name="stato_tipo_danno" tooltip="Seleziona lo stato tipo danno">
-            <Select
-              defaultValue={"Aperto"}
-              options={[
-                { value: "Aperto", label: "Aperto" },
-                { value: "Chiuso", label: "Chiuso" },
-                { value: "Chiuso senza seguito", label: "Chiuso senza seguito" },
-              ]}
-            />
-          </FormInput>
-          <RowSpacer />
-          <FormInput
-            label="Definizione Pagamento"
-            name="definizione_pagamento"
-            tooltip="Seleziona la definizione del pagamento"
-          >
-            <Select
-              defaultValue={"Non pagato"}
-              options={[
-                { value: "Non pagato", label: "Non pagato" },
-                { value: "Pagamento parziale", label: "Pagamento parziale" },
-                { value: "Pagamento totale", label: "Pagamento totale" },
-              ]}
-            />
-          </FormInput>
-        </Row>
-        <Row>
-          <FormInput label="Note Danno" name="note_danno" tooltip="Note relative al danno">
-            <Input placeholder="note relative al danno" />
-          </FormInput>
-          <RowSpacer />
-          <FormInput></FormInput>
-        </Row> */}
-
-        {/* {partModal.part?.tipo_danno === "Persone" && (
-          <>
-            <FormSubTitle>Dettaglio danni alla persona</FormSubTitle>
-            <Row>
-              <Button
-                type="primary"
-                size="small"
-                onClick={() => setPartModalPerson({ isOpen: true, personalData: { id: 0 } })}
-              >
-                Seleziona soggetto
-              </Button>{" "}
-            </Row>
-            <Row>
-              <Col>
-                {partModal.part?.danni.dettagli_danni_persona.map((d, i) => (
-                  <Col>
-                    <Row>
-                      <DamagedPartPerson index={i} details={partModal.part?.danni.dettagli_danni_persona[i]!} />
-                      <RiDeleteBinFill onClick={() => handleRemoveDamageDetails(i)} />
-                    </Row>
-                    <HrStyled />
-                  </Col>
-                ))}
-
-                {partModal.part?.danni.dettagli_danni_persona.length! < 3 && (
-                  <Button type="primary" size="small" onClick={handleAddDamagePersonDetails}>
-                    +
-                  </Button>
-                )}
-              </Col>
-            </Row>
-          </>
-        )} */}
-
-        {/* {partModal.part?.tipo_danno === "Veicolo" && (
-          <>
-            <FormSubTitle>Dettaglio danni al veicolo</FormSubTitle>
-
-            <Row>
-              <DamagedPartVehicle details={partModal.part?.danni.dettagli_danni_veicolo!} />
-            </Row>
-          </>
-        )} */}
       </Modal>
       <Modal
         title={"Seleziona il soggetto della partita di danno"}

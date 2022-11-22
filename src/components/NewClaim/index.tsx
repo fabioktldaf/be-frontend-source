@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Row, Tabs, Tooltip } from "antd";
 import { HiOutlineSave } from "react-icons/hi";
 import { MdContentCopy } from "react-icons/md";
@@ -73,6 +73,7 @@ export type ClaimDataType = {
 
 type NewClaimProps = {
   claim: ClaimDataType;
+  onSend: () => void;
 };
 
 type HeaderProps = {
@@ -119,7 +120,7 @@ const NewClaim = (props: NewClaimProps) => {
         </Tabs>
       </FormContent>
       <CenteredRow>
-        <FormSendButton type="primary" size="large">
+        <FormSendButton type="primary" size="large" onClick={() => props.onSend()}>
           Invia
         </FormSendButton>
       </CenteredRow>
