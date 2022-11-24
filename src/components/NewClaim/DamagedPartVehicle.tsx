@@ -7,7 +7,7 @@ import { RiDeleteBinFill } from "react-icons/ri";
 
 import { useTranslation } from "react-i18next";
 import { vehicleCollisionPoints, VehicleTypeOptions } from "../../config/const";
-import { PartDamagedDetailsVehicle } from "./DamagedPart";
+import { PartDamagedDetailsVehicle } from "./DamagedParts";
 
 const DamagedPartVehicleStyled = styled.div``;
 

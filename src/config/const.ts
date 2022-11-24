@@ -1,3 +1,5 @@
+import { NewClaimStepItem } from "../types/new-claim.types";
+
 export const defaultLanguage = "it";
 export const languages = ["it", "en", "empty"];
 
@@ -53,6 +55,10 @@ export const VehicleTypeOptions = [
   { value: "R", label: "RIMORCHI" },
   { value: "S", label: "MACCHINE AGRICOLE" },
 ];
+
+export type ClaimType = "CARD" | "NO CARD";
+
+export const CardVehicleTypes = ["A", "B", "C", "M", "Q", "T", "W"];
 
 export const vehicleCollisionPoints = [
   {
@@ -129,5 +135,68 @@ export const vehicleCollisionPoints = [
            C 3.00,168.50 96.50,139.50 96.50,139.50  \
              96.50,139.50 21.00,27.00 21.00,27.00   \
              21.00,27.00 8.00,51.00 8.00,51.00 Z",
+  },
+];
+
+export const NewClaimSteps: NewClaimStepItem[] = [
+  {
+    number: 1,
+    waiting: {
+      title: "---",
+      description: "---",
+    },
+    inProgress: {
+      title: "Inserisci",
+      description: "Dati Obbligatori",
+    },
+    done: {
+      title: "Dati Obbligatori",
+      description: "Completato",
+    },
+  },
+  {
+    number: 2,
+    waiting: {
+      title: "Verifica SIC",
+      description: "",
+    },
+    inProgress: {
+      title: "Verifica SIC",
+      description: "",
+    },
+    done: {
+      title: "Verifica SIC",
+      description: "Verificato",
+    },
+  },
+  {
+    number: 3,
+    waiting: {
+      title: "Info Addizionali",
+      description: "",
+    },
+    inProgress: {
+      title: "Inserisci",
+      description: "Ulteriori Dati",
+    },
+    done: {
+      title: "Info Addizionali",
+      description: "Completato",
+    },
+  },
+  {
+    number: 4,
+    waiting: {
+      title: "Riepilogo",
+      description: "",
+    },
+    inProgress: {
+      title: "Riepilogo",
+      description: "Sinistro",
+    },
+    done: {
+      title: "---",
+      description: "---",
+    },
   },
 ];

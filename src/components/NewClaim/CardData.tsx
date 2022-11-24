@@ -4,7 +4,12 @@ import { Input, InputNumber, Button, Select, Switch } from "antd";
 import { Row, RowSpacer, Hidden } from "../../style/containers";
 import { FormSubTitle, FormInput, FormDatePicker, FormTextArea } from "../../style/form";
 import { HrStyled } from "./ClaimData";
-import { VehicleTypeOptions } from "../../config/const";
+import { CardVehicleTypes, VehicleTypeOptions } from "../../config/const";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../redux/store";
+import { ClaimType, SteppedChangeDataType } from "../../types/new-claim.types";
+import { updateStepperData } from "../../redux/features/newClaimSlice";
+import useApplication from "../../hooks/useApplication";
 
 const CardDataStyled = styled.div`
   margin-bottom: 2em;
@@ -59,178 +64,9 @@ const CardNoCardResult = styled.div<{ isCard: boolean }>`
   padding: 0.25em;
 `;
 
-type VehicoleTypeType = "A" | "B" | "C" | "M" | "Q" | "T" | "W" | "R" | "S" | "---";
-type ClaimType = "CARD" | "NO CARD" | "---";
-
-export type StepperDataType = {
-  numeroVeicoliCoinvolti: number;
-  veicoloAVisibile: boolean;
-  tipoVeicoloA: VehicoleTypeType;
-  veicoloBVisibile: boolean;
-  tipoVeicoloB: VehicoleTypeType;
-  collisioneVisibile: boolean;
-  collisione: boolean;
-  inItaliaVisibile: boolean;
-  inItalia: boolean;
-  tipoSinistro: ClaimType;
-};
-
-export type SteppedChangeDataType = "vehicles_number" | "vehicle_a_type" | "vehicle_b_type" | "collision" | "inItaly";
-
-interface CardDataProps {
-  onClaimTypeChanged: (details: StepperDataType) => void;
-}
-
-const CardData = (props: CardDataProps) => {
-  const [stepperData, setStepperData] = useState<StepperDataType>({
-    numeroVeicoliCoinvolti: 0,
-    veicoloAVisibile: false,
-    tipoVeicoloA: "---",
-    veicoloBVisibile: false,
-    tipoVeicoloB: "---",
-    collisioneVisibile: false,
-    collisione: false,
-    inItaliaVisibile: false,
-    inItalia: false,
-    tipoSinistro: "---",
-  });
-
-  useEffect(() => {
-    props.onClaimTypeChanged(stepperData);
-  }, [stepperData]);
-
-  const handleChangeStepperData = (val: any, field: SteppedChangeDataType) => {
-    console.log("val ", val);
-    console.log("field ", field);
-
-    if (field === "vehicles_number") {
-      if (val === 2) {
-        setStepperData(
-          Object.assign({}, stepperData, {
-            numeroVeicoliCoinvolti: val,
-            veicoloAVisibile: true,
-          })
-        );
-      } else {
-        setStepperData({
-          numeroVeicoliCoinvolti: val,
-          veicoloAVisibile: false,
-          tipoVeicoloA: "---",
-          veicoloBVisibile: false,
-          tipoVeicoloB: "---",
-          collisioneVisibile: false,
-          collisione: false,
-          inItaliaVisibile: false,
-          inItalia: false,
-          tipoSinistro: "NO CARD",
-        });
-      }
-    }
-    if (field === "vehicle_a_type") {
-      if (["A", "B", "C", "M", "Q", "T", "W"].indexOf(val) >= 0) {
-        setStepperData(
-          Object.assign({}, stepperData, {
-            tipoVeicoloA: val,
-            veicoloBVisibile: true,
-            tipoVeicoloB: "---",
-            collisioneVisibile: false,
-            collisione: false,
-            inItaliaVisibile: false,
-            inItalia: false,
-            tipoSinistro: "---",
-          })
-        );
-      } else {
-        setStepperData({
-          numeroVeicoliCoinvolti: stepperData.numeroVeicoliCoinvolti,
-          veicoloAVisibile: stepperData.veicoloAVisibile,
-          tipoVeicoloA: val,
-          veicoloBVisibile: false,
-          tipoVeicoloB: "---",
-          collisioneVisibile: false,
-          collisione: false,
-          inItaliaVisibile: false,
-          inItalia: false,
-          tipoSinistro: "NO CARD",
-        });
-      }
-    }
-    if (field === "vehicle_b_type") {
-      if (["A", "B", "C", "M", "Q", "T", "W"].indexOf(val) >= 0) {
-        setStepperData(
-          Object.assign({}, stepperData, {
-            tipoVeicoloB: val,
-            collisioneVisibile: true,
-            collisione: false,
-            inItaliaVisibile: false,
-            inItalia: false,
-            tipoSinistro: "---",
-          })
-        );
-      } else {
-        setStepperData({
-          numeroVeicoliCoinvolti: stepperData.numeroVeicoliCoinvolti,
-          veicoloAVisibile: stepperData.veicoloAVisibile,
-          tipoVeicoloA: stepperData.tipoVeicoloA,
-          veicoloBVisibile: stepperData.veicoloBVisibile,
-          tipoVeicoloB: val,
-          collisioneVisibile: false,
-          collisione: false,
-          inItaliaVisibile: false,
-          inItalia: false,
-          tipoSinistro: "NO CARD",
-        });
-      }
-    }
-    if (field === "collision") {
-      if (val) {
-        setStepperData(
-          Object.assign({}, stepperData, {
-            collisione: val,
-            inItaliaVisibile: true,
-            inItalia: false,
-            tipoSinistro: "---",
-          })
-        );
-      } else {
-        setStepperData({
-          numeroVeicoliCoinvolti: stepperData.numeroVeicoliCoinvolti,
-          veicoloAVisibile: stepperData.veicoloAVisibile,
-          tipoVeicoloA: stepperData.tipoVeicoloA,
-          veicoloBVisibile: stepperData.veicoloBVisibile,
-          tipoVeicoloB: stepperData.tipoVeicoloB,
-          collisioneVisibile: stepperData.collisioneVisibile,
-          collisione: val,
-          inItaliaVisibile: false,
-          inItalia: false,
-          tipoSinistro: "NO CARD",
-        });
-      }
-    }
-    if (field === "inItaly") {
-      if (val) {
-        setStepperData(
-          Object.assign({}, stepperData, {
-            inItalia: val,
-            tipoSinistro: "CARD",
-          })
-        );
-      } else {
-        setStepperData({
-          numeroVeicoliCoinvolti: stepperData.numeroVeicoliCoinvolti,
-          veicoloAVisibile: stepperData.veicoloAVisibile,
-          tipoVeicoloA: stepperData.tipoVeicoloA,
-          veicoloBVisibile: stepperData.veicoloBVisibile,
-          tipoVeicoloB: stepperData.tipoVeicoloB,
-          collisioneVisibile: stepperData.collisioneVisibile,
-          collisione: stepperData.collisione,
-          inItaliaVisibile: stepperData.inItaliaVisibile,
-          inItalia: false,
-          tipoSinistro: "NO CARD",
-        });
-      }
-    }
-  };
+const CardData = () => {
+  const app = useApplication();
+  const stepperData = useSelector((state: RootState) => state.newClaim.stepperData);
 
   const renderCardNoCard = (val: boolean) => <CardCheck isCard={val}>{val ? "CARD" : "NO CARD"}</CardCheck>;
 
@@ -246,7 +82,13 @@ const CardData = (props: CardDataProps) => {
             <td>
               <TdRight>
                 <FormInput name="numero_veicoli" style={{ marginBottom: 0, textAlign: "right" }}>
-                  <InputNumber max={100} min={0} onChange={(val) => handleChangeStepperData(val, "vehicles_number")} />
+                  <InputNumber
+                    max={100}
+                    min={0}
+                    onChange={(val) => app.updatedStepperData(val, "vehicles_number")}
+                    value={stepperData.numeroVeicoliCoinvolti}
+                  />
+                  <Hidden>{stepperData.numeroVeicoliCoinvolti}</Hidden>
                 </FormInput>
               </TdRight>
             </td>
@@ -263,8 +105,9 @@ const CardData = (props: CardDataProps) => {
                   <FormInput name="tipo_veicolo_a" style={{ marginBottom: 0 }}>
                     <Select
                       defaultValue="---"
-                      onChange={(val) => handleChangeStepperData(val, "vehicle_a_type")}
+                      onChange={(val) => app.updatedStepperData(val, "vehicle_a_type")}
                       options={VehicleTypeOptions}
+                      value={stepperData.tipoVeicoloA}
                     />
                     <Hidden>{stepperData.tipoVeicoloA}</Hidden>
                   </FormInput>
@@ -282,8 +125,9 @@ const CardData = (props: CardDataProps) => {
                   <FormInput name="tipo_veicolo_b" style={{ marginBottom: 0 }}>
                     <Select
                       defaultValue="---"
-                      onChange={(val) => handleChangeStepperData(val, "vehicle_b_type")}
+                      onChange={(val) => app.updatedStepperData(val, "vehicle_b_type")}
                       options={VehicleTypeOptions}
+                      value={stepperData.tipoVeicoloB}
                     />
                     <Hidden>{stepperData.tipoVeicoloB}</Hidden>
                   </FormInput>
@@ -303,7 +147,8 @@ const CardData = (props: CardDataProps) => {
                   <Switch
                     unCheckedChildren={"No"}
                     checkedChildren={"Si"}
-                    onChange={(val) => handleChangeStepperData(val, "collision")}
+                    onChange={(val) => app.updatedStepperData(val, "collision")}
+                    checked={stepperData.collisione}
                   />
                 </TdRight>
               </td>
@@ -321,7 +166,8 @@ const CardData = (props: CardDataProps) => {
                   <Switch
                     unCheckedChildren={"No"}
                     checkedChildren={"Si"}
-                    onChange={(val) => handleChangeStepperData(val, "inItaly")}
+                    onChange={(val) => app.updatedStepperData(val, "inItaly")}
+                    checked={stepperData.inItalia}
                   />
                 </TdRight>
               </td>

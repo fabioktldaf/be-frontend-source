@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { useTranslation } from "react-i18next";
-import { PartDamagedDetailsPerson } from "./DamagedPart";
+import { PartDamagedDetailsPerson } from "./DamagedParts";
 
 import front_unselected from "../../images/body/front-unselected.png";
 import front_head_hover from "../../images/body/front-head-hover.png";

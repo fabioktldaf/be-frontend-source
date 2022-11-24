@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { Form, DatePicker, Button, Input, TimePicker } from "antd";
 
 export const FormContainer = styled(Form)`
-  width: 100%;
+  width: 900px;
   background-color: white;
   border-radius: 3px;
   box-shadow: 0 0 5px #aaa;

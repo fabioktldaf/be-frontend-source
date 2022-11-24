@@ -1,13 +1,21 @@
-import { useState } from "react";
-import ApplicationBuilder from "../application";
+import { useState, useEffect } from "react";
+import ApplicationBuilder, { IApplication } from "../application";
 
 const i = 0;
+const app = ApplicationBuilder();
+app.init();
 
 function useApplication() {
-  const [application] = useState(ApplicationBuilder());
-  application.init();
-  console.log("application.init ", i);
-  return application;
+  // const [app, setApp] = useState<IApplication>();
+
+  // useEffect(() => {
+  //   const _app = ApplicationBuilder();
+  //   _app.init();
+  //   console.log("application.init ", i);
+  //   setApp(_app);
+  // }, []);
+
+  return app;
 }
 
 export default useApplication;

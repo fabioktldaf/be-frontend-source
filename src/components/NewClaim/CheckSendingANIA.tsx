@@ -36,7 +36,7 @@ const CheckSendingANIA = (props: CheckSendingANIAProps) => {
   useEffect(() => {
     setTimeout(() => {
       setVerified(true);
-    }, 2000);
+    }, 3000);
   });
 
   return (

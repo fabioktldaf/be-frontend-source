@@ -4,42 +4,25 @@ import { HiOutlineDocumentText } from "react-icons/hi";
 import { CgFileDocument } from "react-icons/cg";
 import { BiSend } from "react-icons/bi";
 import styled from "styled-components";
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/store";
+import { NewClaimSteps } from "../../config/const";
 
 const StepsContainer = styled.div`
   margin: 2em 0;
 `;
 
-interface NewClaimsStepsProps {
-  current: number;
-}
+const NewClaimsSteps = () => {
+  const current = useSelector((state: RootState) => state.newClaim.step);
 
-const NewClaimsSteps = (props: NewClaimsStepsProps) => {
-  const { current: cur } = props;
+  const items = NewClaimSteps.map((s, i) => ({
+    title: current < i ? s.waiting.title : current === i ? s.inProgress.title : s.done.title,
+    description: current < i ? s.waiting.description : current === i ? s.inProgress.description : s.done.description,
+  }));
 
   return (
     <StepsContainer>
-      <Steps
-        size="small"
-        current={props.current}
-        items={[
-          {
-            title: cur === 0 ? "Inserisci" : "Dati Obbligatori",
-            description: cur === 0 ? "Dati Obbligatori" : "Completato",
-          },
-          {
-            title: "Verifica SIC",
-            description: cur <= 1 ? "" : "Verificato",
-          },
-          {
-            title: cur === 2 ? "Inserisci" : "Info Addizionali",
-            description: cur === 2 ? "Ulteriori dati " : cur > 2 ? "Completato" : "",
-          },
-          {
-            title: "Riepilogo",
-            description: cur === 3 ? "Sinitro" : "",
-          },
-        ]}
-      />
+      <Steps size="small" current={current} items={items} />
     </StepsContainer>
   );
 };

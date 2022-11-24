@@ -20,6 +20,8 @@ import NewClaimsSteps from "../NewClaim/NewClaimSteps";
 import CheckSendingANIA from "../NewClaim/CheckSendingANIA";
 import AdditionalData from "../NewClaim/AdditionalData";
 import Resume from "../NewClaim/Resume";
+import { defaultClaimPolicyData } from "../../config/dummy-data";
+import NewClaimPage from "../../pages/new-claim";
 
 const LayoutStyled = styled(Layout)`
   height: 100vh;
@@ -36,32 +38,6 @@ const ContentStyled = styled(Layout.Content)`
 
 type Props = {
   children?: JSX.Element | JSX.Element[];
-};
-
-const defaultClaimData = {
-  numero_sinistro: Date.now().toString(),
-  polizza: {
-    numero_polizza: "AB-12345789",
-    data_effetto: "01/01/2022",
-    data_scadenza: "31/12/2022",
-  },
-  proprietario: {
-    persona_fisica: {
-      nome: "Mario",
-      cognome: "Rossi",
-      codice_fiscale: "RSSMRA73L09Z103F",
-      provincia_residenza: "Milano",
-      comune_residenza: "Rho",
-    },
-  },
-  contraente: {
-    persona_giuridica: {
-      ragione_sociale: "Acme Inc.",
-      partita_iva: "01960170684",
-      provincia_sede_legale: "Bologna",
-      comune_sede_legale: "Bologna",
-    },
-  },
 };
 
 const AppLayout: React.FC<Props> = (props: Props) => {
@@ -96,25 +72,7 @@ const AppLayout: React.FC<Props> = (props: Props) => {
                 }
               />
               <Route path={Urls.policy_manualInsert} element={<PolicyManualInsert />} />
-              <Route
-                path={Urls.new_claim}
-                element={
-                  <Col>
-                    <NewClaimsSteps current={newClaimCurrentStep} />
-                    {newClaimCurrentStep === 0 && (
-                      <NewClaim claim={defaultClaimData} onSend={() => setNewClaimCurrentStep(1)} />
-                    )}
-                    {newClaimCurrentStep === 1 && (
-                      <CheckSendingANIA
-                        onForward={() => setNewClaimCurrentStep(2)}
-                        onBackward={() => setNewClaimCurrentStep(0)}
-                      />
-                    )}
-                    {newClaimCurrentStep === 2 && <AdditionalData onSave={() => setNewClaimCurrentStep(3)} />}
-                    {newClaimCurrentStep === 3 && <Resume />}
-                  </Col>
-                }
-              />
+              <Route path={Urls.new_claim} element={<NewClaimPage />} />
             </Routes>
 
             {children}

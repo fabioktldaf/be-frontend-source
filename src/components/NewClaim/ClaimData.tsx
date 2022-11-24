@@ -4,9 +4,12 @@ import styled from "styled-components";
 import { Input, Select, Switch, Collapse, Button } from "antd";
 import { Row, RowSpacer } from "../../style/containers";
 import { FormInput, FormDatePicker, FormSubTitle, FormTextArea, FormTimePicker } from "../../style/form";
-import { ClaimDataType } from "./index";
-import CardData, { StepperDataType } from "./CardData";
+import CardData from "./CardData";
 import moment from "moment";
+import { RootState } from "../../redux/store";
+import { useSelector } from "react-redux";
+import { StepperDataType } from "../../types/new-claim.types";
+import useApplication from "../../hooks/useApplication";
 
 const ClaimDataStyled = styled.div``;
 
@@ -77,163 +80,125 @@ const DateWarningMessage = styled.div`
   padding: 0.25em;
 `;
 
-const IsOwnerContractor = styled.div`
-  display: flex;
-  margin-top: 2em;
-`;
+const ClaimData = () => {
+  const app = useApplication();
+  const policyData = useSelector((state: RootState) => state.newClaim.policyData);
+  const { owner, contractor } = policyData || {};
+  const stepperData = useSelector((state: RootState) => state.newClaim.stepperData);
+  const claimData = useSelector((state: RootState) => state.newClaim.clamiData);
 
-const IsOwnerContractorMessage = styled.div`
-  margin-right: 2em;
-`;
-type ClaimDataProps = {
-  claim: ClaimDataType;
-};
+  //const [presenceOfWitnesses, setPresenceOfWitnesses] = useState(false);
+  //const [stepperData, setStepperData] = useState<StepperDataType>();
+  //const [dataAccadimento, setDataAccadimento] = useState<moment.Moment | null>();
 
-const ClaimData = (props: ClaimDataProps) => {
-  const [presenceOfWitnesses, setPresenceOfWitnesses] = useState(false);
-  const [stepperData, setStepperData] = useState<StepperDataType>();
-  const [dataAccadimento, setDataAccadimento] = useState<moment.Moment | null>();
-
-  const handleClaimTypeChanged = (_stepperData: StepperDataType) => {
-    console.log("stepperData ", _stepperData);
-    setStepperData(_stepperData);
-  };
+  // const handleClaimTypeChanged = (_stepperData: StepperDataType) => {
+  //   console.log("stepperData ", _stepperData);
+  //   setStepperData(_stepperData);
+  // };
 
   const checkDataAccadimento = () => {
-    if (!dataAccadimento) return true;
+    if (!claimData?.occurrenceDate) return true;
 
-    const startDate = moment(props.claim.polizza.data_effetto, "DD/MM/YYYY");
-    const endDate = moment(props.claim.polizza.data_scadenza, "DD/MM/YYYY");
+    const startDate = moment(policyData?.effect_date, "DD/MM/YYYY");
+    const endDate = moment(policyData?.expiration_date, "DD/MM/YYYY");
 
-    return dataAccadimento?.isBetween(startDate, endDate);
+    return moment(claimData.occurrenceDate).isBetween(startDate, endDate);
   };
+
+  const renderDetailsGroupDataField = (field: any, i: number) => (
+    <ReadonlyField key={i}>
+      <LabelStyled>{field.label} :</LabelStyled>
+      <ReadonlyValue>{field.link ? <Link to={"#"}>{field.value}</Link> : field.value}</ReadonlyValue>
+    </ReadonlyField>
+  );
+
+  const renderDetailsGroupData = (title: string, fields: any[]) => (
+    <DetailsGroupData>
+      <DetailsGroupDataTitle>{title}</DetailsGroupDataTitle>
+      <DetailsGroupDataValues>{fields.map((f, i) => renderDetailsGroupDataField(f, i))}</DetailsGroupDataValues>
+    </DetailsGroupData>
+  );
+
+  const renderNaturalPerson = (title: string, person: any) =>
+    renderDetailsGroupData(title, [
+      {
+        label: "Nome",
+        value: person.lastname + " " + person.name,
+        link: "#",
+      },
+      {
+        label: "Codice Fiscale",
+        value: person.fiscal_code,
+      },
+      {
+        label: "Provincia di residenza",
+        value: person.province_of_residence,
+      },
+      {
+        label: "Comune di residenza",
+        value: person.city_of_residence,
+      },
+    ]);
+
+  const renderGiuridicalPerson = (title: string, person: any) =>
+    renderDetailsGroupData(title, [
+      {
+        label: "Ragione Sociale",
+        value: person.business_name,
+        link: "#",
+      },
+      {
+        label: "Partita IVA",
+        value: person.iva,
+      },
+      {
+        label: "Provincia di sede",
+        value: person.registered_office_province,
+      },
+      {
+        label: "Comune di sede",
+        value: person.registered_office_city,
+      },
+    ]);
+
+  const ownerId = owner?.giuridical_person?.id || owner?.natural_person?.id;
+  const contractorId = contractor?.giuridical_person?.id || contractor?.natural_person?.id;
 
   return (
     <ClaimDataStyled>
       <CollapseStyled>
         <Collapse.Panel header={"DETTAGLIO DATI POLIZZA"} key="1">
           <CollapsePanelContentStyled>
-            <DetailsGroupData>
-              <DetailsGroupDataTitle>POLIZZA</DetailsGroupDataTitle>
-              <DetailsGroupDataValues>
-                <ReadonlyField>
-                  <LabelStyled>Numero Polizza :</LabelStyled>
-                  <ReadonlyValue>
-                    <Link to={"#"}>{props.claim.polizza.numero_polizza}</Link>
-                  </ReadonlyValue>
-                </ReadonlyField>
-                <ReadonlyField>
-                  <LabelStyled>Data Effetto :</LabelStyled>
-                  <ReadonlyValue>{props.claim.polizza.data_effetto}</ReadonlyValue>
-                </ReadonlyField>
-                <ReadonlyField>
-                  <LabelStyled>Data Scadenza :</LabelStyled>
-                  <ReadonlyValue>{props.claim.polizza.data_scadenza}</ReadonlyValue>
-                </ReadonlyField>
-              </DetailsGroupDataValues>
-            </DetailsGroupData>
-            <DetailsGroupData>
-              <DetailsGroupDataTitle>PROPRIETARIO</DetailsGroupDataTitle>
-              {props.claim.proprietario.persona_fisica && (
-                <DetailsGroupDataValues>
-                  <ReadonlyField>
-                    <LabelStyled>Nome :</LabelStyled>
-                    <ReadonlyValue>
-                      <Link to={"#"}>
-                        {props.claim.proprietario.persona_fisica.cognome} {props.claim.proprietario.persona_fisica.nome}
-                      </Link>
-                    </ReadonlyValue>
-                  </ReadonlyField>
-                  <ReadonlyField>
-                    <LabelStyled>Codice Fiscale :</LabelStyled>
-                    <ReadonlyValue>{props.claim.proprietario.persona_fisica.codice_fiscale}</ReadonlyValue>
-                  </ReadonlyField>
-                  <ReadonlyField>
-                    <LabelStyled>Provincia di residenza :</LabelStyled>
-                    <ReadonlyValue>{props.claim.proprietario.persona_fisica.provincia_residenza}</ReadonlyValue>
-                  </ReadonlyField>
-                  <ReadonlyField>
-                    <LabelStyled>Comune di residenza :</LabelStyled>
-                    <ReadonlyValue>{props.claim.proprietario.persona_fisica.comune_residenza}</ReadonlyValue>
-                  </ReadonlyField>
-                </DetailsGroupDataValues>
-              )}
-              {props.claim.proprietario.persona_giuridica && (
-                <DetailsGroupDataValues>
-                  <ReadonlyField>
-                    <LabelStyled>Nome :</LabelStyled>
-                    <Link to={"#"}>{props.claim.proprietario.persona_giuridica.ragione_sociale}</Link>
-                    <ReadonlyValue></ReadonlyValue>
-                  </ReadonlyField>
-                  <ReadonlyField>
-                    <LabelStyled>Partita IVA :</LabelStyled>
-                    <ReadonlyValue>{props.claim.proprietario.persona_giuridica.partita_iva}</ReadonlyValue>
-                  </ReadonlyField>
-                  <ReadonlyField>
-                    <LabelStyled>Provincia sede legale :</LabelStyled>
-                    <ReadonlyValue>{props.claim.proprietario.persona_giuridica.provincia_sede_legale}</ReadonlyValue>
-                  </ReadonlyField>
-                  <ReadonlyField>
-                    <LabelStyled>Comune sede legale :</LabelStyled>
-                    <ReadonlyValue>{props.claim.proprietario.persona_giuridica.comune_sede_legale}</ReadonlyValue>
-                  </ReadonlyField>
-                </DetailsGroupDataValues>
-              )}
-            </DetailsGroupData>
+            {renderDetailsGroupData("POLIZZA", [
+              {
+                label: "Numero Polizza",
+                value: policyData?.policy_number,
+                link: "#",
+              },
+              {
+                label: "Data Effetto",
+                value: policyData?.effect_date,
+              },
+              {
+                label: "Data Scadenza",
+                value: policyData?.expiration_date,
+              },
+            ])}
 
-            <DetailsGroupData>
-              <DetailsGroupDataTitle>CONTRAENTE</DetailsGroupDataTitle>
-              {props.claim.contraente?.persona_fisica && (
-                <DetailsGroupDataValues>
-                  <ReadonlyField>
-                    <LabelStyled>Nome :</LabelStyled>
-                    <ReadonlyValue>
-                      <Link to={"#"}>
-                        {props.claim.contraente.persona_fisica.cognome} {props.claim.contraente.persona_fisica.nome}
-                      </Link>
-                    </ReadonlyValue>
-                  </ReadonlyField>
-                  <ReadonlyField>
-                    <LabelStyled>Codice Fiscale :</LabelStyled>
-                    <ReadonlyValue>{props.claim.contraente.persona_fisica.codice_fiscale}</ReadonlyValue>
-                  </ReadonlyField>
-                  <ReadonlyField>
-                    <LabelStyled>Provincia di residenza :</LabelStyled>
-                    <ReadonlyValue>{props.claim.contraente.persona_fisica.provincia_residenza}</ReadonlyValue>
-                  </ReadonlyField>
-                  <ReadonlyField>
-                    <LabelStyled>Comune di residenza :</LabelStyled>
-                    <ReadonlyValue>{props.claim.contraente.persona_fisica.comune_residenza}</ReadonlyValue>
-                  </ReadonlyField>
-                </DetailsGroupDataValues>
-              )}
-              {props.claim.contraente?.persona_giuridica && (
-                <DetailsGroupDataValues>
-                  <ReadonlyField>
-                    <LabelStyled>Nome :</LabelStyled>
-                    <Link to={"#"}>{props.claim.contraente.persona_giuridica.ragione_sociale}</Link>
-                    <ReadonlyValue></ReadonlyValue>
-                  </ReadonlyField>
-                  <ReadonlyField>
-                    <LabelStyled>Partita IVA :</LabelStyled>
-                    <ReadonlyValue>{props.claim.contraente.persona_giuridica.partita_iva}</ReadonlyValue>
-                  </ReadonlyField>
-                  <ReadonlyField>
-                    <LabelStyled>Provincia sede legale :</LabelStyled>
-                    <ReadonlyValue>{props.claim.contraente.persona_giuridica.provincia_sede_legale}</ReadonlyValue>
-                  </ReadonlyField>
-                  <ReadonlyField>
-                    <LabelStyled>Comune sede legale :</LabelStyled>
-                    <ReadonlyValue>{props.claim.contraente.persona_giuridica.comune_sede_legale}</ReadonlyValue>
-                  </ReadonlyField>
-                </DetailsGroupDataValues>
-              )}
-            </DetailsGroupData>
+            {owner?.natural_person && renderNaturalPerson("PROPRIETARIO", owner.natural_person)}
+            {owner?.giuridical_person && renderGiuridicalPerson("PROPRIETARIO", owner.giuridical_person)}
+
+            {contractor && contractorId !== ownerId && (
+              <>
+                {contractor.natural_person && renderNaturalPerson("CONTRAENTE", contractor.natural_person)}
+                {contractor.giuridical_person && renderGiuridicalPerson("CONTRAENTE", contractor.giuridical_person)}
+              </>
+            )}
           </CollapsePanelContentStyled>
         </Collapse.Panel>
       </CollapseStyled>
 
-      <CardData onClaimTypeChanged={handleClaimTypeChanged} />
+      <CardData />
 
       <HrStyled />
 
@@ -249,7 +214,10 @@ const ClaimData = (props: ClaimDataProps) => {
           tooltip="Seleziona la data di pervenimento della denuncia"
           rules={[{ required: true, message: "La data di pervenimento della denuncia è obbligatoria" }]}
         >
-          <FormDatePicker placeholder="data di pervenimento della denuncia ..." />
+          <FormDatePicker
+            placeholder="data di pervenimento della denuncia ..."
+            onChange={(val) => app.updateClaimData(val?.toString(), "receipt-date")}
+          />
         </FormInput>
       </Row>
       <Row>
@@ -259,7 +227,10 @@ const ClaimData = (props: ClaimDataProps) => {
           tooltip="Seleziona la data di accadimento..."
           rules={[{ required: true, message: "La data di accadimento è obbligatoria" }]}
         >
-          <FormDatePicker placeholder="data di accadimento ..." onChange={(val) => setDataAccadimento(val)} />
+          <FormDatePicker
+            placeholder="data di accadimento ..."
+            onChange={(val) => app.updateClaimData(val?.toString(), "occurrence-date")}
+          />
         </FormInput>
         <RowSpacer />
         <FormInput
@@ -268,7 +239,11 @@ const ClaimData = (props: ClaimDataProps) => {
           tooltip="Seleziona l'ora di accadimento..."
           rules={[{ required: true, message: "L'ora di accadimento è obbligatoria" }]}
         >
-          <FormTimePicker placeholder="ora di accadimento ..." format="HH:mm" />
+          <FormTimePicker
+            placeholder="ora di accadimento ..."
+            format="HH:mm"
+            onChange={(val) => app.updateClaimData(val?.toString(), "occurrence-time")}
+          />
         </FormInput>
       </Row>
 
@@ -276,9 +251,9 @@ const ClaimData = (props: ClaimDataProps) => {
         <DateWarningMessage>
           La data di accadimento è fuori copertura
           <span style={{ fontSize: "0.9em", marginLeft: "1em" }}>
-            (DAL {props.claim.polizza.data_effetto}
+            (DAL {policyData?.effect_date}
             {` AL `}
-            {props.claim.polizza.data_scadenza})
+            {policyData?.expiration_date})
           </span>
         </DateWarningMessage>
       )}
@@ -286,13 +261,16 @@ const ClaimData = (props: ClaimDataProps) => {
       <Row>
         <FormInput
           label="Luogo Accadimento Sinistro"
-          name="logo_accadimento_sinistro"
+          name="luogo_accadimento_sinistro"
           tooltip="Inserisci il luogo di accadimento del sinistro"
           rules={[
             { required: stepperData?.tipoSinistro === "CARD", message: "Il luogo di accadimento è obbligatorio" },
           ]}
         >
-          <Input placeholder="luogo del sinistro ..." />
+          <Input
+            placeholder="luogo del sinistro ..."
+            onChange={(val) => app.updateClaimData(val.currentTarget.value, "occurrence-place")}
+          />
         </FormInput>
       </Row>
       <Row>
@@ -301,22 +279,30 @@ const ClaimData = (props: ClaimDataProps) => {
           name="intervento_forze_ordine"
           tooltip="Sono intervenute le forze dell'ordine?"
         >
-          <Switch checkedChildren={"Si"} unCheckedChildren={"No"} />
+          <Switch
+            checkedChildren={"Si"}
+            unCheckedChildren={"No"}
+            onChange={(val) => app.updateClaimData(val, "police-intervention")}
+          />
         </FormInput>
         <RowSpacer />
         <FormInput label="Testimoni" name="testimoni_mittente" tooltip="Testimoni">
-          <Switch checkedChildren={"Si"} unCheckedChildren={"No"} onChange={(val) => setPresenceOfWitnesses(val)} />
-          {presenceOfWitnesses && (
-            <Button type="primary" size="small" style={{ marginLeft: "3em" }}>
-              Inserisci
-            </Button>
-          )}
+          <Switch
+            checkedChildren={"Si"}
+            unCheckedChildren={"No"}
+            onChange={(val) => app.updateClaimData(val, "witnesses")}
+          />
         </FormInput>
       </Row>
       {stepperData?.tipoSinistro === "CARD" && (
         <Row>
           <FormInput label="Nota Ania" name="nota_ania" tooltip="Inserisci una nota utente">
-            <FormTextArea placeholder="nota utente ..." rows={1} maxLength={100} />
+            <FormTextArea
+              placeholder="nota utente ..."
+              rows={1}
+              maxLength={100}
+              onChange={(val) => app.updateClaimData(val, "note")}
+            />
           </FormInput>
         </Row>
       )}

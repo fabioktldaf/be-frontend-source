@@ -1,16 +1,15 @@
-import React, { useEffect, useState } from "react";
-import { Button, Row, Tabs, Tooltip } from "antd";
+import React from "react";
+import { Tabs, Tooltip } from "antd";
 import { HiOutlineSave } from "react-icons/hi";
-import { MdContentCopy } from "react-icons/md";
-import { FormContainer, FormTitle, FormContent, FormActions, FormActionButton, FormSendButton } from "../../style/form";
-import { CenteredRow } from "../../style/containers";
+import { VscCopy } from "react-icons/vsc";
+import { AiOutlineCheck } from "react-icons/ai";
+import { MainForm } from "../Layout/Forms";
 import Responsability from "./Responsability";
 import ClaimData from "./ClaimData";
-import AffectedThing from "./AffectedThing";
-import AffectedVehicle from "./AffectedVehicle";
-import DamagedPart from "./DamagedPart";
-import NotDamagedPart from "./NotDamagedPart";
+import DamagedParts from "./DamagedParts";
 import styled from "styled-components";
+import { RootState } from "../../redux/store";
+import { useSelector } from "react-redux";
 
 const SaveIconStyled = styled(HiOutlineSave)`
   font-size: 1.2em;
@@ -24,107 +23,86 @@ const PolicyNumberStyled = styled.div`
   margin-left: 1em;
 `;
 
-const PolicyNumberCopyStyled = styled(MdContentCopy)`
-  margin-left: 0.5em;
-  cursor: pointer;
+const CheckedIcon = styled(AiOutlineCheck)`
+  color: green;
+  margin-right: 0.5em;
 `;
 
-const getTodayDate = () => {
-  const now = new Date();
-  const day = now.getUTCDate();
-  const month = now.getUTCMonth() + 1;
-  const year = now.getUTCFullYear();
+const TabItemLabelContainer = styled.div`
+  display: flex;
+  align-items: center;
+`;
 
-  return `${day < 10 ? "0" : ""}${day}/${month < 10 ? "0" : ""}${month}/${year}`;
-};
+const NewClaim = () => {
+  const policyNumber = useSelector((state: RootState) => state.newClaim.policyData?.policy_number)!;
+  const claimDataCompleted = useSelector((state: RootState) => state.newClaim.claimDataCompleted);
+  const responsabilityDataCompleted = useSelector((state: RootState) => state.newClaim.responsabilityDataCompleted);
+  const damagedPartsDataCompleted = useSelector((state: RootState) => state.newClaim.damagedPartsDataCompleted);
 
-export type ClaimDataPolicyType = {
-  numero_polizza: string;
-  data_effetto: string;
-  data_scadenza: string;
-};
-
-export type ClaimDataSubjetcPersonType = {
-  nome: string;
-  cognome: string;
-  codice_fiscale: string;
-  provincia_residenza: string;
-  comune_residenza: string;
-};
-export type ClaimDataSubjetcCompanyType = {
-  ragione_sociale: string;
-  partita_iva: string;
-  provincia_sede_legale: string;
-  comune_sede_legale: string;
-};
-
-export type ClaimDataSubjetcType = {
-  persona_fisica?: ClaimDataSubjetcPersonType;
-  persona_giuridica?: ClaimDataSubjetcCompanyType;
-};
-
-export type ClaimDataType = {
-  numero_sinistro?: string;
-
-  polizza: ClaimDataPolicyType;
-  proprietario: ClaimDataSubjetcType;
-  contraente?: ClaimDataSubjetcType;
-};
-
-type NewClaimProps = {
-  claim: ClaimDataType;
-  onSend: () => void;
-};
-
-type HeaderProps = {
-  policy_number: string;
-};
-
-const Header = (props: HeaderProps) => {
-  return (
-    <FormTitle>
+  const renderTitle = (
+    <>
       Apertura Sinistro
       <PolicyNumberStyled>
-        N° {props.policy_number}{" "}
+        N° {policyNumber}
         <Tooltip title={"Clicca per copiare il numero di polizza"}>
-          <PolicyNumberCopyStyled onClick={() => navigator.clipboard.writeText(props.policy_number)} />
+          <VscCopy
+            onClick={() => navigator.clipboard.writeText(policyNumber)}
+            style={{ cursor: "pointer", marginLeft: "0.5em" }}
+          />
         </Tooltip>
       </PolicyNumberStyled>
-      <FormActions>
-        <FormActionButton icon={<SaveIconStyled />} size="small">
-          Salva
-        </FormActionButton>
-      </FormActions>
-    </FormTitle>
+    </>
   );
-};
 
-const NewClaim = (props: NewClaimProps) => {
-  const [claim, setClaim] = useState<ClaimDataType>(props.claim);
+  const actions = [
+    {
+      label: "Salva",
+      icon: <SaveIconStyled />,
+      execute: () => {
+        console.log("saving new claim data");
+      },
+    },
+  ];
 
   return (
-    <FormContainer layout="vertical">
-      <Header policy_number={claim.numero_sinistro!} />
-      <FormContent>
-        <Tabs defaultActiveKey="1" tabPosition="left">
-          <Tabs.TabPane tab="Dati Sinistro" key="1">
-            <ClaimData claim={claim} />
-          </Tabs.TabPane>
-          <Tabs.TabPane tab="Responsabilità" key="2">
-            <Responsability isCard={true} />
-          </Tabs.TabPane>
-          <Tabs.TabPane tab="Partite" key="3">
-            <DamagedPart />
-            <NotDamagedPart />
-          </Tabs.TabPane>
-        </Tabs>
-      </FormContent>
-      <CenteredRow>
-        <FormSendButton type="primary" size="large" onClick={() => props.onSend()}>
-          Invia
-        </FormSendButton>
-      </CenteredRow>
-    </FormContainer>
+    <MainForm layout="vertical" title={renderTitle} actions={actions}>
+      <Tabs
+        defaultActiveKey="1"
+        tabPosition="left"
+        items={[
+          {
+            label: (
+              <TabItemLabelContainer>
+                {claimDataCompleted && <CheckedIcon />}
+                {"Dati Sinistro"}
+              </TabItemLabelContainer>
+            ),
+            key: "1",
+            children: <ClaimData />,
+          },
+          {
+            label: (
+              <TabItemLabelContainer>
+                {responsabilityDataCompleted && <CheckedIcon />}
+                {"Responsabilità"}
+              </TabItemLabelContainer>
+            ),
+            key: "2",
+            children: <Responsability isCard={true} />,
+          },
+          {
+            label: (
+              <TabItemLabelContainer>
+                {damagedPartsDataCompleted && <CheckedIcon />}
+                {"Partite Danno"}
+              </TabItemLabelContainer>
+            ),
+            key: "3",
+            children: <DamagedParts />,
+          },
+        ]}
+      />
+    </MainForm>
   );
 };
 
