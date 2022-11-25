@@ -200,3 +200,48 @@ export const NewClaimSteps: NewClaimStepItem[] = [
     },
   },
 ];
+
+export const OwnerRolesType = [
+  { value: "---", label: "---" },
+  { value: "CP", label: "CP - Conducente proprietario" },
+  { value: "TP", label: "TP - Trasportato proprietario" },
+  {
+    value: "NP",
+    label: "NP - Proprietario non presente sul veicolo",
+  },
+];
+
+export const NotOwnerRolesType = [
+  { value: "---", label: "---" },
+  { value: "CN", label: "CN - Conducente non proprietario" },
+  { value: "TN", label: "TN - Trasportato non proprietario" },
+
+  // {
+  //   value: "CPC",
+  //   label: "CPC - Conducente proprietario controparte",
+  // },
+  // {
+  //   value: "CNC",
+  //   label: "CNC - Conducente non proprietario controparte",
+  // },
+  // {
+  //   value: "TPC",
+  //   label: "TPC - Trasportato proprietario controparte",
+  // },
+  // {
+  //   value: "TNC",
+  //   label: "TNC - Trasportato non proprietario controparte",
+  // },
+  {
+    value: "NPC",
+    label: "NPC - Proprietario non presente sul veicolo",
+  },
+  {
+    value: "TS",
+    label: "TS - Terzo passante",
+  },
+  {
+    value: "TD",
+    label: "TD - Terzo Danneggiato",
+  },
+];

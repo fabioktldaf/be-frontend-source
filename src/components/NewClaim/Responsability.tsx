@@ -5,6 +5,10 @@ import { Col, Row, RowSpacer } from "../../style/containers";
 import { FormSubTitle, FormInput, FormDatePicker } from "../../style/form";
 import { useTranslation } from "react-i18next";
 import { Barems } from "../../config/const";
+import useApplication from "../../hooks/useApplication";
+import { BaremsResultType } from "../../types/new-claim.types";
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/store";
 
 const ResponsabilityStyled = styled.div``;
 
@@ -91,53 +95,99 @@ interface ResponsabilityProps {
   isCard: boolean;
 }
 
+type BaremModalStateType = {
+  isOpen: boolean;
+  vehicleA: number | undefined;
+  vehicleB: number | undefined;
+  result: string | undefined;
+};
+
 const Responsability = (props: ResponsabilityProps) => {
   const { t } = useTranslation();
+  const app = useApplication();
+  const responsabilityData = useSelector((state: RootState) => state.newClaim.responsability);
 
-  const [baremModalOpen, setBaremModalOpen] = useState(false);
-  const [baremVehicleA, setBaremVehicleA] = useState<number | undefined>();
-  const [baremVehicleB, setBaremVehicleB] = useState<number | undefined>();
-  const [baremResult, setBaremResult] = useState("NC");
-  const [motivoForzatura, setMotivoForzatura] = useState("");
-  const [tipoResponsabilità, setTipoResponsabilità] = useState("---");
+  const [baremModal, setBaremModal] = useState<BaremModalStateType>({
+    isOpen: false,
+    ...responsabilityData?.barems,
+  } as BaremModalStateType);
 
-  useEffect(() => {
-    console.log("motivo forzatura ", motivoForzatura);
-    if (motivoForzatura === "---") setTipoResponsabilità("1");
-    else setTipoResponsabilità("2");
-  }, [motivoForzatura]);
+  const { forcedReason, responsabilityType, signatureType, responsabilityPercentage } = responsabilityData || {};
+
+  // const [baremModalOpen, setBaremModalOpen] = useState(false);
+  // const [baremVehicleA, setBaremVehicleA] = useState<number | undefined>();
+  // const [baremVehicleB, setBaremVehicleB] = useState<number | undefined>();
+  // const [baremResult, setBaremResult] = useState("NC");
+  //const [motivoForzatura, setMotivoForzatura] = useState("");
+  //const [tipoResponsabilità, setTipoResponsabilità] = useState("---");
+
+  // useEffect(() => {
+  //   console.log("motivo forzatura ", motivoForzatura);
+  //   if (motivoForzatura === "---") setTipoResponsabilità("1");
+  //   else setTipoResponsabilità("2");
+  // }, [motivoForzatura]);
+
+  const handleBaremChange = (vehicle: "vehicleA" | "vehicleB", value: number) => {
+    const newBaremModal = Object.assign({}, baremModal);
+
+    newBaremModal[vehicle] = value;
+
+    if (newBaremModal.vehicleA && newBaremModal.vehicleB)
+      newBaremModal.result = Barems[newBaremModal.vehicleA][newBaremModal.vehicleB];
+
+    setBaremModal(newBaremModal);
+  };
+
+  const handleShowBaremsModal = () => {
+    const newBaremModal = Object.assign({}, baremModal);
+    newBaremModal.isOpen = true;
+    setBaremModal(newBaremModal);
+  };
 
   const handleBaremsModalCancel = () => {
-    setBaremModalOpen(false);
+    const newBaremModal = Object.assign({}, baremModal);
+    newBaremModal.isOpen = false;
+    setBaremModal(newBaremModal);
   };
 
   const handleBaremsModalOk = () => {
-    setBaremModalOpen(false);
+    const newBaremModal = Object.assign({}, baremModal);
+    newBaremModal.isOpen = false;
+
+    setBaremModal(newBaremModal);
+
+    const barems: BaremsResultType = {
+      vehicleA: newBaremModal.vehicleA!,
+      vehicleB: newBaremModal.vehicleB!,
+      result: newBaremModal.result!,
+    };
+
+    app.updateResponsabilityData(barems, "barems");
   };
 
-  const handleChangeVehicleValue = (vehicle: "A" | "B", val: number) => {
-    let bRes: string | null = null;
+  // const handleChangeVehicleValue = (vehicle: "A" | "B", val: number) => {
+  //   let bRes: string | null = null;
 
-    if (vehicle === "A") {
-      setBaremVehicleA(val);
-      if (baremVehicleB) {
-        bRes = Barems[val][baremVehicleB];
-      }
-    }
-    if (vehicle === "B") {
-      setBaremVehicleB(val);
-      if (baremVehicleA) {
-        bRes = Barems[baremVehicleA][val];
-      }
-    }
+  //   if (vehicle === "A") {
+  //     setBaremVehicleA(val);
+  //     if (baremVehicleB) {
+  //       bRes = Barems[val][baremVehicleB];
+  //     }
+  //   }
+  //   if (vehicle === "B") {
+  //     setBaremVehicleB(val);
+  //     if (baremVehicleA) {
+  //       bRes = Barems[baremVehicleA][val];
+  //     }
+  //   }
 
-    if (bRes) {
-      setBaremResult(bRes);
-      const newTipoResp = bRes === "T" ? "1" : bRes === "C" ? "2" : bRes === "R" ? "3" : "";
-      console.log("tipo responsabilità ", newTipoResp);
-      setTipoResponsabilità(newTipoResp);
-    }
-  };
+  //   if (bRes) {
+  //     setBaremResult(bRes);
+  //     const newTipoResp = bRes === "T" ? "1" : bRes === "C" ? "2" : bRes === "R" ? "3" : "";
+  //     console.log("tipo responsabilità ", newTipoResp);
+  //     setTipoResponsabilità(newTipoResp);
+  //   }
+  // };
 
   return (
     <ResponsabilityStyled>
@@ -150,48 +200,48 @@ const Responsability = (props: ResponsabilityProps) => {
           rules={[{ required: true, message: "Il caso di cirsostanza è obbligatorio" }]}
         >
           <BaremContainer>
-            <BaremOpenModal onClick={() => setBaremModalOpen(true)}>
-              {["R", "C", "T"].indexOf(baremResult) === -1 ? (
+            <BaremOpenModal onClick={handleShowBaremsModal}>
+              {!baremModal.result ? (
                 "Seleziona"
               ) : (
                 <>
-                  {baremResult} ({t(`barem_result_${baremResult}_label`)})
+                  {baremModal.result} ({t(`barem_result_${baremModal.result}_label`)})
                 </>
               )}
             </BaremOpenModal>
-            {["R", "C", "T"].indexOf(baremResult) > -1 && (
+            {baremModal.result && (
               <Col>
-                <Row>Veicolo Nostro : {t(`barem_label_${baremVehicleA}`)}</Row>
-                <Row>Veicolo Controparte : {t(`barem_label_${baremVehicleB}`)}</Row>
+                <Row>Veicolo Nostro : {t(`barem_label_${baremModal.vehicleA}`)}</Row>
+                <Row>Veicolo Controparte : {t(`barem_label_${baremModal.vehicleB}`)}</Row>
               </Col>
             )}
           </BaremContainer>
 
           <Modal
             title="Seleziona le circostanze dei veicoli"
-            open={baremModalOpen}
+            open={baremModal.isOpen}
             onCancel={handleBaremsModalCancel}
             width={900}
             footer={
               <BaremModalFooter>
-                <BaremModalFooterMessage>
-                  <BaremModalFooterMessageType>
-                    {baremResult !== "NC" && (
-                      <>
-                        {baremResult} ({t(`barem_result_${baremResult}_label`)})
-                      </>
-                    )}
-                  </BaremModalFooterMessageType>
-                  {baremResult !== "NC" && "-"}
-                  <BaremModalFooterMessageText>{t(`barem_result_${baremResult}_text`)}</BaremModalFooterMessageText>
-                </BaremModalFooterMessage>
+                {baremModal.result && (
+                  <BaremModalFooterMessage>
+                    <BaremModalFooterMessageType>
+                      {baremModal.result !== "NC" && (
+                        <>
+                          {baremModal.result} ({t(`barem_result_${baremModal.result}_label`)})
+                        </>
+                      )}
+                    </BaremModalFooterMessageType>
+                    {baremModal.result !== "NC" && "-"}
+                    <BaremModalFooterMessageText>
+                      {t(`barem_result_${baremModal.result}_text`)}
+                    </BaremModalFooterMessageText>
+                  </BaremModalFooterMessage>
+                )}
                 <BaremModalFooterButtons>
                   <Button onClick={handleBaremsModalCancel}>Cancel</Button>
-                  <Button
-                    type="primary"
-                    onClick={handleBaremsModalOk}
-                    disabled={["R", "T", "C"].indexOf(baremResult) === -1}
-                  >
+                  <Button type="primary" onClick={handleBaremsModalOk} disabled={!baremModal.result}>
                     Ok
                   </Button>
                 </BaremModalFooterButtons>
@@ -210,14 +260,14 @@ const Responsability = (props: ResponsabilityProps) => {
                 {baremsArray().map((i: number) => (
                   <tr>
                     <BaremCaseLabel>{t(`barem_label_${i}`)}</BaremCaseLabel>
-                    <BaremCaseTd onClick={() => handleChangeVehicleValue("A", i)}>
+                    <BaremCaseTd onClick={() => handleBaremChange("vehicleA", i)}>
                       <div style={{ display: "flex", justifyContent: "center" }}>
-                        <BaremCaseValue selected={baremVehicleA === i}>{i}</BaremCaseValue>
+                        <BaremCaseValue selected={baremModal.vehicleA === i}>{i}</BaremCaseValue>
                       </div>
                     </BaremCaseTd>
-                    <BaremCaseTd onClick={() => handleChangeVehicleValue("B", i)}>
+                    <BaremCaseTd onClick={() => handleBaremChange("vehicleB", i)}>
                       <div style={{ display: "flex", justifyContent: "center" }}>
-                        <BaremCaseValue selected={baremVehicleB === i}>{i}</BaremCaseValue>
+                        <BaremCaseValue selected={baremModal.vehicleB === i}>{i}</BaremCaseValue>
                       </div>
                     </BaremCaseTd>
                   </tr>
@@ -228,12 +278,12 @@ const Responsability = (props: ResponsabilityProps) => {
         </FormInput>
         <RowSpacer />
       </Row>
-      {baremResult === "T" && (
+      {baremModal.result === "T" && (
         <Row>
           <FormInput label="Motivo Forzatura" name="motivo_forzatura" tooltip="Seleziona il motivo della forzatura">
             <Select
               defaultValue="---"
-              onChange={(val) => setMotivoForzatura(val)}
+              onChange={(val) => app.updateResponsabilityData(val, "forced-reason")}
               options={[
                 { value: "---", label: "---" },
                 { value: "1", label: "Mancato rispetto limiti velocità" },
@@ -247,32 +297,27 @@ const Responsability = (props: ResponsabilityProps) => {
       <FormSubTitle>Responsabilità</FormSubTitle>
 
       <Row>
-        {tipoResponsabilità && (
+        {
           <FormInput label="Tipo Responsabilità" name="tipo_responsabilità">
-            {ResponsabilityTypes.card.find((r) => r.value === tipoResponsabilità)?.label}
+            {ResponsabilityTypes.card.find((r) => r.value === responsabilityType)?.label}
           </FormInput>
-        )}
+        }
         <RowSpacer />
-        {props.isCard && (
+        {
           <FormInput label="Percentual Responsabilità" name="percentuale_responsabilità">
-            {tipoResponsabilità === "3"
-              ? "0%"
-              : tipoResponsabilità === "2"
-              ? "50%"
-              : tipoResponsabilità === "1"
-              ? "100%"
-              : ""}
+            {responsabilityPercentage}
           </FormInput>
-        )}
+        }
       </Row>
       <Row>
         <FormInput label="Tipo Firma" name="tipo_firma" tooltip="Seleziona il tipo firma">
           <Select
             defaultValue="---"
+            onChange={(val) => app.updateResponsabilityData(val, "signature-type")}
             options={[
               { value: "---", label: "---" },
-              { value: "monofirma", label: "Monofirma" },
-              { value: "firma_congiunta", label: "Doppia Firma" },
+              { value: "1", label: "Monofirma" },
+              { value: "2", label: "Doppia Firma" },
             ]}
           />
         </FormInput>

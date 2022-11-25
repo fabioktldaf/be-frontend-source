@@ -7,7 +7,7 @@ import { RiDeleteBinFill } from "react-icons/ri";
 
 import { useTranslation } from "react-i18next";
 import { vehicleCollisionPoints, VehicleTypeOptions } from "../../config/const";
-import { PartDamagedDetailsVehicle } from "./DamagedParts";
+import { PartDamagedDetailsVehicle } from "../../types/new-claim.types";
 
 const DamagedPartVehicleStyled = styled.div``;
 
@@ -39,9 +39,9 @@ export const plateFormats = [
 const DamagedPartVehicle = (props: DamagedPartVehicleProps) => {
   const { t } = useTranslation();
 
-  const renderCollisionPoint = (code: string) => {
+  const renderCollisionPoint = (code: string, i: number) => {
     const cp = vehicleCollisionPoints.find((p) => p.code === code);
-    return <div>{`${cp!.code} - ${cp!.label}`}</div>;
+    return <div key={i}>{`${cp!.code} - ${cp!.label}`}</div>;
   };
   return (
     <DamagedPartVehicleStyled>
@@ -57,7 +57,7 @@ const DamagedPartVehicle = (props: DamagedPartVehicleProps) => {
 
       {props.details.collisionPoints?.length > 0 && (
         <FormInput label="Punti di impatto" name={`punti_impatto`} tooltip="Punti di impatto del veicolo">
-          {props.details.collisionPoints?.map((c) => renderCollisionPoint(c))}
+          {props.details.collisionPoints?.map((c, i) => renderCollisionPoint(c, i))}
         </FormInput>
       )}
     </DamagedPartVehicleStyled>

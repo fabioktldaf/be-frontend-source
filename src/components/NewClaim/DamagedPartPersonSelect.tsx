@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { useTranslation } from "react-i18next";
-import { PartDamagedDetailsPerson } from "./DamagedParts";
 
 import front_unselected from "../../images/body/front-unselected.png";
 import front_head_hover from "../../images/body/front-head-hover.png";
@@ -32,6 +31,7 @@ import rear_leg_right_hover from "../../images/body/rear-leg-right-hover.png";
 import rear_leg_right_selected from "../../images/body/rear-leg-right-selected.png";
 
 import { Tooltip } from "antd";
+import { PartDamagedDetailsPerson } from "../../types/new-claim.types";
 
 const DamagedPartPersonStyled = styled.div`
   display: flex;

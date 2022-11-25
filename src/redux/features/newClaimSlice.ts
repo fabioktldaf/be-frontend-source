@@ -2,7 +2,10 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import {
   ClaimDataPolicyDataType,
   ClaimDataType,
+  DamagedPartPair,
+  DamagedPartType,
   NewClaimStateType,
+  ResponsabilityDataType,
   StepperDataType,
 } from "../../types/new-claim.types";
 
@@ -13,9 +16,9 @@ export interface NewClaimState {
   clamiData?: ClaimDataType;
   claimDataCompleted: boolean;
   stepperData: StepperDataType;
-  // responsability?: string;
+  responsability?: ResponsabilityDataType;
   responsabilityDataCompleted: boolean;
-  // damagedParts?: string;
+  damagedParts: DamagedPartType[];
   damagedPartsDataCompleted: boolean;
 }
 
@@ -35,6 +38,7 @@ const buildInitialState = () => {
       inItalia: false,
       tipoSinistro: "---",
     },
+    damagedParts: [],
     claimDataCompleted: false,
     responsabilityDataCompleted: false,
     damagedPartsDataCompleted: false,
@@ -70,6 +74,35 @@ export const newClaimSlice = createSlice({
     setPolicyData(state, action: PayloadAction<ClaimDataPolicyDataType>) {
       state.policyData = action.payload;
     },
+    setResponsabilityData(state, action: PayloadAction<ResponsabilityDataType>) {
+      state.responsability = action.payload;
+    },
+    setDamagedPart(state, action: PayloadAction<DamagedPartPair>) {
+      if (state.damagedParts?.length === 0 && action.payload.index === 0) {
+        state.damagedParts = [action.payload.damagedPart];
+      } else if (action.payload.index >= state.damagedParts?.length) {
+        state.damagedParts = [...state.damagedParts, action.payload.damagedPart];
+      } else {
+        state.damagedParts = state.damagedParts?.map((d, i) =>
+          i === action.payload.index ? action.payload.damagedPart : d
+        );
+      }
+    },
+    addDamagedPart(state) {
+      state.damagedParts = [
+        ...state.damagedParts,
+        {
+          pdNumber: Date.now().toString(),
+          subject: {},
+          roleType: "",
+          managementType: "---",
+          damages: [],
+        },
+      ];
+    },
+    removeDamagedPart(state, action: PayloadAction<number>) {
+      state.damagedParts = state.damagedParts.filter((d, i) => i !== action.payload);
+    },
     updateStepperData(state, action: PayloadAction<StepperDataType>) {
       state.stepperData = action.payload;
     },
@@ -81,9 +114,24 @@ export const newClaimSlice = createSlice({
       state.responsabilityDataCompleted = action.payload[1];
       state.damagedPartsDataCompleted = action.payload[2];
     },
+    setOwnerManagementType(state, action: PayloadAction<string>) {
+      state.damagedParts[0].managementType = action.payload;
+    },
   },
 });
 
-export const { clear, setStatus, setPolicyData, updateStepperData, updateClaimData, updateTabsCompletedState } =
-  newClaimSlice.actions;
+export const {
+  clear,
+  setStatus,
+  setPolicyData,
+  updateStepperData,
+  updateClaimData,
+  updateTabsCompletedState,
+  setResponsabilityData,
+  setDamagedPart,
+  removeDamagedPart,
+  addDamagedPart,
+  setOwnerManagementType,
+} = newClaimSlice.actions;
+
 export default newClaimSlice.reducer;

@@ -21,4 +21,11 @@ export const defaultClaimPolicyData = {
       registered_office_city: "Bologna",
     },
   },
+  ownerVehicle: {
+    type: "A",
+    plate: {
+      number: "AB123CD",
+      format: "Targa Italiana",
+    },
+  },
 };

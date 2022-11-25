@@ -1,14 +1,13 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import { Input, Select, Switch, Collapse, Button } from "antd";
+import { Input, Switch, Collapse } from "antd";
 import { Row, RowSpacer } from "../../style/containers";
-import { FormInput, FormDatePicker, FormSubTitle, FormTextArea, FormTimePicker } from "../../style/form";
+import { FormInput, FormDatePicker, FormTextArea, FormTimePicker } from "../../style/form";
 import CardData from "./CardData";
 import moment from "moment";
 import { RootState } from "../../redux/store";
 import { useSelector } from "react-redux";
-import { StepperDataType } from "../../types/new-claim.types";
 import useApplication from "../../hooks/useApplication";
 
 const ClaimDataStyled = styled.div``;
@@ -86,15 +85,6 @@ const ClaimData = () => {
   const { owner, contractor } = policyData || {};
   const stepperData = useSelector((state: RootState) => state.newClaim.stepperData);
   const claimData = useSelector((state: RootState) => state.newClaim.clamiData);
-
-  //const [presenceOfWitnesses, setPresenceOfWitnesses] = useState(false);
-  //const [stepperData, setStepperData] = useState<StepperDataType>();
-  //const [dataAccadimento, setDataAccadimento] = useState<moment.Moment | null>();
-
-  // const handleClaimTypeChanged = (_stepperData: StepperDataType) => {
-  //   console.log("stepperData ", _stepperData);
-  //   setStepperData(_stepperData);
-  // };
 
   const checkDataAccadimento = () => {
     if (!claimData?.occurrenceDate) return true;

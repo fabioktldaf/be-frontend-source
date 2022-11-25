@@ -1,9 +1,20 @@
+export type ClaimDataOwnerVehiclePlateType = {
+  number: string;
+  format: string;
+};
+
+export type ClaimDataOwnerVehicleType = {
+  type: string;
+  plate: ClaimDataOwnerVehiclePlateType;
+};
+
 export type ClaimDataPolicyDataType = {
   policy_number: string;
   effect_date: string;
   expiration_date: string;
   owner: ClaimDataSubjetcType;
   contractor: ClaimDataSubjetcType;
+  ownerVehicle: ClaimDataOwnerVehicleType;
 };
 
 export type ClaimDataSubjetcPersonType = {
@@ -48,7 +59,7 @@ export type ClaimDataType = {
   note: string;
 };
 
-export type UpdateDataFieldsType =
+export type UpdateNewClaimDataFieldsType =
   | "receipt-date"
   | "occurrence-date"
   | "occurrence-time"
@@ -57,7 +68,9 @@ export type UpdateDataFieldsType =
   | "witnesses"
   | "note";
 
-export type PartChangeType = "damage_type" | "collision_point" | "person_damage" | "role_type";
+export type UpdateNewClaimResponsabilityDataFieldsType = "barems" | "forced-reason" | "signature-type";
+
+export type PartChangeType = "damage-type" | "collision-point" | "person-damage" | "role-type" | "owner-vehicle-note";
 
 export type PartChangeTypeType = "" | "Person" | "Thing" | "Vehicle" | "Location" | "Generic";
 
@@ -68,6 +81,7 @@ export type SubjectPersonalDataType = {
 export type PartDamagedDetailsPerson = {
   personWoundedPoints: string[];
   personlData?: SubjectPersonalDataType;
+  note: string;
 };
 
 export type PartDamagedDetailsVehicle = {
@@ -75,22 +89,29 @@ export type PartDamagedDetailsVehicle = {
   format: string;
   type: string;
   collisionPoints: string[];
-};
-
-export type PartDamagedDetailsThing = {};
-
-export type DamagedType = {
-  tipo_ruolo: string;
-  tipo_danno: PartChangeTypeType;
-  details: PartDamagedDetailsPerson | PartDamagedDetailsVehicle | PartDamagedDetailsThing;
   note: string;
 };
 
-export type PartType = {
-  subject: any;
-  numero_pd: string;
-  danni: DamagedType[];
-  data_pd: string;
+export type PartDamagedDetailsThing = {
+  note: string;
+};
+
+export type DamagedType = {
+  damageType: PartChangeTypeType;
+  details: PartDamagedDetailsPerson | PartDamagedDetailsVehicle | PartDamagedDetailsThing;
+};
+
+export type DamagedPartType = {
+  pdNumber: string;
+  subject: any; // da anagrafica
+  roleType: string;
+  managementType: string;
+  damages: DamagedType[];
+};
+
+export type DamagedPartPair = {
+  damagedPart: DamagedPartType;
+  index: number;
 };
 
 export type NewClaimStepTextType = {
@@ -133,3 +154,34 @@ export enum NewClaimStateType {
   AdditionalData,
   Resume,
 }
+
+export type BaremsResultType = {
+  vehicleA: number;
+  vehicleB: number;
+  result: string;
+};
+
+export type ResponsabilityDataType = {
+  barems: BaremsResultType;
+  forcedReason: string;
+  responsabilityType: string;
+  responsabilityPercentage: string;
+  responsabilityPercentageFixed: boolean;
+  signatureType: string;
+};
+
+export const DamageTypeCard = [
+  { value: "---", label: "---" },
+  { value: "Person", label: "Persone" },
+  { value: "Thing", label: "Cose" },
+  { value: "Vehicle", label: "Veicolo" },
+];
+
+export const DamageTypeNoCard = [
+  { value: "---", label: "---" },
+  { value: "Person", label: "Persone" },
+  { value: "Thing", label: "Cose" },
+  { value: "Vehicle", label: "Veicolo" },
+  { value: "Location", label: "Ubicazione" },
+  { value: "Generic", label: "Generico" },
+];

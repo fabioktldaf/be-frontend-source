@@ -52,8 +52,8 @@ const CarImpactSelector = (props: CarImpactSelectorProps) => {
     <CarContainer>
       <CarStyled src={carImage} />
       <SvgStyled xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 202 484">
-        {vehicleCollisionPoints.map((path) => (
-          <Tooltip title={`${path.code} - ${path.label}`} placement={path.tooltipPlacement as TooltipPlacement}>
+        {vehicleCollisionPoints.map((path, i) => (
+          <Tooltip key={i} title={`${path.code} - ${path.label}`} placement={path.tooltipPlacement as TooltipPlacement}>
             <PathStyled
               fill={areas.indexOf(path.code) === -1 ? "#00000001" : "#ff000085"}
               selected={areas.indexOf(path.code) >= 0}
