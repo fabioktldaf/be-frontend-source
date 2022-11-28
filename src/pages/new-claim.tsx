@@ -6,10 +6,9 @@ import { setStatus } from "../redux/features/newClaimSlice";
 
 import NewClaim from "../components/NewClaim";
 import AdditionalData from "../components/NewClaim/AdditionalData";
-import CheckSendingANIA from "../components/NewClaim/CheckSendingANIA";
+import CheckSic from "../components/NewClaim/CheckSic";
 import NewClaimsSteps from "../components/NewClaim/NewClaimSteps";
 import Resume from "../components/NewClaim/Resume";
-import { defaultClaimPolicyData } from "../config/dummy-data";
 import useApplication from "../hooks/useApplication";
 import { NewClaimStateType } from "../types/new-claim.types";
 
@@ -26,9 +25,9 @@ const NewClaimPage = () => {
         Carica Dati Polizza
       </Button>
       <NewClaimsSteps />
-      {step === 0 && <NewClaim />}
+      {step === 0 && <NewClaim onForward={() => handleChangeStatus(NewClaimStateType.VerifingSic)} />}
       {step === 1 && (
-        <CheckSendingANIA
+        <CheckSic
           onForward={() => handleChangeStatus(NewClaimStateType.AdditionalData)}
           onBackward={() => handleChangeStatus(NewClaimStateType.MandatoryData)}
         />

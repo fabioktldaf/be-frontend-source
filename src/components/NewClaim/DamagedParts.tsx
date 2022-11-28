@@ -1,40 +1,38 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { Form, Input, Select, Button, DatePicker, Modal, Popconfirm } from "antd";
-import { CenteredRow, Col, Hidden, Row, RowSpacer } from "../../style/containers";
-import { FormSubTitle, FormInput } from "../../style/form";
+import { Button, Modal } from "antd";
+import { CenteredRow } from "../../style/containers";
+import { FormSubTitle } from "../../style/form";
 import { RiDeleteBinFill } from "react-icons/ri";
 import { useTranslation } from "react-i18next";
 
 import DamagedPartModalContent from "./DamagedPartModalContent";
-import {
-  PartChangeType,
-  PartDamagedDetailsPerson,
-  PartDamagedDetailsVehicle,
-  DamagedPartType,
-} from "../../types/new-claim.types";
+import { DamagedPartType } from "../../types/new-claim.types";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import useApplication from "../../hooks/useApplication";
+import { AllPartRoles } from "../../config/const";
 
 const DamagedPartStyled = styled.div`
   margin-bottom: 2em;
 `;
 
-const PartStyled = styled.div`
-  display: flex;
-  margin-bottom: 1em;
+const TableDamagedParts = styled.table`
+  width: 100%;
+  margin-bottom: 2em;
 `;
 
-const PartResumeStyled = styled.div`
+const TableDamagedPartsRow = styled.tr`
   cursor: pointer;
+  &:hover {
+    background-color: #f5ffd5;
+  }
 `;
 
-const PartSpacer = styled.div`
-  flex: 1;
+const TableDamagedPartsNumber = styled.td`
+  font-size: 0.8em;
+  padding: 1em 0;
 `;
-
-const PartDeleteButton = styled(Button)``;
 
 export type PartModalType = {
   isOpen: boolean;
@@ -42,34 +40,10 @@ export type PartModalType = {
   index: number;
 };
 
-//const getNewDamagedPartNumber = () => Date.now().toString();
-
 const DamagedParts = () => {
   const { t } = useTranslation();
   const app = useApplication();
-  //const policyData = useSelector((state: RootState) => state.newClaim.policyData);
   const damagedParts = useSelector((state: RootState) => state.newClaim.damagedParts);
-
-  // const [parts, setParts] = useState<DamagedPartType[]>([
-  //   {
-  //     pdNumber: getNewDamagedPartNumber(),
-  //     subject: {},
-  //     roleType: "",
-  //     managementType: "",
-  //     danni: [
-  //       {
-  //         damageType: "Vehicle",
-  //         details: {
-  //           plate: policyData?.ownerVehicle.plate.number,
-  //           format: policyData?.ownerVehicle.plate.format,
-  //           type: policyData?.ownerVehicle.type,
-  //           collisionPoints: [],
-  //           note: "",
-  //         } as PartDamagedDetailsVehicle,
-  //       },
-  //     ],
-  //   },
-  // ]);
 
   const [partModal, setPartModal] = useState<PartModalType>({
     isOpen: false,
@@ -78,37 +52,7 @@ const DamagedParts = () => {
   });
 
   const handlePartModalOk = () => {
-    //const updatedPart = Object.assign({}, partModal) as PartModalType;
-
     setPartModal({ part: undefined, index: -1, isOpen: false });
-
-    //app.updateDamagedPart(updatedPart.part!, updatedPart.index);
-
-    // const updatedParts = parts.map(
-    //   (p: DamagedPartType, i: number) => (i === partModal.index ? updatedPart.part : p) as DamagedPartType
-    // );
-
-    //setParts(updatedParts);
-  };
-
-  const handleAddDamagedPart = () => {
-    app.addDamagedPart();
-
-    // const updatedParts = [
-    //   ...parts,
-    //   {
-    //     subject: {},
-    //     numero_pd: getNewDamagedPartNumber(),
-    //     data_pd: "",
-    //     danni: [],
-    //   },
-    // ];
-    // setParts(updatedParts);
-  };
-
-  const handleRemoveDamagedPart = (index: number) => {
-    // setParts((prev) => prev.filter((p, i) => i !== index));
-    app.removeDamagedPart(index);
   };
 
   const showPartModal = (index: number) => {
@@ -123,61 +67,39 @@ const DamagedParts = () => {
     setPartModal({ part: undefined, index: -1, isOpen: false });
   };
 
-  // const handleModalPartChange = (type: PartChangeType, val: any) => {
-  //   const updatedPart: DamagedPartType = Object.assign({}, partModal.part);
+  const renderDamagePartRow = (p: DamagedPartType, i: number) => {
+    let subjectDetails = "---";
+    const roleLabel = AllPartRoles.find((r) => r.value === p.roleType)?.label || "";
+    if (p.subject.natural_person) {
+      const { name, lastname } = p.subject.natural_person;
+      subjectDetails = `${name} ${lastname}`;
+    } else if (p.subject.giuridical_person) {
+      subjectDetails = `${p.subject.giuridical_person.business_name}`;
+    }
 
-  //   if (type === "damage_type") {
-  //     updatedPart.danni[val.index].damageType = val.value;
-  //   }
-
-  //   if (type === "collision_point") {
-  //     (updatedPart!.danni[val.index].details as PartDamagedDetailsVehicle).collisionPoints = val.value.sort(
-  //       (a: string, b: string) => (a > b ? 1 : -1)
-  //     );
-  //   }
-
-  //   if (type === "person_damage") {
-  //     (updatedPart!.danni[val.index].details as PartDamagedDetailsPerson).personWoundedPoints = val;
-  //   }
-
-  //   if (type === "role_type") {
-  //     updatedPart.danni![val.index].tipo_ruolo = val.value;
-  //   }
-
-  //   console.log("updatedPart ", updatedPart);
-
-  //   setPartModal({
-  //     isOpen: partModal.isOpen,
-  //     index: partModal.index,
-  //     part: updatedPart,
-  //   } as PartModalType);
-  // };
-
-  const renderDamagedPartResume = (p: DamagedPartType) => {
-    return `N° ${p.pdNumber}`;
+    return (
+      <TableDamagedPartsRow key={i}>
+        <td onClick={() => showPartModal(i)}>{subjectDetails}</td>
+        <td onClick={() => showPartModal(i)}>{roleLabel}</td>
+        <TableDamagedPartsNumber onClick={() => showPartModal(i)}>n° {p.pdNumber}</TableDamagedPartsNumber>
+        <td>
+          {i > 0 && (
+            <Button onClick={() => app.removeDamagedPart(i)} icon={<RiDeleteBinFill />} shape="circle" type="primary" />
+          )}
+        </td>
+      </TableDamagedPartsRow>
+    );
   };
 
   return (
     <>
       <DamagedPartStyled>
         <FormSubTitle>Parite Danno</FormSubTitle>
-        {damagedParts.map((p: DamagedPartType, i: number) => (
-          <PartStyled key={i}>
-            <PartResumeStyled onClick={() => showPartModal(i)}>{renderDamagedPartResume(p)}</PartResumeStyled>
-            <PartSpacer />
-            {i > 0 && (
-              <PartDeleteButton
-                onClick={() => handleRemoveDamagedPart(i)}
-                icon={<RiDeleteBinFill />}
-                shape="circle"
-                type="primary"
-              />
-            )}
-          </PartStyled>
-        ))}
-
+        <TableDamagedParts>
+          {damagedParts.map((p: DamagedPartType, i: number) => renderDamagePartRow(p, i))}
+        </TableDamagedParts>
         <CenteredRow>
-          <Button type="primary" size="small" onClick={handleAddDamagedPart}>
+          <Button type="primary" size="small" onClick={() => app.addDamagedPart()}>
             add partita danno
           </Button>
         </CenteredRow>
@@ -187,25 +109,11 @@ const DamagedParts = () => {
         open={partModal.index >= 0}
         width={900}
         footer={null}
-        // footer={
-        //   <>
-        //     <Popconfirm
-        //       title="Confermi di voler cancellare i dati inseriti?"
-        //       onConfirm={cancelPartModal}
-        //       okText="Si"
-        //       cancelText="No"
-        //     >
-        //       <Button>Cancella</Button>
-        //     </Popconfirm>
-        //     <Button type="primary" onClick={handlePartModalOk}>
-        //       Salva
-        //     </Button>
-        //   </>
-        // }
       >
         {partModal.part && (
           <DamagedPartModalContent
             part={partModal.part}
+            managementType={damagedParts[0].managementType}
             partIndex={partModal.index}
             onCancel={handlePartModalCancel}
             onOk={handlePartModalOk}

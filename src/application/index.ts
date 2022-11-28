@@ -16,11 +16,12 @@ export interface IApplication {
   updatedStepperData: (val: any, field: SteppedChangeDataType) => void;
   updateClaimData: (val: any, field: UpdateNewClaimDataFieldsType) => void;
   updateResponsabilityData: (val: any, fieldName: UpdateNewClaimResponsabilityDataFieldsType) => void;
-  getRoleTypes: (damagedPartIndex: number) => any[];
+  getDamageAvailableRoleTypes: (damagedPartIndex: number) => any[];
   updateDamagedPart: (damagedPart: DamagedPartType, index: number) => void;
   removeDamagedPart: (index: number) => void;
   addDamagedPart: () => void;
-  getAvailableDamageTypes: (index: number, roleType: string) => any[];
+  getAvailableDamageTypes: (index: number, part: DamagedPartType) => any[];
+  damagedPartsRemoveOtherDrivers: () => void;
 }
 
 export default (): IApplication => {
@@ -44,8 +45,8 @@ export default (): IApplication => {
     updateResponsabilityData: (val: any, field: UpdateNewClaimResponsabilityDataFieldsType) => {
       NewClaim.updateResponsabilityData(val, field);
     },
-    getRoleTypes: (damagedPartIndex: number) => {
-      return NewClaim.getRoleTypes(damagedPartIndex);
+    getDamageAvailableRoleTypes: (damagedPartIndex: number) => {
+      return NewClaim.getDamageAvailableRoleTypes(damagedPartIndex);
     },
     updateDamagedPart: (damagedPart: DamagedPartType, index: number) => {
       NewClaim.updateDamagedPart(damagedPart, index);
@@ -56,8 +57,11 @@ export default (): IApplication => {
     addDamagedPart: () => {
       NewClaim.addDamagedPart();
     },
-    getAvailableDamageTypes: (index: number, roleType: string) => {
-      return NewClaim.getAvailableDamageTypes(index, roleType);
+    getAvailableDamageTypes: (index: number, part: DamagedPartType) => {
+      return NewClaim.getAvailableDamageTypes(index, part);
+    },
+    damagedPartsRemoveOtherDrivers: () => {
+      NewClaim.damagedPartsRemoveOtherDrivers();
     },
   };
 };

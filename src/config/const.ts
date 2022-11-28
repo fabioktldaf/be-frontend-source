@@ -1,4 +1,4 @@
-import { NewClaimStepItem } from "../types/new-claim.types";
+import { NewClaimStepItem, SelectPair } from "../types/new-claim.types";
 
 export const defaultLanguage = "it";
 export const languages = ["it", "en", "empty"];
@@ -201,47 +201,73 @@ export const NewClaimSteps: NewClaimStepItem[] = [
   },
 ];
 
-export const OwnerRolesType = [
-  { value: "---", label: "---" },
-  { value: "CP", label: "CP - Conducente proprietario" },
-  { value: "TP", label: "TP - Trasportato proprietario" },
-  {
-    value: "NP",
-    label: "NP - Proprietario non presente sul veicolo",
-  },
+export const PartRoleEmpty: SelectPair = { value: "---", label: "---" };
+export const PartRoleCP: SelectPair = { value: "CP", label: "CP - Conducente proprietario" };
+export const PartRoleTP: SelectPair = { value: "TP", label: "TP - Trasportato proprietario" };
+export const PartRoleNP: SelectPair = { value: "NP", label: "NP - Proprietario non presente sul veicolo" };
+export const PartRoleCN: SelectPair = { value: "CN", label: "CN - Conducente non proprietario" };
+export const PartRoleTN: SelectPair = { value: "TN", label: "TN - Trasportato non proprietario" };
+export const PartRoleCPC: SelectPair = { value: "CPC", label: "CPC - Conducente proprietario controparte" };
+export const PartRoleCNC: SelectPair = { value: "CNC", label: "CNC - Conducente non proprietario controparte" };
+export const PartRoleTPC: SelectPair = { value: "TPC", label: "TPC - Trasportato proprietario controparte" };
+export const PartRoleTNC: SelectPair = { value: "TNC", label: "TNC - Trasportato non proprietario controparte" };
+export const PartRoleNPC: SelectPair = {
+  value: "NPC",
+  label: "NPC - Proprietario non presente sul veicolo controparte",
+};
+export const PartRoleTS: SelectPair = { value: "TS", label: "TS - Terzo passante" };
+export const PartRoleTD: SelectPair = { value: "TD", label: "TD - Terzo Danneggiato" };
+
+export const OwnerRolesType = [PartRoleEmpty, PartRoleCP, PartRoleTP, PartRoleNP];
+
+export const AllPartRoles = [
+  PartRoleEmpty,
+  PartRoleCP,
+  PartRoleTP,
+  PartRoleNP,
+  PartRoleCN,
+  PartRoleTN,
+  PartRoleCPC,
+  PartRoleCNC,
+  PartRoleTPC,
+  PartRoleTNC,
+  PartRoleNPC,
+  PartRoleTS,
+  PartRoleTD,
 ];
 
-export const NotOwnerRolesType = [
-  { value: "---", label: "---" },
-  { value: "CN", label: "CN - Conducente non proprietario" },
-  { value: "TN", label: "TN - Trasportato non proprietario" },
-
-  // {
-  //   value: "CPC",
-  //   label: "CPC - Conducente proprietario controparte",
-  // },
-  // {
-  //   value: "CNC",
-  //   label: "CNC - Conducente non proprietario controparte",
-  // },
-  // {
-  //   value: "TPC",
-  //   label: "TPC - Trasportato proprietario controparte",
-  // },
-  // {
-  //   value: "TNC",
-  //   label: "TNC - Trasportato non proprietario controparte",
-  // },
-  {
-    value: "NPC",
-    label: "NPC - Proprietario non presente sul veicolo",
-  },
-  {
-    value: "TS",
-    label: "TS - Terzo passante",
-  },
-  {
-    value: "TD",
-    label: "TD - Terzo Danneggiato",
-  },
+/* export const NotOwnerRolesType = [
+  PartRoleEmpty,
+  PartRoleCN,
+  PartRoleTN,
+  // PartRoleCPC,
+  // PartRoleCNC,
+  // PartRoleTPC,
+  // PArtRoleTNC,
+  PartRoleTS,
+  PartRoleTD,
 ];
+*/
+
+export const DamageTypeEmpty: SelectPair = { value: "---", label: "---" };
+export const DamageTypeThing: SelectPair = { value: "Thing", label: "Cose" };
+export const DamageTypePerson: SelectPair = { value: "Person", label: "Persone" };
+export const DamageTypeVehicle: SelectPair = { value: "Vehicle", label: "Veicolo" };
+export const DamageTypeLocation: SelectPair = { value: "Location", label: "Ubicazione" };
+export const DamageTypeGeneric: SelectPair = { value: "Generic", label: "Generico" };
+
+// export const DamageTypeCard = [
+//   { value: "---", label: "---" },
+//   { value: "Person", label: "Persone" },
+//   { value: "Thing", label: "Cose" },
+//   { value: "Vehicle", label: "Veicolo" },
+// ];
+
+// export const DamageTypeNoCard = [
+//   { value: "---", label: "---" },
+//   { value: "Person", label: "Persone" },
+//   { value: "Thing", label: "Cose" },
+//   { value: "Vehicle", label: "Veicolo" },
+//   { value: "Location", label: "Ubicazione" },
+//   { value: "Generic", label: "Generico" },
+// ];

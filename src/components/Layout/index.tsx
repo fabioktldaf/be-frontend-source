@@ -17,7 +17,7 @@ import { Col } from "../../style/containers";
 import "antd/dist/antd.css";
 import { FormContainer } from "../../style/form";
 import NewClaimsSteps from "../NewClaim/NewClaimSteps";
-import CheckSendingANIA from "../NewClaim/CheckSendingANIA";
+import CheckSic from "../NewClaim/CheckSic";
 import AdditionalData from "../NewClaim/AdditionalData";
 import Resume from "../NewClaim/Resume";
 import { defaultClaimPolicyData } from "../../config/dummy-data";

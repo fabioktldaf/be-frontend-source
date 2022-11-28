@@ -17,7 +17,7 @@ export type ClaimDataPolicyDataType = {
   ownerVehicle: ClaimDataOwnerVehicleType;
 };
 
-export type ClaimDataSubjetcPersonType = {
+export type SubjetcPersonType = {
   id: number;
   name: string;
   lastname: string;
@@ -25,7 +25,7 @@ export type ClaimDataSubjetcPersonType = {
   province_of_residence: string;
   city_of_residence: string;
 };
-export type ClaimDataSubjetcCompanyType = {
+export type SubjetcCompanyType = {
   id: number;
   business_name: string;
   iva: string;
@@ -34,8 +34,8 @@ export type ClaimDataSubjetcCompanyType = {
 };
 
 export type ClaimDataSubjetcType = {
-  natural_person?: ClaimDataSubjetcPersonType;
-  giuridical_person?: ClaimDataSubjetcCompanyType;
+  natural_person?: SubjetcPersonType;
+  giuridical_person?: SubjetcCompanyType;
 };
 
 export type NewClaimCardQuestion = {
@@ -70,7 +70,14 @@ export type UpdateNewClaimDataFieldsType =
 
 export type UpdateNewClaimResponsabilityDataFieldsType = "barems" | "forced-reason" | "signature-type";
 
-export type PartChangeType = "damage-type" | "collision-point" | "person-damage" | "role-type" | "owner-vehicle-note";
+export type PartChangeType =
+  | "damage-type"
+  | "collision-point"
+  | "person-damage"
+  | "role-type"
+  | "owner-vehicle-note"
+  | "person-note"
+  | "thing-note";
 
 export type PartChangeTypeType = "" | "Person" | "Thing" | "Vehicle" | "Location" | "Generic";
 
@@ -81,7 +88,7 @@ export type SubjectPersonalDataType = {
 export type PartDamagedDetailsPerson = {
   personWoundedPoints: string[];
   personlData?: SubjectPersonalDataType;
-  note: string;
+  note?: string;
 };
 
 export type PartDamagedDetailsVehicle = {
@@ -101,9 +108,14 @@ export type DamagedType = {
   details: PartDamagedDetailsPerson | PartDamagedDetailsVehicle | PartDamagedDetailsThing;
 };
 
+export type PolicySubjetcType = {
+  natural_person?: SubjetcPersonType;
+  giuridical_person?: SubjetcCompanyType;
+};
+
 export type DamagedPartType = {
   pdNumber: string;
-  subject: any; // da anagrafica
+  subject: PolicySubjetcType;
   roleType: string;
   managementType: string;
   damages: DamagedType[];
@@ -170,18 +182,7 @@ export type ResponsabilityDataType = {
   signatureType: string;
 };
 
-export const DamageTypeCard = [
-  { value: "---", label: "---" },
-  { value: "Person", label: "Persone" },
-  { value: "Thing", label: "Cose" },
-  { value: "Vehicle", label: "Veicolo" },
-];
-
-export const DamageTypeNoCard = [
-  { value: "---", label: "---" },
-  { value: "Person", label: "Persone" },
-  { value: "Thing", label: "Cose" },
-  { value: "Vehicle", label: "Veicolo" },
-  { value: "Location", label: "Ubicazione" },
-  { value: "Generic", label: "Generico" },
-];
+export type SelectPair = {
+  value: any;
+  label: string;
+};

@@ -56,6 +56,10 @@ export const newClaimSlice = createSlice({
       state.step = newState.step;
       state.policyData = newState.policyData;
       state.stepperData = newState.stepperData;
+      state.damagedParts = [];
+      state.claimDataCompleted = false;
+      state.responsabilityDataCompleted = false;
+      state.damagedPartsDataCompleted = false;
     },
     setStatus(state, action: PayloadAction<NewClaimStateType>) {
       const status = action.payload;
@@ -110,6 +114,8 @@ export const newClaimSlice = createSlice({
       state.clamiData = action.payload;
     },
     updateTabsCompletedState(state, action: PayloadAction<boolean[]>) {
+      console.log("action.payload ", action.payload);
+
       state.claimDataCompleted = action.payload[0];
       state.responsabilityDataCompleted = action.payload[1];
       state.damagedPartsDataCompleted = action.payload[2];

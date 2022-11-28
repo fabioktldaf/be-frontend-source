@@ -16,14 +16,31 @@ import { defaultClaimPolicyData } from "../config/dummy-data";
 import {
   ClaimType,
   DamagedPartType,
-  DamageTypeCard,
   NewClaimStateType,
   PartDamagedDetailsVehicle,
+  SelectPair,
   SteppedChangeDataType,
   UpdateNewClaimDataFieldsType,
   UpdateNewClaimResponsabilityDataFieldsType,
 } from "../types/new-claim.types";
-import { CardVehicleTypes, NotOwnerRolesType, OwnerRolesType } from "../config/const";
+import {
+  CardVehicleTypes,
+  OwnerRolesType,
+  DamageTypeEmpty,
+  DamageTypeThing,
+  DamageTypePerson,
+  DamageTypeVehicle,
+  DamageTypeLocation,
+  DamageTypeGeneric,
+  PartRoleTPC,
+  PartRoleCP,
+  PartRoleNPC,
+  PartRoleEmpty,
+  PartRoleCN,
+  PartRoleTN,
+  PartRoleTS,
+  PartRoleTD,
+} from "../config/const";
 
 const isCardVehicle = (type: ClaimType) => CardVehicleTypes.indexOf(type) >= 0;
 
@@ -37,7 +54,7 @@ export default {
         index: 0,
         damagedPart: {
           pdNumber: Date.now().toString(),
-          subject: {},
+          subject: defaultClaimPolicyData.owner,
           roleType: "",
           managementType: "---",
           damages: [
@@ -156,20 +173,68 @@ export default {
     store.dispatch(setResponsabilityData(updatedResponsabilityData));
     checkResponsabilityDataCompleted();
   },
-  getRoleTypes: (damagedPartIndex: number) => {
-    return damagedPartIndex === 0 ? OwnerRolesType : NotOwnerRolesType;
+  getDamageAvailableRoleTypes: (damagedPartIndex: number) => {
+    if (damagedPartIndex === 0) return OwnerRolesType;
+
+    const availableRoles = [PartRoleEmpty, PartRoleTN, PartRoleTS, PartRoleTD];
+    const damagedParts = store.getState().newClaim.damagedParts;
+
+    if (damagedParts[0].roleType != PartRoleCP.value) {
+      const hasAlreadyDriver = damagedParts.find((p) => p.damages.find((d) => d.damageType === PartRoleCN.value));
+      if (!hasAlreadyDriver) availableRoles.push(PartRoleCN);
+    }
+
+    return availableRoles;
+  },
+  damagedPartsRemoveOtherDrivers: () => {
+    const parts = store.getState().newClaim.damagedParts;
+    parts.forEach((p, i) => {
+      if (p.roleType === PartRoleCN.value) {
+        const updatedPart = JSON.parse(JSON.stringify(p));
+        updatedPart.roleType = PartRoleEmpty.value;
+        store.dispatch(setDamagedPart({ damagedPart: updatedPart, index: i }));
+      }
+    });
   },
   updateDamagedPart: (damagedPart: DamagedPartType, index: number) => {
     store.dispatch(setDamagedPart({ damagedPart, index }));
+    checkDamagedPartsDataCompleted();
   },
   addDamagedPart: () => {
+    debugger;
     store.dispatch(addDamagedPart());
+    checkDamagedPartsDataCompleted();
   },
   removeDamagedPart: (index: number) => {
+    debugger;
     store.dispatch(removeDamagedPart(index));
+    checkDamagedPartsDataCompleted();
   },
-  getAvailableDamageTypes: (index: number, roleType: string) => {
-    return [...DamageTypeCard];
+  getAvailableDamageTypes: (index: number, part: DamagedPartType) => {
+    let availableDamages: SelectPair[] = [DamageTypeEmpty, DamageTypeThing];
+
+    const damageParts = store.getState().newClaim.damagedParts;
+
+    if (part.roleType === PartRoleCP.value || part.roleType === PartRoleTPC.value) {
+      const alreadyHasPerson = part.damages.find((d) => d.damageType === DamageTypePerson.value);
+      if (!alreadyHasPerson) availableDamages.push(DamageTypePerson);
+    }
+
+    if (part.roleType === PartRoleCN.value) {
+      const alreadyHasPerson = part.damages.find((d) => d.damageType === DamageTypePerson.value);
+      if (!alreadyHasPerson) availableDamages.push(DamageTypePerson);
+    }
+
+    if (
+      part.roleType === PartRoleTN.value ||
+      part.roleType === PartRoleTS.value ||
+      part.roleType === PartRoleTD.value
+    ) {
+      const alreadyHasPerson = part.damages.find((d) => d.damageType === DamageTypePerson.value);
+      if (!alreadyHasPerson) availableDamages.push(DamageTypePerson);
+    }
+
+    return availableDamages;
   },
 };
 
@@ -178,6 +243,7 @@ export default {
 const notEmpty = (s: string | null | undefined) => !!s && s !== "";
 
 const checkClaimDataCompleted = () => {
+  debugger;
   const { clamiData, stepperData, responsabilityDataCompleted, damagedPartsDataCompleted } = store.getState().newClaim;
 
   const claimDataCompleted =
@@ -201,4 +267,31 @@ const checkResponsabilityDataCompleted = () => {
   store.dispatch(
     updateTabsCompletedState([claimDataCompleted, responsabilityDataCompleted, damagedPartsDataCompleted])
   );
+};
+
+const checkDamagedPartsDataCompleted = () => {
+  debugger;
+  const { damagedParts, claimDataCompleted, responsabilityDataCompleted } = store.getState().newClaim;
+
+  /**
+   * controllare anche se ci sono dei danni alla persona non valorizzati....
+   *
+   */
+
+  if (damagedParts.length === 1) {
+    const owner = damagedParts[0];
+    const haseRole = owner.roleType !== PartRoleEmpty.value;
+    const hasVehicleDamage = (owner.damages[0].details as PartDamagedDetailsVehicle).collisionPoints.length > 0;
+    const damagedPartsDataCompleted = haseRole && hasVehicleDamage;
+
+    const newCompleted = [claimDataCompleted, responsabilityDataCompleted, damagedPartsDataCompleted];
+    console.log("newCompleted ", newCompleted);
+    store.dispatch(updateTabsCompletedState(newCompleted));
+  } else {
+    // check other data
+    //
+    //
+    //
+    //
+  }
 };

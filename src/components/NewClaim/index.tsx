@@ -1,5 +1,5 @@
 import React from "react";
-import { Tabs, Tooltip } from "antd";
+import { Button, Tabs, Tooltip } from "antd";
 import { HiOutlineSave } from "react-icons/hi";
 import { VscCopy } from "react-icons/vsc";
 import { AiOutlineCheck } from "react-icons/ai";
@@ -33,7 +33,18 @@ const TabItemLabelContainer = styled.div`
   align-items: center;
 `;
 
-const NewClaim = () => {
+const ButtonSendContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2em;
+`;
+
+interface NewClaimProps {
+  onForward: () => void;
+}
+
+const NewClaim = (props: NewClaimProps) => {
   const policyNumber = useSelector((state: RootState) => state.newClaim.policyData?.policy_number)!;
   const claimDataCompleted = useSelector((state: RootState) => state.newClaim.claimDataCompleted);
   const responsabilityDataCompleted = useSelector((state: RootState) => state.newClaim.responsabilityDataCompleted);
@@ -66,42 +77,51 @@ const NewClaim = () => {
 
   return (
     <MainForm layout="vertical" title={renderTitle} actions={actions}>
-      <Tabs
-        defaultActiveKey="1"
-        tabPosition="left"
-        items={[
-          {
-            label: (
-              <TabItemLabelContainer>
-                {claimDataCompleted && <CheckedIcon />}
-                {"Dati Sinistro"}
-              </TabItemLabelContainer>
-            ),
-            key: "1",
-            children: <ClaimData />,
-          },
-          {
-            label: (
-              <TabItemLabelContainer>
-                {responsabilityDataCompleted && <CheckedIcon />}
-                {"Responsabilità"}
-              </TabItemLabelContainer>
-            ),
-            key: "2",
-            children: <Responsability isCard={true} />,
-          },
-          {
-            label: (
-              <TabItemLabelContainer>
-                {damagedPartsDataCompleted && <CheckedIcon />}
-                {"Partite Danno"}
-              </TabItemLabelContainer>
-            ),
-            key: "3",
-            children: <DamagedParts />,
-          },
-        ]}
-      />
+      <>
+        <Tabs
+          defaultActiveKey="1"
+          tabPosition="left"
+          items={[
+            {
+              label: (
+                <TabItemLabelContainer>
+                  {claimDataCompleted && <CheckedIcon />}
+                  {"Dati Sinistro"}
+                </TabItemLabelContainer>
+              ),
+              key: "1",
+              children: <ClaimData />,
+            },
+            {
+              label: (
+                <TabItemLabelContainer>
+                  {responsabilityDataCompleted && <CheckedIcon />}
+                  {"Responsabilità"}
+                </TabItemLabelContainer>
+              ),
+              key: "2",
+              children: <Responsability isCard={true} />,
+            },
+            {
+              label: (
+                <TabItemLabelContainer>
+                  {damagedPartsDataCompleted && <CheckedIcon />}
+                  {"Partite Danno"}
+                </TabItemLabelContainer>
+              ),
+              key: "3",
+              children: <DamagedParts />,
+            },
+          ]}
+        />
+        {claimDataCompleted && responsabilityDataCompleted && damagedPartsDataCompleted && (
+          <ButtonSendContainer>
+            <Button type="primary" onClick={props.onForward}>
+              Verifica SIC
+            </Button>
+          </ButtonSendContainer>
+        )}
+      </>
     </MainForm>
   );
 };

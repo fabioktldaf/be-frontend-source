@@ -25,12 +25,12 @@ const ResultANIA = styled.div`
   margin-top: 3em;
 `;
 
-interface CheckSendingANIAProps {
+interface CheckSicProps {
   onForward: () => void;
   onBackward: () => void;
 }
 
-const CheckSendingANIA = (props: CheckSendingANIAProps) => {
+const CheckSic = (props: CheckSicProps) => {
   const [verified, setVerified] = useState(false);
 
   useEffect(() => {
@@ -70,4 +70,4 @@ const CheckSendingANIA = (props: CheckSendingANIAProps) => {
   );
 };
 
-export default CheckSendingANIA;
+export default CheckSic;

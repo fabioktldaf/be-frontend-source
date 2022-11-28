@@ -7,11 +7,9 @@ interface AdditionalDataProps {}
 const Resume = (props: AdditionalDataProps) => {
   return (
     <div style={{ display: "flex", alignItems: "center", flexDirection: "column", padding: "2em 0" }}>
-      <div>Good Job!</div>
+      <div>[[riepilogo del sinistro]]</div>
       <br />
-      <div>[[eventuali dati di riepilogo del sinistro]]</div>
-      <br />
-      <div>Vuoi inviare un riepilogo del sinistro via email?</div>
+      <div>Scarica un PDF</div>
     </div>
   );
 };

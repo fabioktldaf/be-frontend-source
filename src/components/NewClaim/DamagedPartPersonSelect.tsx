@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useTranslation } from "react-i18next";
 
@@ -240,43 +240,69 @@ interface DamagedPartPersonProps {
 }
 
 const DamagedPartPersonSelect = (props: DamagedPartPersonProps) => {
+  const { details } = props;
   const { t } = useTranslation();
-  const [selection, setSelection] = useState<PersonDamagesSelection>({
-    front_head: false,
-    front_trunc: false,
-    front_arm_right: false,
-    front_arm_left: false,
-    front_leg_right: false,
-    front_leg_left: false,
-    rear_head: false,
-    rear_trunc: false,
-    rear_arm_right: false,
-    rear_arm_left: false,
-    rear_leg_right: false,
-    rear_leg_left: false,
-  });
+
+  const personWoundedPoints = details?.personWoundedPoints || [];
+  const hasWound = (wound: string) => personWoundedPoints.indexOf(wound) >= 0 || false;
+
+  // const [selection, setSelection] = useState<PersonDamagesSelection>({
+  //   front_head: hasWound("front_head"),
+  //   front_trunc: hasWound("front_trunc"),
+  //   front_arm_right: hasWound("front_arm_right"),
+  //   front_arm_left: hasWound("front_arm_left"),
+  //   front_leg_right: hasWound("front_leg_right"),
+  //   front_leg_left: hasWound("front_leg_left"),
+  //   rear_head: hasWound("rear_head"),
+  //   rear_trunc: hasWound("rear_trunc"),
+  //   rear_arm_right: hasWound("rear_arm_right"),
+  //   rear_arm_left: hasWound("rear_arm_left"),
+  //   rear_leg_right: hasWound("rear_leg_right"),
+  //   rear_leg_left: hasWound("rear_leg_left"),
+  // });
+
+  // useEffect(() => {
+  //   setSelection({
+  //     front_head: hasWound("front_head"),
+  //     front_trunc: hasWound("front_trunc"),
+  //     front_arm_right: hasWound("front_arm_right"),
+  //     front_arm_left: hasWound("front_arm_left"),
+  //     front_leg_right: hasWound("front_leg_right"),
+  //     front_leg_left: hasWound("front_leg_left"),
+  //     rear_head: hasWound("rear_head"),
+  //     rear_trunc: hasWound("rear_trunc"),
+  //     rear_arm_right: hasWound("rear_arm_right"),
+  //     rear_arm_left: hasWound("rear_arm_left"),
+  //     rear_leg_right: hasWound("rear_leg_right"),
+  //     rear_leg_left: hasWound("rear_leg_left"),
+  //   });
+  // }, [personWoundedPoints]);
 
   const handleToggleSelection = (localization: string) => {
-    const newSelection: any = Object.assign({}, selection);
-    newSelection[localization] = !newSelection[localization];
-    setSelection(newSelection);
-    const localizationsLabel: string[] = [];
+    let newSelection: string[] = [...(props.details?.personWoundedPoints || [])];
+    if (newSelection.find((s) => s === localization)) {
+      newSelection = newSelection.filter((s) => s !== localization);
+    } else newSelection.push(localization);
 
-    if (newSelection.front_head) localizationsLabel.push("front_head");
-    if (newSelection.front_trunc) localizationsLabel.push("front_trunc");
-    if (newSelection.front_arm_right) localizationsLabel.push("front_arm_right");
-    if (newSelection.front_arm_left) localizationsLabel.push("front_arm_left");
-    if (newSelection.front_leg_right) localizationsLabel.push("front_leg_righ");
-    if (newSelection.front_leg_left) localizationsLabel.push("front_leg_left");
-    if (newSelection.rear_head) localizationsLabel.push("rear_head");
-    if (newSelection.rear_trunc) localizationsLabel.push("rear_trunc");
-    if (newSelection.rear_arm_right) localizationsLabel.push("rear_arm_right");
-    if (newSelection.rear_arm_left) localizationsLabel.push("rear_arm_left");
-    if (newSelection.rear_leg_right) localizationsLabel.push("rear_leg_right");
-    if (newSelection.rear_leg_left) localizationsLabel.push("rear_leg_left");
+    // newSelection[localization] = !newSelection[localization];
+    // //setSelection(newSelection);
+    // const localizationsLabel: string[] = [];
 
-    console.log("localizationsLabel ", localizationsLabel);
-    props.onChange(localizationsLabel);
+    // if (newSelection.front_head) localizationsLabel.push("front_head");
+    // if (newSelection.front_trunc) localizationsLabel.push("front_trunc");
+    // if (newSelection.front_arm_right) localizationsLabel.push("front_arm_right");
+    // if (newSelection.front_arm_left) localizationsLabel.push("front_arm_left");
+    // if (newSelection.front_leg_right) localizationsLabel.push("front_leg_righ");
+    // if (newSelection.front_leg_left) localizationsLabel.push("front_leg_left");
+    // if (newSelection.rear_head) localizationsLabel.push("rear_head");
+    // if (newSelection.rear_trunc) localizationsLabel.push("rear_trunc");
+    // if (newSelection.rear_arm_right) localizationsLabel.push("rear_arm_right");
+    // if (newSelection.rear_arm_left) localizationsLabel.push("rear_arm_left");
+    // if (newSelection.rear_leg_right) localizationsLabel.push("rear_leg_right");
+    // if (newSelection.rear_leg_left) localizationsLabel.push("rear_leg_left");
+
+    console.log("newSelection ", newSelection);
+    props.onChange(newSelection);
   };
 
   return (
@@ -284,32 +310,32 @@ const DamagedPartPersonSelect = (props: DamagedPartPersonProps) => {
       <PersonContainer>
         <PersonBackground src={front_unselected} />
         <Tooltip title="Testa Frontale" placement="top" mouseLeaveDelay={0}>
-          <FrontHeadStyled selected={selection.front_head} onClick={() => handleToggleSelection("front_head")} />
+          <FrontHeadStyled selected={hasWound("front_head")} onClick={() => handleToggleSelection("front_head")} />
         </Tooltip>
         <Tooltip title="Busto Frontale" placement="top" mouseLeaveDelay={0}>
-          <FrontTruncStyled selected={selection.front_trunc} onClick={() => handleToggleSelection("front_trunc")} />
+          <FrontTruncStyled selected={hasWound("front_trunc")} onClick={() => handleToggleSelection("front_trunc")} />
         </Tooltip>
         <Tooltip title="Braccio Sinistro Frontale" placement="left" mouseLeaveDelay={0}>
           <FrontArmLeftStyled
-            selected={selection.front_arm_left}
+            selected={hasWound("front_arm_left")}
             onClick={() => handleToggleSelection("front_arm_left")}
           />
         </Tooltip>
         <Tooltip title="Braccio Destro Frontale" placement="right" mouseLeaveDelay={0}>
           <FrontArmRightStyled
-            selected={selection.front_arm_right}
+            selected={hasWound("front_arm_right")}
             onClick={() => handleToggleSelection("front_arm_right")}
           />
         </Tooltip>
         <Tooltip title="Gamba Sinistra Frontale" placement="left" mouseLeaveDelay={0}>
           <FrontLegLeftStyled
-            selected={selection.front_leg_left}
+            selected={hasWound("front_leg_left")}
             onClick={() => handleToggleSelection("front_leg_left")}
           />
         </Tooltip>
         <Tooltip title="Gamba Destra Frontale" placement="right" mouseLeaveDelay={0}>
           <FrontLegRightStyled
-            selected={selection.front_leg_right}
+            selected={hasWound("front_leg_right")}
             onClick={() => handleToggleSelection("front_leg_right")}
           />
         </Tooltip>
@@ -317,32 +343,32 @@ const DamagedPartPersonSelect = (props: DamagedPartPersonProps) => {
       <PersonContainer>
         <PersonBackground src={rear_unselected} />
         <Tooltip title="Testa Posteriore" placement="top" mouseLeaveDelay={0}>
-          <RearHeadStyled selected={selection.rear_head} onClick={() => handleToggleSelection("rear_head")} />
+          <RearHeadStyled selected={hasWound("rear_head")} onClick={() => handleToggleSelection("rear_head")} />
         </Tooltip>
         <Tooltip title="Schiena" placement="top" mouseLeaveDelay={0}>
-          <RearTruncStyled selected={selection.rear_trunc} onClick={() => handleToggleSelection("rear_trunc")} />
+          <RearTruncStyled selected={hasWound("rear_trunc")} onClick={() => handleToggleSelection("rear_trunc")} />
         </Tooltip>
         <Tooltip title="Braccio Sinistro Posteriore" placement="left" mouseLeaveDelay={0}>
           <RearArmLeftStyled
-            selected={selection.rear_arm_left}
+            selected={hasWound("rear_arm_left")}
             onClick={() => handleToggleSelection("rear_arm_left")}
           />
         </Tooltip>
         <Tooltip title="Braccio Destro Posteriore" placement="right" mouseLeaveDelay={0}>
           <RearArmRightStyled
-            selected={selection.rear_arm_right}
+            selected={hasWound("rear_arm_right")}
             onClick={() => handleToggleSelection("rear_arm_right")}
           />
         </Tooltip>
         <Tooltip title="Gamba Sinistra Posteriore" placement="left" mouseLeaveDelay={0}>
           <RearLegLeftStyled
-            selected={selection.rear_leg_left}
+            selected={hasWound("rear_leg_left")}
             onClick={() => handleToggleSelection("rear_leg_left")}
           />
         </Tooltip>
         <Tooltip title="Gamba Destra Posteriore" placement="right" mouseLeaveDelay={0}>
           <RearLegRightStyled
-            selected={selection.rear_leg_right}
+            selected={hasWound("rear_leg_right")}
             onClick={() => handleToggleSelection("rear_leg_right")}
           />
         </Tooltip>
