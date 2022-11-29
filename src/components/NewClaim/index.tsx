@@ -10,6 +10,7 @@ import DamagedParts from "./DamagedParts";
 import styled from "styled-components";
 import { RootState } from "../../redux/store";
 import { useSelector } from "react-redux";
+import CounterpartData from "./CounterpartData";
 
 const SaveIconStyled = styled(HiOutlineSave)`
   font-size: 1.2em;
@@ -45,10 +46,17 @@ interface NewClaimProps {
 }
 
 const NewClaim = (props: NewClaimProps) => {
-  const policyNumber = useSelector((state: RootState) => state.newClaim.policyData?.policy_number)!;
-  const claimDataCompleted = useSelector((state: RootState) => state.newClaim.claimDataCompleted);
-  const responsabilityDataCompleted = useSelector((state: RootState) => state.newClaim.responsabilityDataCompleted);
-  const damagedPartsDataCompleted = useSelector((state: RootState) => state.newClaim.damagedPartsDataCompleted);
+  const {
+    policyData,
+    stepperData,
+    claimDataCompleted,
+    responsabilityDataCompleted,
+    damagedPartsDataCompleted,
+    counterpartDataCompleted,
+  } = useSelector((state: RootState) => state.newClaim);
+
+  const policyNumber = policyData?.policy_number || "";
+  const isCard = stepperData.tipoSinistro === "CARD";
 
   const renderTitle = (
     <>
@@ -75,45 +83,62 @@ const NewClaim = (props: NewClaimProps) => {
     },
   ];
 
+  const buildTabs = () => {
+    const items = [
+      {
+        label: (
+          <TabItemLabelContainer>
+            {claimDataCompleted && <CheckedIcon />}
+            {"Dati Sinistro"}
+          </TabItemLabelContainer>
+        ),
+        key: "1",
+        children: <ClaimData />,
+      },
+    ];
+
+    if (isCard) {
+      items.push({
+        label: (
+          <TabItemLabelContainer>
+            {counterpartDataCompleted && <CheckedIcon />}
+            {"Controparte"}
+          </TabItemLabelContainer>
+        ),
+        key: "2",
+        children: <CounterpartData />,
+      });
+
+      items.push({
+        label: (
+          <TabItemLabelContainer>
+            {responsabilityDataCompleted && <CheckedIcon />}
+            {"Responsabilità"}
+          </TabItemLabelContainer>
+        ),
+        key: (items.length + 1).toString(),
+        children: <Responsability isCard={true} />,
+      });
+
+      items.push({
+        label: (
+          <TabItemLabelContainer>
+            {damagedPartsDataCompleted && <CheckedIcon />}
+            {"Partite Danno"}
+          </TabItemLabelContainer>
+        ),
+        key: (items.length + 1).toString(),
+        children: <DamagedParts />,
+      });
+    }
+
+    return items;
+  };
+
   return (
     <MainForm layout="vertical" title={renderTitle} actions={actions}>
       <>
-        <Tabs
-          defaultActiveKey="1"
-          tabPosition="left"
-          items={[
-            {
-              label: (
-                <TabItemLabelContainer>
-                  {claimDataCompleted && <CheckedIcon />}
-                  {"Dati Sinistro"}
-                </TabItemLabelContainer>
-              ),
-              key: "1",
-              children: <ClaimData />,
-            },
-            {
-              label: (
-                <TabItemLabelContainer>
-                  {responsabilityDataCompleted && <CheckedIcon />}
-                  {"Responsabilità"}
-                </TabItemLabelContainer>
-              ),
-              key: "2",
-              children: <Responsability isCard={true} />,
-            },
-            {
-              label: (
-                <TabItemLabelContainer>
-                  {damagedPartsDataCompleted && <CheckedIcon />}
-                  {"Partite Danno"}
-                </TabItemLabelContainer>
-              ),
-              key: "3",
-              children: <DamagedParts />,
-            },
-          ]}
-        />
+        <Tabs defaultActiveKey="1" tabPosition="left" items={buildTabs()} />
         {claimDataCompleted && responsabilityDataCompleted && damagedPartsDataCompleted && (
           <ButtonSendContainer>
             <Button type="primary" onClick={props.onForward}>

@@ -201,7 +201,7 @@ export const NewClaimSteps: NewClaimStepItem[] = [
   },
 ];
 
-export const PartRoleEmpty: SelectPair = { value: "---", label: "---" };
+export const PartRoleEmpty: SelectPair = { value: "", label: "---" };
 export const PartRoleCP: SelectPair = { value: "CP", label: "CP - Conducente proprietario" };
 export const PartRoleTP: SelectPair = { value: "TP", label: "TP - Trasportato proprietario" };
 export const PartRoleNP: SelectPair = { value: "NP", label: "NP - Proprietario non presente sul veicolo" };

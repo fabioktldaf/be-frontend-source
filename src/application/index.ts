@@ -15,6 +15,7 @@ export interface IApplication {
   startNewClaim: () => void;
   updatedStepperData: (val: any, field: SteppedChangeDataType) => void;
   updateClaimData: (val: any, field: UpdateNewClaimDataFieldsType) => void;
+  updateCounterpartData: (val: any, field: UpdateNewClaimDataFieldsType) => void;
   updateResponsabilityData: (val: any, fieldName: UpdateNewClaimResponsabilityDataFieldsType) => void;
   getDamageAvailableRoleTypes: (damagedPartIndex: number) => any[];
   updateDamagedPart: (damagedPart: DamagedPartType, index: number) => void;
@@ -41,6 +42,9 @@ export default (): IApplication => {
     },
     updateClaimData: (val: any, field: UpdateNewClaimDataFieldsType) => {
       NewClaim.updateClaimData(val, field);
+    },
+    updateCounterpartData: (val: any, field: UpdateNewClaimDataFieldsType) => {
+      NewClaim.updateCounterpartData(val, field);
     },
     updateResponsabilityData: (val: any, field: UpdateNewClaimResponsabilityDataFieldsType) => {
       NewClaim.updateResponsabilityData(val, field);

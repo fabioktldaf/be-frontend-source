@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import {
+  ClaimDataCounterpartDataType,
   ClaimDataPolicyDataType,
   ClaimDataType,
   DamagedPartPair,
@@ -20,6 +21,8 @@ export interface NewClaimState {
   responsabilityDataCompleted: boolean;
   damagedParts: DamagedPartType[];
   damagedPartsDataCompleted: boolean;
+  counterpartData?: ClaimDataCounterpartDataType;
+  counterpartDataCompleted: boolean;
 }
 
 const buildInitialState = () => {
@@ -42,6 +45,7 @@ const buildInitialState = () => {
     claimDataCompleted: false,
     responsabilityDataCompleted: false,
     damagedPartsDataCompleted: false,
+    counterpartDataCompleted: false,
   } as NewClaimState;
 };
 
@@ -57,8 +61,12 @@ export const newClaimSlice = createSlice({
       state.policyData = newState.policyData;
       state.stepperData = newState.stepperData;
       state.damagedParts = [];
+      state.responsability = undefined;
+      state.counterpartData = undefined;
       state.claimDataCompleted = false;
+      state.counterpartDataCompleted = false;
       state.responsabilityDataCompleted = false;
+
       state.damagedPartsDataCompleted = false;
     },
     setStatus(state, action: PayloadAction<NewClaimStateType>) {
@@ -113,12 +121,14 @@ export const newClaimSlice = createSlice({
     updateClaimData(state, action: PayloadAction<ClaimDataType>) {
       state.clamiData = action.payload;
     },
+    updateCounterpartData(state, action: PayloadAction<ClaimDataCounterpartDataType>) {
+      state.counterpartData = action.payload;
+    },
     updateTabsCompletedState(state, action: PayloadAction<boolean[]>) {
-      console.log("action.payload ", action.payload);
-
       state.claimDataCompleted = action.payload[0];
-      state.responsabilityDataCompleted = action.payload[1];
-      state.damagedPartsDataCompleted = action.payload[2];
+      state.counterpartDataCompleted = action.payload[1];
+      state.responsabilityDataCompleted = action.payload[2];
+      state.damagedPartsDataCompleted = action.payload[3];
     },
     setOwnerManagementType(state, action: PayloadAction<string>) {
       state.damagedParts[0].managementType = action.payload;
@@ -132,6 +142,7 @@ export const {
   setPolicyData,
   updateStepperData,
   updateClaimData,
+  updateCounterpartData,
   updateTabsCompletedState,
   setResponsabilityData,
   setDamagedPart,

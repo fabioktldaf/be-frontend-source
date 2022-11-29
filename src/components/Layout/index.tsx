@@ -1,27 +1,18 @@
-import React, { ReactComponentElement, useState } from "react";
+import React, { useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import FullSearch from "../SearchPolicy/FullSearch";
 import SearchByFields from "../SearchPolicy/SearchByFields";
 import SearchResults from "../SearchPolicy/SearchResults";
 import PolicyManualInsert from "../PolicyManualInsert";
-import NewClaim from "../NewClaim";
-
 import { Layout } from "antd";
 import { Urls } from "../../config/const";
-
 import Sider from "./Sider";
 import Header from "./Header";
 import styled from "styled-components";
-import { Col } from "../../style/containers";
+import { FormContainer } from "../../style/form";
+import NewClaimPage from "../../pages/new-claim";
 
 import "antd/dist/antd.css";
-import { FormContainer } from "../../style/form";
-import NewClaimsSteps from "../NewClaim/NewClaimSteps";
-import CheckSic from "../NewClaim/CheckSic";
-import AdditionalData from "../NewClaim/AdditionalData";
-import Resume from "../NewClaim/Resume";
-import { defaultClaimPolicyData } from "../../config/dummy-data";
-import NewClaimPage from "../../pages/new-claim";
 
 const LayoutStyled = styled(Layout)`
   height: 100vh;
@@ -42,7 +33,6 @@ type Props = {
 
 const AppLayout: React.FC<Props> = (props: Props) => {
   const { children } = props;
-  const [newClaimCurrentStep, setNewClaimCurrentStep] = useState(0);
 
   return (
     <LayoutStyled>

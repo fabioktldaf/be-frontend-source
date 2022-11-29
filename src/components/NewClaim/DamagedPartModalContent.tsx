@@ -186,6 +186,7 @@ const DamagedPartModalContent = (props: DamagedPartModalContentProps) => {
           </Col>
           <Col style={{ flex: 1, alignItems: "center", display: "flex", padding: "2em 0" }}>
             <CarImpactSelector
+              areas={(part.damages[0].details as PartDamagedDetailsVehicle).collisionPoints}
               onChange={(areas) => handleModalPartChange("collision-point", { value: areas, index: 0 })}
             />
           </Col>
@@ -354,7 +355,7 @@ const DamagedPartModalContent = (props: DamagedPartModalContentProps) => {
         </Row>
         <Row>
           <FormInput label="Tipo Gestione" name="tipo_gestione" tooltip="Tipo Gestione">
-            {props.managementType}
+            {part.managementType}
           </FormInput>
         </Row>
         <HrStyled />

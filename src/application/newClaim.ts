@@ -11,12 +11,14 @@ import {
   removeDamagedPart,
   addDamagedPart,
   setOwnerManagementType,
+  updateCounterpartData,
 } from "../redux/features/newClaimSlice";
 import { defaultClaimPolicyData } from "../config/dummy-data";
 import {
   ClaimType,
   DamagedPartType,
   NewClaimStateType,
+  PartDamagedDetailsPerson,
   PartDamagedDetailsVehicle,
   SelectPair,
   SteppedChangeDataType,
@@ -119,26 +121,16 @@ export default {
     checkClaimDataCompleted();
   },
   updateClaimData: (val: any, fieldName: UpdateNewClaimDataFieldsType) => {
-    const updatedClaimData = Object.assign({}, store.getState().newClaim.clamiData);
-
-    if (fieldName === "receipt-date") {
-      updatedClaimData.receiptDate = val;
-    } else if (fieldName === "occurrence-date") {
-      updatedClaimData.occurrenceDate = val;
-    } else if (fieldName === "occurrence-time") {
-      updatedClaimData.occurrenceTime = val;
-    } else if (fieldName === "occurrence-place") {
-      updatedClaimData.occurrencePlace = val;
-    } else if (fieldName === "police-intervention") {
-      updatedClaimData.policeIntervention = val;
-    } else if (fieldName === "witnesses") {
-      updatedClaimData.witnesses = val;
-    } else if (fieldName === "note") {
-      updatedClaimData.note = val;
-    }
+    const updatedClaimData = Object.assign({}, store.getState().newClaim.clamiData, { [fieldName]: val });
 
     store.dispatch(updateClaimData(updatedClaimData));
     checkClaimDataCompleted();
+  },
+  updateCounterpartData: (val: any, fieldName: UpdateNewClaimDataFieldsType) => {
+    const updatedCounterpartData = Object.assign({}, store.getState().newClaim.counterpartData, { [fieldName]: val });
+
+    store.dispatch(updateCounterpartData(updatedCounterpartData));
+    checkCounterpatDataCompleted();
   },
   updateResponsabilityData: (val: any, fieldName: UpdateNewClaimResponsabilityDataFieldsType) => {
     const updatedResponsabilityData = Object.assign({}, store.getState().newClaim.responsability);
@@ -201,12 +193,10 @@ export default {
     checkDamagedPartsDataCompleted();
   },
   addDamagedPart: () => {
-    debugger;
     store.dispatch(addDamagedPart());
     checkDamagedPartsDataCompleted();
   },
   removeDamagedPart: (index: number) => {
-    debugger;
     store.dispatch(removeDamagedPart(index));
     checkDamagedPartsDataCompleted();
   },
@@ -243,8 +233,8 @@ export default {
 const notEmpty = (s: string | null | undefined) => !!s && s !== "";
 
 const checkClaimDataCompleted = () => {
-  debugger;
-  const { clamiData, stepperData, responsabilityDataCompleted, damagedPartsDataCompleted } = store.getState().newClaim;
+  const { clamiData, stepperData, counterpartDataCompleted, responsabilityDataCompleted, damagedPartsDataCompleted } =
+    store.getState().newClaim;
 
   const claimDataCompleted =
     stepperData.tipoSinistro === "CARD" &&
@@ -254,44 +244,82 @@ const checkClaimDataCompleted = () => {
     notEmpty(clamiData?.occurrencePlace);
 
   store.dispatch(
-    updateTabsCompletedState([claimDataCompleted, responsabilityDataCompleted, damagedPartsDataCompleted])
+    updateTabsCompletedState([
+      claimDataCompleted,
+      counterpartDataCompleted,
+      responsabilityDataCompleted,
+      damagedPartsDataCompleted,
+    ])
+  );
+};
+
+const checkCounterpatDataCompleted = () => {
+  const { counterpartData, claimDataCompleted, responsabilityDataCompleted, damagedPartsDataCompleted } =
+    store.getState().newClaim;
+
+  const ownerCompleted = counterpartData?.isOwnerNaturalPerson
+    ? notEmpty(counterpartData.ownerName) && notEmpty(counterpartData.ownerLastname)
+    : notEmpty(counterpartData?.ownerBusinessName);
+
+  const counterpartDataCompleted =
+    ownerCompleted &&
+    notEmpty(counterpartData?.plate) &&
+    counterpartData?.insuranceCode !== "---" &&
+    notEmpty(counterpartData?.insuranceCode);
+
+  store.dispatch(
+    updateTabsCompletedState([
+      claimDataCompleted,
+      counterpartDataCompleted,
+      responsabilityDataCompleted,
+      damagedPartsDataCompleted,
+    ])
   );
 };
 
 const checkResponsabilityDataCompleted = () => {
-  const { responsability, claimDataCompleted, damagedPartsDataCompleted } = store.getState().newClaim;
+  const { responsability, claimDataCompleted, counterpartDataCompleted, damagedPartsDataCompleted } =
+    store.getState().newClaim;
 
   const responsabilityDataCompleted =
     (!!responsability?.barems.result && ["1", "2"].indexOf(responsability?.signatureType) >= 0) || false;
 
   store.dispatch(
-    updateTabsCompletedState([claimDataCompleted, responsabilityDataCompleted, damagedPartsDataCompleted])
+    updateTabsCompletedState([
+      claimDataCompleted,
+      counterpartDataCompleted,
+      responsabilityDataCompleted,
+      damagedPartsDataCompleted,
+    ])
   );
 };
 
 const checkDamagedPartsDataCompleted = () => {
-  debugger;
-  const { damagedParts, claimDataCompleted, responsabilityDataCompleted } = store.getState().newClaim;
+  const { damagedParts, claimDataCompleted, counterpartDataCompleted, responsabilityDataCompleted } =
+    store.getState().newClaim;
+  const ownerVehicleHasDamage =
+    (damagedParts[0].damages[0].details as PartDamagedDetailsVehicle).collisionPoints.length > 0;
 
-  /**
-   * controllare anche se ci sono dei danni alla persona non valorizzati....
-   *
-   */
+  let partWithoutRole = false;
+  let personsWithoutDamages = false;
+  damagedParts.forEach(({ damages, roleType }) => {
+    if (roleType === PartRoleEmpty.value) {
+      partWithoutRole = true;
+    }
+    damages.forEach(({ details, damageType }) => {
+      if (damageType === "Person" && !((details as PartDamagedDetailsPerson).personWoundedPoints?.length >= 1)) {
+        personsWithoutDamages = true;
+      }
+    });
+  });
 
-  if (damagedParts.length === 1) {
-    const owner = damagedParts[0];
-    const haseRole = owner.roleType !== PartRoleEmpty.value;
-    const hasVehicleDamage = (owner.damages[0].details as PartDamagedDetailsVehicle).collisionPoints.length > 0;
-    const damagedPartsDataCompleted = haseRole && hasVehicleDamage;
+  const damagedPartsDataCompleted = ownerVehicleHasDamage && !personsWithoutDamages && !partWithoutRole;
+  const newCompleted = [
+    claimDataCompleted,
+    counterpartDataCompleted,
+    responsabilityDataCompleted,
+    damagedPartsDataCompleted,
+  ];
 
-    const newCompleted = [claimDataCompleted, responsabilityDataCompleted, damagedPartsDataCompleted];
-    console.log("newCompleted ", newCompleted);
-    store.dispatch(updateTabsCompletedState(newCompleted));
-  } else {
-    // check other data
-    //
-    //
-    //
-    //
-  }
+  store.dispatch(updateTabsCompletedState(newCompleted));
 };

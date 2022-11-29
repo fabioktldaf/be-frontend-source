@@ -47,8 +47,6 @@ export type NewClaimCardQuestion = {
 };
 
 export type ClaimDataType = {
-  //cardQuestions: NewClaimCardQuestion;
-  //isCard: boolean;
   registrationDate: string;
   receiptDate: string;
   occurrenceDate: string;
@@ -59,14 +57,24 @@ export type ClaimDataType = {
   note: string;
 };
 
+export type PersonType = "Fisica" | "Giuridica";
+
 export type UpdateNewClaimDataFieldsType =
-  | "receipt-date"
-  | "occurrence-date"
-  | "occurrence-time"
-  | "occurrence-place"
-  | "police-intervention"
+  | "receiptDate"
+  | "occurrenceDate"
+  | "occurrenceTime"
+  | "occurrencePlace"
+  | "policeIntervention"
   | "witnesses"
-  | "note";
+  | "note"
+  | "isOwnerNaturalPerson"
+  | "ownerName"
+  | "ownerLastname"
+  | "ownerBusinessName"
+  | "driverName"
+  | "driverLastname"
+  | "plate"
+  | "insuranceCode";
 
 export type UpdateNewClaimResponsabilityDataFieldsType = "barems" | "forced-reason" | "signature-type";
 
@@ -77,7 +85,8 @@ export type PartChangeType =
   | "role-type"
   | "owner-vehicle-note"
   | "person-note"
-  | "thing-note";
+  | "thing-note"
+  | "management-type";
 
 export type PartChangeTypeType = "" | "Person" | "Thing" | "Vehicle" | "Location" | "Generic";
 
@@ -180,6 +189,17 @@ export type ResponsabilityDataType = {
   responsabilityPercentage: string;
   responsabilityPercentageFixed: boolean;
   signatureType: string;
+};
+
+export type ClaimDataCounterpartDataType = {
+  isOwnerNaturalPerson: boolean;
+  ownerName: string;
+  ownerLastname: string;
+  ownerBusinessName: string;
+  driverName: string;
+  driverLastname: string;
+  plate: string;
+  insuranceCode: string;
 };
 
 export type SelectPair = {

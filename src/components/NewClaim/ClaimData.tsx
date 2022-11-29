@@ -1,14 +1,15 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import { Input, Switch, Collapse } from "antd";
-import { Row, RowSpacer } from "../../style/containers";
-import { FormInput, FormDatePicker, FormTextArea, FormTimePicker } from "../../style/form";
+import { Input, Switch, Collapse, Select } from "antd";
+import { Hidden, Row, RowSpacer } from "../../style/containers";
+import { FormInput, FormDatePicker, FormTextArea, FormTimePicker, FormSubTitle } from "../../style/form";
 import CardData from "./CardData";
 import moment from "moment";
 import { RootState } from "../../redux/store";
 import { useSelector } from "react-redux";
 import useApplication from "../../hooks/useApplication";
+import { insuranceCodes } from "../../config/dummy-data";
 
 const ClaimDataStyled = styled.div``;
 
@@ -91,8 +92,27 @@ const ClaimData = () => {
 
     const startDate = moment(policyData?.effect_date, "DD/MM/YYYY");
     const endDate = moment(policyData?.expiration_date, "DD/MM/YYYY");
+    const occurrenceDate = moment(claimData.occurrenceDate);
+    const receiptDate = moment(claimData.receiptDate);
 
-    return moment(claimData.occurrenceDate).isBetween(startDate, endDate);
+    if (!occurrenceDate.isBetween(startDate, endDate))
+      return (
+        <DateWarningMessage>
+          La data di accadimento è fuori copertura
+          <span style={{ fontSize: "0.9em", marginLeft: "1em" }}>
+            (DAL {policyData?.effect_date}
+            {` AL `}
+            {policyData?.expiration_date})
+          </span>
+        </DateWarningMessage>
+      );
+
+    if (occurrenceDate.isAfter(receiptDate))
+      return (
+        <DateWarningMessage>La data di accadimento è successiva al pervenimento della denuncia</DateWarningMessage>
+      );
+
+    return <></>;
   };
 
   const renderDetailsGroupDataField = (field: any, i: number) => (
@@ -206,7 +226,7 @@ const ClaimData = () => {
         >
           <FormDatePicker
             placeholder="data di pervenimento della denuncia ..."
-            onChange={(val) => app.updateClaimData(val?.toString(), "receipt-date")}
+            onChange={(val) => app.updateClaimData(val?.toString(), "receiptDate")}
           />
         </FormInput>
       </Row>
@@ -219,7 +239,7 @@ const ClaimData = () => {
         >
           <FormDatePicker
             placeholder="data di accadimento ..."
-            onChange={(val) => app.updateClaimData(val?.toString(), "occurrence-date")}
+            onChange={(val) => app.updateClaimData(val?.toString(), "occurrenceDate")}
           />
         </FormInput>
         <RowSpacer />
@@ -232,21 +252,12 @@ const ClaimData = () => {
           <FormTimePicker
             placeholder="ora di accadimento ..."
             format="HH:mm"
-            onChange={(val) => app.updateClaimData(val?.toString(), "occurrence-time")}
+            onChange={(val) => app.updateClaimData(val?.toString(), "occurrenceTime")}
           />
         </FormInput>
       </Row>
 
-      {!checkDataAccadimento() && (
-        <DateWarningMessage>
-          La data di accadimento è fuori copertura
-          <span style={{ fontSize: "0.9em", marginLeft: "1em" }}>
-            (DAL {policyData?.effect_date}
-            {` AL `}
-            {policyData?.expiration_date})
-          </span>
-        </DateWarningMessage>
-      )}
+      {checkDataAccadimento()}
 
       <Row>
         <FormInput
@@ -259,7 +270,7 @@ const ClaimData = () => {
         >
           <Input
             placeholder="luogo del sinistro ..."
-            onChange={(val) => app.updateClaimData(val.currentTarget.value, "occurrence-place")}
+            onChange={(val) => app.updateClaimData(val.currentTarget.value, "occurrencePlace")}
           />
         </FormInput>
       </Row>
@@ -272,7 +283,7 @@ const ClaimData = () => {
           <Switch
             checkedChildren={"Si"}
             unCheckedChildren={"No"}
-            onChange={(val) => app.updateClaimData(val, "police-intervention")}
+            onChange={(val) => app.updateClaimData(val, "policeIntervention")}
           />
         </FormInput>
         <RowSpacer />
@@ -285,16 +296,18 @@ const ClaimData = () => {
         </FormInput>
       </Row>
       {stepperData?.tipoSinistro === "CARD" && (
-        <Row>
-          <FormInput label="Nota Ania" name="nota_ania" tooltip="Inserisci una nota utente">
-            <FormTextArea
-              placeholder="nota utente ..."
-              rows={1}
-              maxLength={100}
-              onChange={(val) => app.updateClaimData(val, "note")}
-            />
-          </FormInput>
-        </Row>
+        <>
+          <Row>
+            <FormInput label="Nota Ania" name="nota_ania" tooltip="Inserisci una nota utente">
+              <FormTextArea
+                placeholder="nota utente ..."
+                rows={1}
+                maxLength={100}
+                onChange={(val) => app.updateClaimData(val, "note")}
+              />
+            </FormInput>
+          </Row>
+        </>
       )}
     </ClaimDataStyled>
   );
