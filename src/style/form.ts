@@ -2,6 +2,12 @@ import React from "react";
 import styled from "styled-components";
 import { Form, DatePicker, Button, Input, TimePicker } from "antd";
 
+export const FormRow = styled.div`
+  display: flex;
+  flex-direction: row;
+  margin: 0.5em 0;
+`;
+
 export const FormContainer = styled(Form)`
   width: 900px;
   background-color: white;

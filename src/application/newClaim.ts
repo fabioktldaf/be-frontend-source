@@ -10,7 +10,6 @@ import {
   setDamagedPart,
   removeDamagedPart,
   addDamagedPart,
-  setOwnerManagementType,
   updateCounterpartData,
 } from "../redux/features/newClaimSlice";
 import { defaultClaimPolicyData } from "../config/dummy-data";
@@ -31,9 +30,6 @@ import {
   DamageTypeEmpty,
   DamageTypeThing,
   DamageTypePerson,
-  DamageTypeVehicle,
-  DamageTypeLocation,
-  DamageTypeGeneric,
   PartRoleTPC,
   PartRoleCP,
   PartRoleNPC,
@@ -58,7 +54,6 @@ export default {
           pdNumber: Date.now().toString(),
           subject: defaultClaimPolicyData.owner,
           roleType: "",
-          managementType: "---",
           damages: [
             {
               damageType: "Vehicle",
@@ -133,8 +128,9 @@ export default {
     checkCounterpatDataCompleted();
   },
   updateResponsabilityData: (val: any, fieldName: UpdateNewClaimResponsabilityDataFieldsType) => {
-    const updatedResponsabilityData = Object.assign({}, store.getState().newClaim.responsability);
-    let OwnerManagementType = "CG";
+    const { responsability, damagedParts } = store.getState().newClaim;
+    const updatedResponsabilityData = Object.assign({}, responsability);
+    let OwnerManagementType = "3";
 
     if (fieldName === "barems") {
       updatedResponsabilityData.barems = Object.assign({}, val);
@@ -144,25 +140,34 @@ export default {
       updatedResponsabilityData.signatureType = val;
     }
 
-    if (updatedResponsabilityData.barems.result === "T") {
+    if (updatedResponsabilityData.barems.result === "1") {
       if (["1", "2"].indexOf(updatedResponsabilityData.forcedReason) >= 0) {
         updatedResponsabilityData.responsabilityType = "2";
         updatedResponsabilityData.responsabilityPercentage = "50%";
+        OwnerManagementType = "2";
       } else {
         updatedResponsabilityData.responsabilityType = "1";
         updatedResponsabilityData.responsabilityPercentage = "100%";
-        OwnerManagementType = "CD";
       }
-    } else if (updatedResponsabilityData.barems.result === "C") {
+    } else if (updatedResponsabilityData.barems.result === "2") {
       updatedResponsabilityData.responsabilityType = "2";
       updatedResponsabilityData.responsabilityPercentage = "50%";
-    } else if (updatedResponsabilityData.barems.result === "R") {
+    } else if (updatedResponsabilityData.barems.result === "3") {
       updatedResponsabilityData.responsabilityType = "3";
       updatedResponsabilityData.responsabilityPercentage = "0%";
     }
 
-    store.dispatch(setOwnerManagementType(OwnerManagementType));
     store.dispatch(setResponsabilityData(updatedResponsabilityData));
+
+    if (responsability?.responsabilityType !== OwnerManagementType && damagedParts.length > 1) {
+      damagedParts.forEach((p, i) => {
+        if (i === 0) return;
+        const updatedDamagedPart = JSON.parse(JSON.stringify(p));
+        updatedDamagedPart.managementType = OwnerManagementType;
+        store.dispatch(setDamagedPart({ damagedPart: updatedDamagedPart, index: i }));
+      });
+    }
+
     checkResponsabilityDataCompleted();
   },
   getDamageAvailableRoleTypes: (damagedPartIndex: number) => {
@@ -193,7 +198,9 @@ export default {
     checkDamagedPartsDataCompleted();
   },
   addDamagedPart: () => {
-    store.dispatch(addDamagedPart());
+    const ownerManagementPart = store.getState().newClaim.responsability?.responsabilityType || "---";
+
+    store.dispatch(addDamagedPart(ownerManagementPart));
     checkDamagedPartsDataCompleted();
   },
   removeDamagedPart: (index: number) => {
@@ -302,10 +309,15 @@ const checkDamagedPartsDataCompleted = () => {
 
   let partWithoutRole = false;
   let personsWithoutDamages = false;
+  let damagedPartWithoutDamages = false;
+
   damagedParts.forEach(({ damages, roleType }) => {
+    if (damages.length < 1) damagedPartWithoutDamages = true;
+
     if (roleType === PartRoleEmpty.value) {
       partWithoutRole = true;
     }
+
     damages.forEach(({ details, damageType }) => {
       if (damageType === "Person" && !((details as PartDamagedDetailsPerson).personWoundedPoints?.length >= 1)) {
         personsWithoutDamages = true;
@@ -313,7 +325,8 @@ const checkDamagedPartsDataCompleted = () => {
     });
   });
 
-  const damagedPartsDataCompleted = ownerVehicleHasDamage && !personsWithoutDamages && !partWithoutRole;
+  const damagedPartsDataCompleted =
+    ownerVehicleHasDamage && !damagedPartWithoutDamages && !personsWithoutDamages && !partWithoutRole;
   const newCompleted = [
     claimDataCompleted,
     counterpartDataCompleted,

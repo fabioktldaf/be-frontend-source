@@ -1,17 +1,20 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import { Input, Switch, Collapse, Select } from "antd";
-import { Hidden, Row, RowSpacer } from "../../style/containers";
-import { FormInput, FormDatePicker, FormTextArea, FormTimePicker, FormSubTitle } from "../../style/form";
+import { Switch, Collapse } from "antd";
+import { RowSpacer } from "../../style/containers";
+import { FormRow, FormInput, FormTextArea } from "../../style/form";
 import CardData from "./CardData";
 import moment from "moment";
 import { RootState } from "../../redux/store";
 import { useSelector } from "react-redux";
 import useApplication from "../../hooks/useApplication";
-import { insuranceCodes } from "../../config/dummy-data";
+import { DatePickerStyled, InputTextStyled, TimePickerStyled } from "../../style/Input";
 
-const ClaimDataStyled = styled.div``;
+const ClaimDataStyled = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
 
 const CollapseStyled = styled(Collapse)`
   margin-bottom: 3em;
@@ -207,74 +210,60 @@ const ClaimData = () => {
           </CollapsePanelContentStyled>
         </Collapse.Panel>
       </CollapseStyled>
-
       <CardData />
 
       <HrStyled />
-
-      <Row>
+      <FormRow>
         <FormInput label="Data Registrazione" name="data_registrazione">
           {moment().format("DD/MM/YYYY")}
         </FormInput>
         <RowSpacer />
 
-        <FormInput
+        <DatePickerStyled
           label="Data Pervenimento Denuncia"
-          name="data_pervenimento_denuncia"
           tooltip="Seleziona la data di pervenimento della denuncia"
           rules={[{ required: true, message: "La data di pervenimento della denuncia è obbligatoria" }]}
-        >
-          <FormDatePicker
-            placeholder="data di pervenimento della denuncia ..."
-            onChange={(val) => app.updateClaimData(val?.toString(), "receiptDate")}
-          />
-        </FormInput>
-      </Row>
-      <Row>
-        <FormInput
+          placeholder="data pervenimento denuncia ..."
+          onChange={(val) => app.updateClaimData(val, "receiptDate")}
+          value={claimData?.receiptDate}
+          format={"DD/MM/YYYY"}
+        />
+      </FormRow>
+      <FormRow>
+        <DatePickerStyled
           label="Data Accadimento"
-          name="data_accadimento"
-          tooltip="Seleziona la data di accadimento..."
+          tooltip="Seleziona la data di Accadimento"
           rules={[{ required: true, message: "La data di accadimento è obbligatoria" }]}
-        >
-          <FormDatePicker
-            placeholder="data di accadimento ..."
-            onChange={(val) => app.updateClaimData(val?.toString(), "occurrenceDate")}
-          />
-        </FormInput>
+          placeholder="data di accadimento ..."
+          onChange={(val) => app.updateClaimData(val, "occurrenceDate")}
+          value={claimData?.occurrenceDate}
+          format={"DD/MM/YYYY"}
+        />
         <RowSpacer />
-        <FormInput
+        <TimePickerStyled
           label="Ora Accadimento"
-          name="ora_accadimento"
           tooltip="Seleziona l'ora di accadimento..."
           rules={[{ required: true, message: "L'ora di accadimento è obbligatoria" }]}
-        >
-          <FormTimePicker
-            placeholder="ora di accadimento ..."
-            format="HH:mm"
-            onChange={(val) => app.updateClaimData(val?.toString(), "occurrenceTime")}
-          />
-        </FormInput>
-      </Row>
-
+          placeholder="ora di accadimento ..."
+          format="HH:mm"
+          onChange={(val: string) => app.updateClaimData(val, "occurrenceTime")}
+          value={claimData?.occurrenceTime}
+        />
+      </FormRow>
       {checkDataAccadimento()}
-
-      <Row>
-        <FormInput
+      <FormRow>
+        <InputTextStyled
           label="Luogo Accadimento Sinistro"
-          name="luogo_accadimento_sinistro"
           tooltip="Inserisci il luogo di accadimento del sinistro"
           rules={[
             { required: stepperData?.tipoSinistro === "CARD", message: "Il luogo di accadimento è obbligatorio" },
           ]}
-        >
-          <Input
-            placeholder="luogo del sinistro ..."
-            onChange={(val) => app.updateClaimData(val.currentTarget.value, "occurrencePlace")}
-          />
-        </FormInput>
-      </Row>
-      <Row>
+          placeholder="luogo del sinistro ..."
+          onChange={(txt) => app.updateClaimData(txt, "occurrencePlace")}
+          value={claimData?.occurrencePlace}
+        />
+      </FormRow>
+      <FormRow>
         <FormInput
           label="Intervento Forze dell'Ordine"
           name="intervento_forze_ordine"
@@ -284,6 +273,7 @@ const ClaimData = () => {
             checkedChildren={"Si"}
             unCheckedChildren={"No"}
             onChange={(val) => app.updateClaimData(val, "policeIntervention")}
+            checked={claimData?.policeIntervention}
           />
         </FormInput>
         <RowSpacer />
@@ -292,12 +282,13 @@ const ClaimData = () => {
             checkedChildren={"Si"}
             unCheckedChildren={"No"}
             onChange={(val) => app.updateClaimData(val, "witnesses")}
+            checked={claimData?.witnesses}
           />
         </FormInput>
-      </Row>
+      </FormRow>
       {stepperData?.tipoSinistro === "CARD" && (
         <>
-          <Row>
+          <FormRow>
             <FormInput label="Nota Ania" name="nota_ania" tooltip="Inserisci una nota utente">
               <FormTextArea
                 placeholder="nota utente ..."
@@ -306,7 +297,7 @@ const ClaimData = () => {
                 onChange={(val) => app.updateClaimData(val, "note")}
               />
             </FormInput>
-          </Row>
+          </FormRow>
         </>
       )}
     </ClaimDataStyled>

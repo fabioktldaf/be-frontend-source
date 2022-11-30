@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { Form, Input, Button, Select, Modal, Divider } from "antd";
-import { Col, Row, RowSpacer } from "../../style/containers";
-import { FormSubTitle, FormInput, FormDatePicker } from "../../style/form";
+import { Col, Hidden, Row, RowSpacer } from "../../style/containers";
+import { FormSubTitle, FormInput, FormDatePicker, FormRow } from "../../style/form";
 import { useTranslation } from "react-i18next";
-import { Barems } from "../../config/const";
+import { Barems, BaremsToManagement, BaremsToResponsability, Responsabilities } from "../../config/const";
 import useApplication from "../../hooks/useApplication";
 import { BaremsResultType } from "../../types/new-claim.types";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
+import { SelectStyled } from "../../style/Input";
 
 const ResponsabilityStyled = styled.div``;
 
@@ -75,20 +76,6 @@ const BaremModalFooterButtons = styled.div`
   justify-content: flex-end;
 `;
 
-const ResponsabilityTypes = {
-  noCard: [
-    { value: "---", label: "---" },
-    { value: "4", label: "Passivo" },
-    { value: "5", label: "Attivo" },
-  ],
-  card: [
-    { value: "---", label: "---" },
-    { value: "1", label: "Debitore" },
-    { value: "2", label: "Concorsuale" },
-    { value: "3", label: "Gestionario" },
-  ],
-};
-
 const baremsArray = () => Array.from(Array(18).keys()).map((i) => 17 - i);
 
 interface ResponsabilityProps {
@@ -114,26 +101,16 @@ const Responsability = (props: ResponsabilityProps) => {
 
   const { forcedReason, responsabilityType, signatureType, responsabilityPercentage } = responsabilityData || {};
 
-  // const [baremModalOpen, setBaremModalOpen] = useState(false);
-  // const [baremVehicleA, setBaremVehicleA] = useState<number | undefined>();
-  // const [baremVehicleB, setBaremVehicleB] = useState<number | undefined>();
-  // const [baremResult, setBaremResult] = useState("NC");
-  //const [motivoForzatura, setMotivoForzatura] = useState("");
-  //const [tipoResponsabilità, setTipoResponsabilità] = useState("---");
-
-  // useEffect(() => {
-  //   console.log("motivo forzatura ", motivoForzatura);
-  //   if (motivoForzatura === "---") setTipoResponsabilità("1");
-  //   else setTipoResponsabilità("2");
-  // }, [motivoForzatura]);
-
   const handleBaremChange = (vehicle: "vehicleA" | "vehicleB", value: number) => {
     const newBaremModal = Object.assign({}, baremModal);
 
     newBaremModal[vehicle] = value;
 
-    if (newBaremModal.vehicleA && newBaremModal.vehicleB)
-      newBaremModal.result = Barems[newBaremModal.vehicleA][newBaremModal.vehicleB];
+    if (newBaremModal.vehicleA && newBaremModal.vehicleB) {
+      const result = Barems[newBaremModal.vehicleA][newBaremModal.vehicleB] as string;
+      const responsability = BaremsToResponsability[result];
+      newBaremModal.result = responsability;
+    }
 
     setBaremModal(newBaremModal);
   };
@@ -165,34 +142,10 @@ const Responsability = (props: ResponsabilityProps) => {
     app.updateResponsabilityData(barems, "barems");
   };
 
-  // const handleChangeVehicleValue = (vehicle: "A" | "B", val: number) => {
-  //   let bRes: string | null = null;
-
-  //   if (vehicle === "A") {
-  //     setBaremVehicleA(val);
-  //     if (baremVehicleB) {
-  //       bRes = Barems[val][baremVehicleB];
-  //     }
-  //   }
-  //   if (vehicle === "B") {
-  //     setBaremVehicleB(val);
-  //     if (baremVehicleA) {
-  //       bRes = Barems[baremVehicleA][val];
-  //     }
-  //   }
-
-  //   if (bRes) {
-  //     setBaremResult(bRes);
-  //     const newTipoResp = bRes === "T" ? "1" : bRes === "C" ? "2" : bRes === "R" ? "3" : "";
-  //     console.log("tipo responsabilità ", newTipoResp);
-  //     setTipoResponsabilità(newTipoResp);
-  //   }
-  // };
-
   return (
     <ResponsabilityStyled>
       <FormSubTitle>Ripartizione Responsabilità (Barèmes)</FormSubTitle>
-      <Row>
+      <FormRow>
         <FormInput
           label="Caso Circostanza"
           name="caso_circostanza_mittente"
@@ -201,18 +154,13 @@ const Responsability = (props: ResponsabilityProps) => {
         >
           <BaremContainer>
             <BaremOpenModal onClick={handleShowBaremsModal}>
-              {!baremModal.result ? (
-                "Seleziona"
-              ) : (
-                <>
-                  {baremModal.result} ({t(`barem_result_${baremModal.result}_label`)})
-                </>
-              )}
+              {!baremModal.result ? "Seleziona" : t(`barem_result_${baremModal.result}_label`)}
+              <Hidden>{responsabilityData?.barems.result}</Hidden>
             </BaremOpenModal>
             {baremModal.result && (
               <Col>
-                <Row>Veicolo Nostro : {t(`barem_label_${baremModal.vehicleA}`)}</Row>
-                <Row>Veicolo Controparte : {t(`barem_label_${baremModal.vehicleB}`)}</Row>
+                <Row>Veicolo A : {t(`barem_label_${baremModal.vehicleA}`)}</Row>
+                <Row>Veicolo B : {t(`barem_label_${baremModal.vehicleB}`)}</Row>
               </Col>
             )}
           </BaremContainer>
@@ -227,11 +175,7 @@ const Responsability = (props: ResponsabilityProps) => {
                 {baremModal.result && (
                   <BaremModalFooterMessage>
                     <BaremModalFooterMessageType>
-                      {baremModal.result !== "NC" && (
-                        <>
-                          {baremModal.result} ({t(`barem_result_${baremModal.result}_label`)})
-                        </>
-                      )}
+                      {baremModal.result !== "NC" && <>{t(`barem_result_${baremModal.result}_label`)}</>}
                     </BaremModalFooterMessageType>
                     {baremModal.result !== "NC" && "-"}
                     <BaremModalFooterMessageText>
@@ -252,8 +196,8 @@ const Responsability = (props: ResponsabilityProps) => {
               <thead>
                 <tr>
                   <BaremTdHeader>CIRCOSTANZA DEL SINISTRO</BaremTdHeader>
-                  <BaremTdHeader>VEICOLO Nostro</BaremTdHeader>
-                  <BaremTdHeader>VEICOLO Controparte</BaremTdHeader>
+                  <BaremTdHeader>VEICOLO A</BaremTdHeader>
+                  <BaremTdHeader>VEICOLO B</BaremTdHeader>
                 </tr>
               </thead>
               <tbody>
@@ -277,9 +221,9 @@ const Responsability = (props: ResponsabilityProps) => {
           </Modal>
         </FormInput>
         <RowSpacer />
-      </Row>
-      {baremModal.result === "T" && (
-        <Row>
+      </FormRow>
+      {baremModal.result === "1" && (
+        <FormRow>
           <FormInput label="Motivo Forzatura" name="motivo_forzatura" tooltip="Seleziona il motivo della forzatura">
             <Select
               defaultValue="---"
@@ -289,17 +233,18 @@ const Responsability = (props: ResponsabilityProps) => {
                 { value: "1", label: "Mancato rispetto limiti velocità" },
                 { value: "2", label: "Mancato rispetto norme regola strada per svolte sx dx" },
               ]}
+              value={responsabilityData?.forcedReason}
             />
           </FormInput>
-        </Row>
+        </FormRow>
       )}
 
       <FormSubTitle>Responsabilità</FormSubTitle>
 
-      <Row>
+      <FormRow>
         {
           <FormInput label="Tipo Responsabilità" name="tipo_responsabilità">
-            {ResponsabilityTypes.card.find((r) => r.value === responsabilityType)?.label}
+            {BaremsToManagement[responsabilityData?.responsabilityType || ""]}
           </FormInput>
         }
         <RowSpacer />
@@ -308,9 +253,20 @@ const Responsability = (props: ResponsabilityProps) => {
             {responsabilityPercentage}
           </FormInput>
         }
-      </Row>
-      <Row>
-        <FormInput label="Tipo Firma" name="tipo_firma" tooltip="Seleziona il tipo firma">
+      </FormRow>
+      <FormRow>
+        <SelectStyled
+          defaultValue="---"
+          onChange={(val) => app.updateResponsabilityData(val, "signature-type")}
+          options={[
+            { value: "---", label: "---" },
+            { value: "1", label: "Monofirma" },
+            { value: "2", label: "Doppia Firma" },
+          ]}
+          value={responsabilityData?.signatureType}
+        />
+
+        {/* <FormInput label="Tipo Firma" name="tipo_firma" tooltip="Seleziona il tipo firma">
           <Select
             defaultValue="---"
             onChange={(val) => app.updateResponsabilityData(val, "signature-type")}
@@ -319,9 +275,11 @@ const Responsability = (props: ResponsabilityProps) => {
               { value: "1", label: "Monofirma" },
               { value: "2", label: "Doppia Firma" },
             ]}
+            value={responsabilityData?.signatureType}
           />
-        </FormInput>
-      </Row>
+          <Hidden>{responsabilityData?.signatureType}</Hidden>
+        </FormInput> */}
+      </FormRow>
     </ResponsabilityStyled>
   );
 };

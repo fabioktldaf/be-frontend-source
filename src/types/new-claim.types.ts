@@ -126,7 +126,6 @@ export type DamagedPartType = {
   pdNumber: string;
   subject: PolicySubjetcType;
   roleType: string;
-  managementType: string;
   damages: DamagedType[];
 };
 
@@ -145,6 +144,12 @@ export type NewClaimStepItem = {
   waiting: NewClaimStepTextType;
   inProgress: NewClaimStepTextType;
   done: NewClaimStepTextType;
+};
+
+export type ResponsabilityTypes = "1" | "2" | "3" | "4" | "5" | "---";
+export type ResponsabilitiesType = {
+  card: SelectPair[];
+  noCard: SelectPair[];
 };
 
 export type SteppedChangeDataType = "vehicles_number" | "vehicle_a_type" | "vehicle_b_type" | "collision" | "inItaly";

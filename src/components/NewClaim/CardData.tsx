@@ -1,15 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import styled from "styled-components";
-import { Input, InputNumber, Button, Select, Switch } from "antd";
-import { Row, RowSpacer, Hidden } from "../../style/containers";
-import { FormSubTitle, FormInput, FormDatePicker, FormTextArea } from "../../style/form";
-import { HrStyled } from "./ClaimData";
-import { CardVehicleTypes, VehicleTypeOptions } from "../../config/const";
-import { useDispatch, useSelector } from "react-redux";
+import { Switch } from "antd";
+import { VehicleTypeOptions } from "../../config/const";
+import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
-import { ClaimType, SteppedChangeDataType } from "../../types/new-claim.types";
-import { updateStepperData } from "../../redux/features/newClaimSlice";
 import useApplication from "../../hooks/useApplication";
+import { InputNumberStyled, SelectStyled } from "../../style/Input";
 
 const CardDataStyled = styled.div`
   margin-bottom: 2em;
@@ -29,13 +25,9 @@ const TdQuestion = styled.div`
   padding-left: 1em;
 `;
 
-const TdRight = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: flex-end;
-  width: 14em;
-  margin: 1em 0;
+const TdAnswer = styled.td`
+  text-align: right;
+  padding: 0.5em 0;
 `;
 
 const TdVehicleLabel = styled.td`
@@ -79,19 +71,14 @@ const CardData = () => {
               <TdQuestion>Quanti veicoli sono stati coinvolti?</TdQuestion>
             </td>
             <TdVehicleLabel></TdVehicleLabel>
-            <td>
-              <TdRight>
-                <FormInput name="numero_veicoli" style={{ marginBottom: 0, textAlign: "right" }}>
-                  <InputNumber
-                    max={100}
-                    min={0}
-                    onChange={(val) => app.updatedStepperData(val, "vehicles_number")}
-                    value={stepperData.numeroVeicoliCoinvolti}
-                  />
-                  <Hidden>{stepperData.numeroVeicoliCoinvolti}</Hidden>
-                </FormInput>
-              </TdRight>
-            </td>
+            <TdAnswer>
+              <InputNumberStyled
+                min={0}
+                max={10}
+                value={stepperData.numeroVeicoliCoinvolti}
+                onChange={(val) => app.updatedStepperData(val, "vehicles_number")}
+              />
+            </TdAnswer>
             <td>{renderCardNoCard(stepperData.veicoloAVisibile)}</td>
           </TrStyled>
           {(stepperData.veicoloAVisibile || stepperData.veicoloBVisibile) && (
@@ -100,19 +87,13 @@ const CardData = () => {
                 <TdQuestion>Quale tipo di veicoli sono stati coinvolti?</TdQuestion>
               </td>
               <TdVehicleLabel>Veicolo A</TdVehicleLabel>
-              <td>
-                <TdRight>
-                  <FormInput name="tipo_veicolo_a" style={{ marginBottom: 0 }}>
-                    <Select
-                      defaultValue="---"
-                      onChange={(val) => app.updatedStepperData(val, "vehicle_a_type")}
-                      options={VehicleTypeOptions}
-                      value={stepperData.tipoVeicoloA}
-                    />
-                    <Hidden>{stepperData.tipoVeicoloA}</Hidden>
-                  </FormInput>
-                </TdRight>
-              </td>
+              <TdAnswer>
+                <SelectStyled
+                  onChange={(val) => app.updatedStepperData(val, "vehicle_a_type")}
+                  options={VehicleTypeOptions}
+                  value={stepperData.tipoVeicoloA}
+                />
+              </TdAnswer>
               <td>{renderCardNoCard(stepperData.veicoloBVisibile)}</td>
             </TrStyled>
           )}
@@ -120,19 +101,13 @@ const CardData = () => {
             <TrStyled>
               <td></td>
               <TdVehicleLabel>Veicolo B</TdVehicleLabel>
-              <td>
-                <TdRight>
-                  <FormInput name="tipo_veicolo_b" style={{ marginBottom: 0 }}>
-                    <Select
-                      defaultValue="---"
-                      onChange={(val) => app.updatedStepperData(val, "vehicle_b_type")}
-                      options={VehicleTypeOptions}
-                      value={stepperData.tipoVeicoloB}
-                    />
-                    <Hidden>{stepperData.tipoVeicoloB}</Hidden>
-                  </FormInput>
-                </TdRight>
-              </td>
+              <TdAnswer>
+                <SelectStyled
+                  onChange={(val) => app.updatedStepperData(val, "vehicle_b_type")}
+                  options={VehicleTypeOptions}
+                  value={stepperData.tipoVeicoloB}
+                />
+              </TdAnswer>
               <td>{renderCardNoCard(stepperData.collisioneVisibile)}</td>
             </TrStyled>
           )}
@@ -142,16 +117,14 @@ const CardData = () => {
                 <TdQuestion>C'è stata una collisione?</TdQuestion>
               </td>
               <TdVehicleLabel></TdVehicleLabel>
-              <td>
-                <TdRight>
-                  <Switch
-                    unCheckedChildren={"No"}
-                    checkedChildren={"Si"}
-                    onChange={(val) => app.updatedStepperData(val, "collision")}
-                    checked={stepperData.collisione}
-                  />
-                </TdRight>
-              </td>
+              <TdAnswer>
+                <Switch
+                  unCheckedChildren={"No"}
+                  checkedChildren={"Si"}
+                  onChange={(val) => app.updatedStepperData(val, "collision")}
+                  checked={stepperData.collisione}
+                />
+              </TdAnswer>
               <td>{renderCardNoCard(stepperData.inItaliaVisibile)}</td>
             </TrStyled>
           )}
@@ -161,16 +134,14 @@ const CardData = () => {
                 <TdQuestion>Il luogo di accadimento è in Italia, San Marino o Vaticano?</TdQuestion>
               </td>
               <TdVehicleLabel></TdVehicleLabel>
-              <td>
-                <TdRight>
-                  <Switch
-                    unCheckedChildren={"No"}
-                    checkedChildren={"Si"}
-                    onChange={(val) => app.updatedStepperData(val, "inItaly")}
-                    checked={stepperData.inItalia}
-                  />
-                </TdRight>
-              </td>
+              <TdAnswer>
+                <Switch
+                  unCheckedChildren={"No"}
+                  checkedChildren={"Si"}
+                  onChange={(val) => app.updatedStepperData(val, "inItaly")}
+                  checked={stepperData.inItalia}
+                />
+              </TdAnswer>
               <td>{renderCardNoCard(stepperData.tipoSinistro === "CARD")}</td>
             </TrStyled>
           )}

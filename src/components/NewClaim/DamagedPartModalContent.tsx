@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import { Input, Select, Button, Popconfirm } from "antd";
+import { Select, Button, Popconfirm } from "antd";
 import { Col, Hidden, Row, RowSpacer } from "../../style/containers";
-import { FormSubTitle, FormInput } from "../../style/form";
+import { FormSubTitle, FormInput, FormRow } from "../../style/form";
 import { RiDeleteBinFill } from "react-icons/ri";
 
 import DamagedPartPersonSelect from "./DamagedPartPersonSelect";
-import DamagedPartVehicle, { plateFormats } from "./DamagedPartVehicle";
+import DamagedPartVehicle from "./DamagedPartVehicle";
 import { HrStyled } from "./ClaimData";
 import CarImpactSelector from "./CarImpactSelect";
 import { useTranslation } from "react-i18next";
@@ -20,8 +20,8 @@ import {
   DamagedType,
 } from "../../types/new-claim.types";
 import useApplication from "../../hooks/useApplication";
-import { PartRoleCP, PartRoleNP } from "../../config/const";
-//import { DamageTypeCard } from "../../config/const";
+import { PartRoleCP, PartRoleNP, Responsabilities } from "../../config/const";
+import { InputTextStyled, SelectStyled } from "../../style/Input";
 
 const PersonDamageList = styled(Col)`
   width: 25em;
@@ -74,6 +74,9 @@ const DamagedPartModalContent = (props: DamagedPartModalContentProps) => {
   if (props.part.pdNumber !== part.pdNumber) return <></>; // part & props.part non sono sempre sincronizzate
 
   const isOwner = () => props.partIndex === 0;
+
+  const responsabiityType = Responsabilities.card.find((r) => r.value === props.managementType);
+  const managementTypeText = `${props.managementType} - ${responsabiityType?.label}`;
 
   const handleOnOk = () => {
     app.updateDamagedPart(Object.assign({}, part), props.partIndex);
@@ -154,33 +157,33 @@ const DamagedPartModalContent = (props: DamagedPartModalContentProps) => {
     return (
       <>
         <FormSubTitle>PARTITA DI DANNO PROPRIETARIO</FormSubTitle>
-        <Row>
-          <FormInput label="Tipo Ruolo" name="tipo_ruolo" tooltip="Seleziona il tipo ruolo">
-            <Select
-              defaultValue="---"
-              options={app.getDamageAvailableRoleTypes(props.partIndex)}
-              onChange={(val) => handleModalPartChange("role-type", val)}
-              value={part.roleType}
-            />
-            <Hidden>{part.roleType}</Hidden>
-          </FormInput>
+        <FormRow>
+          <SelectStyled
+            label="Compagnia Assicurativa"
+            tooltip="Seleziona la compagnia assicurativa della controparte"
+            defaultValue="---"
+            options={app.getDamageAvailableRoleTypes(props.partIndex)}
+            onChange={(val: string) => handleModalPartChange("role-type", val)}
+            value={part.roleType}
+          />
+
           <RowSpacer />
 
-          <FormInput label="Proprietario" name="anagrafica_owner" tooltip="Seleziona l'anagrafica">
+          <FormInput label="Proprietario" tooltip="Seleziona l'anagrafica">
             <Link to={"#"}>{ownerDetails}</Link>
           </FormInput>
-        </Row>
-        <Row>
-          <FormInput label="Tipo Gestione" name="tipo_gestione_veicolo_proprietario" tooltip="Tipo Gestione">
-            {props.managementType}
+        </FormRow>
+        <FormRow>
+          <FormInput label="Tipo Gestione" tooltip="Tipo Gestione">
+            {managementTypeText}
           </FormInput>
           <RowSpacer />
-          <FormInput label="Tipo Danno" name="danno_veicolo_proprietario" tooltip="Seleziona il tipo danno">
+          <FormInput label="Tipo Danno" tooltip="Seleziona il tipo danno">
             {"Veicolo"}
           </FormInput>
           <RowSpacer />
-        </Row>
-        <Row>
+        </FormRow>
+        <FormRow>
           <Col>
             <DamagedPartVehicle readOnly={true} details={part.damages![0].details! as PartDamagedDetailsVehicle} />
           </Col>
@@ -190,12 +193,15 @@ const DamagedPartModalContent = (props: DamagedPartModalContentProps) => {
               onChange={(areas) => handleModalPartChange("collision-point", { value: areas, index: 0 })}
             />
           </Col>
-        </Row>
-        <Row>
-          <FormInput label="Note" name="note" tooltip="Note">
-            <Input onChange={(e) => handleModalPartChange("owner-vehicle-note", e.currentTarget.value)} />
-          </FormInput>
-        </Row>
+        </FormRow>
+        <FormRow>
+          <InputTextStyled
+            label="Note veicolo"
+            tooltip="Note"
+            placeholder="note veicolo ..."
+            onChange={(val: string) => handleModalPartChange("owner-vehicle-note", val)}
+          />
+        </FormRow>
         {part.damages.map((damage, i) => {
           if (i === 0) {
             return <></>;
@@ -208,6 +214,7 @@ const DamagedPartModalContent = (props: DamagedPartModalContentProps) => {
 
             return (
               <>
+                <br />
                 <FormSubTitle>Danni alla Persona</FormSubTitle>
                 <ButtonDeleteOtherDamage
                   type="primary"
@@ -217,7 +224,7 @@ const DamagedPartModalContent = (props: DamagedPartModalContentProps) => {
                 >
                   <RiDeleteBinFill />
                 </ButtonDeleteOtherDamage>
-                <Row style={{ height: "450px" }}>
+                <FormRow style={{ height: "450px" }}>
                   <PersonDamageList>
                     <PersonDamageListTitle>Parti del Corpo Lesionate </PersonDamageListTitle>
 
@@ -238,60 +245,57 @@ const DamagedPartModalContent = (props: DamagedPartModalContentProps) => {
                       handleModalPartChange("person-damage", { value: localizations, index: i })
                     }
                   />
-                </Row>
-                <FormInput label="Note Danno" name={`note_danno_${i}`} tooltip="Note relative al danno">
-                  <Input
-                    onChange={(e) => handleModalPartChange("person-note", { index: i, value: e.currentTarget.value })}
+                </FormRow>
+                <FormRow>
+                  <InputTextStyled
+                    label="Note Persona"
+                    tooltip="Note relative al danno"
+                    placeholder="note persona"
+                    onChange={(val) => handleModalPartChange("person-note", { index: i, value: val })}
                     value={damage.details.note}
                   />
-                  <Hidden>{damage.details.note}</Hidden>
-                </FormInput>
+                </FormRow>
               </>
             );
           } else if (damage.damageType === "Thing") {
             return (
               <>
-                <FormSubTitle>Danni a Cose</FormSubTitle>
-                <Row>
-                  <FormInput label="Tipo Danno" name={`tipo_danno_${i}`} tooltip="Seleziona il tipo danno">
-                    <Select
-                      onChange={(val) => handleModalPartChange("damage-type", { value: val, index: i })}
-                      options={availableDamageTypes}
-                      value={damage.damageType}
-                    />
-                    <Hidden>{damage.damageType}</Hidden>
-                  </FormInput>
-                  <RowSpacer />
-                  <FormInput label="Note Danno" name={`note_danno_${i}`} tooltip="Note relative al danno">
-                    <Input
-                      value={damage.details.note}
-                      onChange={(e) => handleModalPartChange("thing-note", { index: i, value: e.currentTarget.value })}
-                    />
-                    <Hidden>{damage.details.note}</Hidden>
-                  </FormInput>
+                <br />
+                <FormSubTitle>Danni All'Oggetto</FormSubTitle>
+                <FormRow>
+                  <InputTextStyled
+                    label="Note Oggetto"
+                    tooltip="Note relative al danno"
+                    placeholder="note oggetto"
+                    value={damage.details.note}
+                    onChange={(val) => handleModalPartChange("thing-note", { index: i, value: val })}
+                  />
+
                   <ButtonDeleteOtherDamage type="primary" shape="circle" onClick={() => handleDeleteDamageType(i)}>
                     <RiDeleteBinFill />
                   </ButtonDeleteOtherDamage>
-                </Row>
+                </FormRow>
               </>
             );
           } else {
             return (
               <>
+                <br />
                 <FormSubTitle>Seleziona il tipo di danno</FormSubTitle>
-                <Row>
-                  <FormInput label="Tipo Danno" name={`tipo_danno_${i}`} tooltip="Seleziona il tipo danno">
-                    <Select
-                      onChange={(val) => handleModalPartChange("damage-type", { value: val, index: i })}
-                      options={availableDamageTypes}
-                    />
-                  </FormInput>
+                <FormRow>
+                  <SelectStyled
+                    label="Tipo Danno"
+                    tooltip="Seleziona il tipo danno"
+                    onChange={(val) => handleModalPartChange("damage-type", { value: val, index: i })}
+                    options={availableDamageTypes}
+                  />
+
                   <RowSpacer />
 
                   <ButtonDeleteOtherDamage type="primary" shape="circle" onClick={() => handleDeleteDamageType(i)}>
                     <RiDeleteBinFill />
                   </ButtonDeleteOtherDamage>
-                </Row>
+                </FormRow>
               </>
             );
           }
@@ -301,7 +305,7 @@ const DamagedPartModalContent = (props: DamagedPartModalContentProps) => {
           add danno
         </Button>
         <HrStyled />
-        <Row>
+        <FormRow>
           <Popconfirm
             title="Confermi di voler cancellare i dati inseriti?"
             onConfirm={props.onCancel}
@@ -313,7 +317,7 @@ const DamagedPartModalContent = (props: DamagedPartModalContentProps) => {
           <Button type="primary" onClick={handleOnOk}>
             Salva
           </Button>
-        </Row>
+        </FormRow>
       </>
     );
   };
@@ -333,16 +337,16 @@ const DamagedPartModalContent = (props: DamagedPartModalContentProps) => {
     return (
       <>
         <FormSubTitle>ALTRA PARTITA DI DANNO</FormSubTitle>
-        <Row>
-          <FormInput label="Tipo Ruolo" name="tipo_ruolo" tooltip="Seleziona il tipo ruolo">
-            <Select
-              defaultValue="---"
-              options={app.getDamageAvailableRoleTypes(props.partIndex)}
-              onChange={(value) => handleModalPartChange("role-type", value)}
-              value={part.roleType}
-            />
-            <Hidden>{part.roleType}</Hidden>
-          </FormInput>
+        <FormRow>
+          <SelectStyled
+            label="Tipo Ruolo"
+            tooltip="Seleziona il tipo ruolo"
+            defaultValue="---"
+            options={app.getDamageAvailableRoleTypes(props.partIndex)}
+            onChange={(value) => handleModalPartChange("role-type", value)}
+            value={part.roleType}
+          />
+
           <RowSpacer />
           <FormInput label="Anagrafica" name={`anagrafica_other_${part.pdNumber}`} tooltip="Seleziona l'anagrafica">
             {subjectDetails !== "" && <Link to={"#"}>{subjectDetails}</Link>}
@@ -352,29 +356,15 @@ const DamagedPartModalContent = (props: DamagedPartModalContentProps) => {
               </Button>
             )}
           </FormInput>
-        </Row>
-        <Row>
+        </FormRow>
+        <FormRow>
           <FormInput label="Tipo Gestione" name="tipo_gestione" tooltip="Tipo Gestione">
-            {part.managementType}
+            {managementTypeText}
           </FormInput>
-        </Row>
+        </FormRow>
         <HrStyled />
         {part.damages.map((damage, i) => {
-          if (damage.damageType === "Vehicle") {
-            return (
-              <Row key={i}>
-                <Col>
-                  <DamagedPartVehicle readOnly={true} details={damage.details! as PartDamagedDetailsVehicle} />
-                </Col>
-                <Col style={{ flex: 1, alignItems: "center", display: "flex", padding: "2em 0" }}>
-                  <CarImpactSelector
-                    areas={(damage.details as PartDamagedDetailsVehicle).collisionPoints}
-                    onChange={(areas) => handleModalPartChange("collision-point", { value: areas, index: i })}
-                  />
-                </Col>
-              </Row>
-            );
-          } else if (damage.damageType === "Person") {
+          if (damage.damageType === "Person") {
             const details = part.damages[i].details as PartDamagedDetailsPerson;
             console.log("details ", details);
 
@@ -392,7 +382,7 @@ const DamagedPartModalContent = (props: DamagedPartModalContentProps) => {
                 >
                   <RiDeleteBinFill />
                 </ButtonDeleteOtherDamage>
-                <Row style={{ height: "450px" }}>
+                <FormRow style={{ height: "450px" }}>
                   <PersonDamageList>
                     <PersonDamageListTitle>Parti del Corpo Lesionate </PersonDamageListTitle>
 
@@ -413,42 +403,40 @@ const DamagedPartModalContent = (props: DamagedPartModalContentProps) => {
                       handleModalPartChange("person-damage", { value: localizations, index: i })
                     }
                   />
-                </Row>
-                <FormInput label="Note Danno" name={`note_danno_${i}`} tooltip="Note relative al danno">
-                  <Input
-                    onChange={(e) => handleModalPartChange("person-note", { index: i, value: e.currentTarget.value })}
+                </FormRow>
+                <FormRow>
+                  <InputTextStyled
+                    label="Note Persona"
+                    tooltip="Note relative al danno"
+                    onChange={(val) => handleModalPartChange("person-note", { index: i, value: val })}
                     value={damage.details.note}
                   />
-                  <Hidden>{damage.details.note}</Hidden>
-                </FormInput>
+                </FormRow>
               </>
             );
           } else if (damage.damageType === "Thing") {
             return (
               <>
-                <FormSubTitle>Danni a Cose</FormSubTitle>
-                <Row>
-                  <FormInput label="Tipo Danno" name={`tipo_danno_${i}`} tooltip="Seleziona il tipo danno">
-                    <Select
-                      onChange={(val) => handleModalPartChange("damage-type", { value: val, index: i })}
-                      options={availableDamageTypes}
-                    />
-                  </FormInput>
-                  <RowSpacer />
-                  <FormInput label="Note Danno" name={`note_danno_${i}`} tooltip="Note relative al danno">
-                    <Input />
-                  </FormInput>
+                <FormSubTitle>Danni All'Oggetto</FormSubTitle>
+                <FormRow>
+                  <InputTextStyled
+                    label="Note oggetto"
+                    tooltip="Inserisci una descrizione per il danno"
+                    placeholder="descrizione del danno"
+                    onChange={(val) => handleModalPartChange("damage-type", { value: val, index: i })}
+                  />
+
                   <ButtonDeleteOtherDamage type="primary" shape="circle" onClick={() => handleDeleteDamageType(i)}>
                     <RiDeleteBinFill />
                   </ButtonDeleteOtherDamage>
-                </Row>
+                </FormRow>
               </>
             );
           } else {
             return (
               <>
                 <FormSubTitle>Seleziona il tipo di danno</FormSubTitle>
-                <Row>
+                <FormRow>
                   <FormInput label="Tipo Danno" name={`tipo_danno_${i}`} tooltip="Seleziona il tipo danno">
                     <Select
                       onChange={(val) => handleModalPartChange("damage-type", { value: val, index: i })}
@@ -462,7 +450,7 @@ const DamagedPartModalContent = (props: DamagedPartModalContentProps) => {
                   <ButtonDeleteOtherDamage type="primary" shape="circle" onClick={() => handleDeleteDamageType(i)}>
                     <RiDeleteBinFill />
                   </ButtonDeleteOtherDamage>
-                </Row>
+                </FormRow>
               </>
             );
           }

@@ -1,4 +1,4 @@
-import { NewClaimStepItem, SelectPair } from "../types/new-claim.types";
+import { NewClaimStepItem, ResponsabilitiesType, SelectPair } from "../types/new-claim.types";
 
 export const defaultLanguage = "it";
 export const languages = ["it", "en", "empty"];
@@ -36,6 +36,20 @@ const _barems: string[][] = [
   /*  1 */ [_R, NC, _R, _R, _R, _R, _R, _R, _R, _R, _R, _R, _R, _R, _R, _R, _R, _R],
   /*  0 */ [NC, _T, _R, _R, _R, _R, _R, NC, _R, NC, _R, _R, NC, NC, _R, _R, _T, _R],
 ];
+
+export const BaremsToResponsability: any = {
+  [_R]: "3",
+  [_T]: "1",
+  [_C]: "2",
+  [NC]: "---",
+};
+
+export const BaremsToManagement: any = {
+  ["3"]: "Gestionario",
+  ["1"]: "Debitore",
+  ["2"]: "Concorsuale",
+  ["---"]: "---",
+};
 
 export const Barems = _barems.map((b, i) => _barems[_barems.length - i - 1]);
 
@@ -201,22 +215,36 @@ export const NewClaimSteps: NewClaimStepItem[] = [
   },
 ];
 
+export const Responsabilities: ResponsabilitiesType = {
+  noCard: [
+    { value: "---", label: "---" },
+    { value: "4", label: "Passivo" },
+    { value: "5", label: "Attivo" },
+  ],
+  card: [
+    { value: "---", label: "---" },
+    { value: "1", label: "Debitore" },
+    { value: "2", label: "Concorsuale" },
+    { value: "3", label: "Gestionario" },
+  ],
+};
+
 export const PartRoleEmpty: SelectPair = { value: "", label: "---" };
-export const PartRoleCP: SelectPair = { value: "CP", label: "CP - Conducente proprietario" };
-export const PartRoleTP: SelectPair = { value: "TP", label: "TP - Trasportato proprietario" };
-export const PartRoleNP: SelectPair = { value: "NP", label: "NP - Proprietario non presente sul veicolo" };
-export const PartRoleCN: SelectPair = { value: "CN", label: "CN - Conducente non proprietario" };
-export const PartRoleTN: SelectPair = { value: "TN", label: "TN - Trasportato non proprietario" };
-export const PartRoleCPC: SelectPair = { value: "CPC", label: "CPC - Conducente proprietario controparte" };
-export const PartRoleCNC: SelectPair = { value: "CNC", label: "CNC - Conducente non proprietario controparte" };
-export const PartRoleTPC: SelectPair = { value: "TPC", label: "TPC - Trasportato proprietario controparte" };
-export const PartRoleTNC: SelectPair = { value: "TNC", label: "TNC - Trasportato non proprietario controparte" };
+export const PartRoleCP: SelectPair = { value: "CP", label: "Conducente proprietario" };
+export const PartRoleTP: SelectPair = { value: "TP", label: "Trasportato proprietario" };
+export const PartRoleNP: SelectPair = { value: "NP", label: "Proprietario non presente sul veicolo" };
+export const PartRoleCN: SelectPair = { value: "CN", label: "Conducente non proprietario" };
+export const PartRoleTN: SelectPair = { value: "TN", label: "Trasportato non proprietario" };
+export const PartRoleCPC: SelectPair = { value: "CPC", label: "Conducente proprietario controparte" };
+export const PartRoleCNC: SelectPair = { value: "CNC", label: "Conducente non proprietario controparte" };
+export const PartRoleTPC: SelectPair = { value: "TPC", label: "Trasportato proprietario controparte" };
+export const PartRoleTNC: SelectPair = { value: "TNC", label: "Trasportato non proprietario controparte" };
 export const PartRoleNPC: SelectPair = {
   value: "NPC",
   label: "NPC - Proprietario non presente sul veicolo controparte",
 };
-export const PartRoleTS: SelectPair = { value: "TS", label: "TS - Terzo passante" };
-export const PartRoleTD: SelectPair = { value: "TD", label: "TD - Terzo Danneggiato" };
+export const PartRoleTS: SelectPair = { value: "TS", label: "Terzo passante" };
+export const PartRoleTD: SelectPair = { value: "TD", label: "Terzo Danneggiato" };
 
 export const OwnerRolesType = [PartRoleEmpty, PartRoleCP, PartRoleTP, PartRoleNP];
 

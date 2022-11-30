@@ -25,6 +25,18 @@ export interface NewClaimState {
   counterpartDataCompleted: boolean;
 }
 
+const today = (() => {
+  const _now = new Date();
+  const day = _now.getUTCDate();
+  const month = _now.getUTCMonth() + 1;
+  const year = _now.getUTCFullYear();
+
+  const strDay = (day < 10 ? "0" : "") + day;
+  const strMonth = (month < 10 ? "0" : "") + month;
+
+  return `${strDay}/${strMonth}/${year}`;
+})();
+
 const buildInitialState = () => {
   return {
     status: NewClaimStateType.Unknown,
@@ -40,6 +52,16 @@ const buildInitialState = () => {
       inItaliaVisibile: false,
       inItalia: false,
       tipoSinistro: "---",
+    },
+    clamiData: {
+      receiptDate: today,
+      registrationDate: today,
+      occurrenceDate: today,
+      occurrenceTime: "00:00",
+      occurrencePlace: "",
+      policeIntervention: false,
+      witnesses: false,
+      note: "",
     },
     damagedParts: [],
     claimDataCompleted: false,
@@ -100,14 +122,13 @@ export const newClaimSlice = createSlice({
         );
       }
     },
-    addDamagedPart(state) {
+    addDamagedPart(state, action: PayloadAction<string>) {
       state.damagedParts = [
         ...state.damagedParts,
         {
           pdNumber: Date.now().toString(),
           subject: {},
           roleType: "",
-          managementType: "---",
           damages: [],
         },
       ];
@@ -130,9 +151,6 @@ export const newClaimSlice = createSlice({
       state.responsabilityDataCompleted = action.payload[2];
       state.damagedPartsDataCompleted = action.payload[3];
     },
-    setOwnerManagementType(state, action: PayloadAction<string>) {
-      state.damagedParts[0].managementType = action.payload;
-    },
   },
 });
 
@@ -148,7 +166,6 @@ export const {
   setDamagedPart,
   removeDamagedPart,
   addDamagedPart,
-  setOwnerManagementType,
 } = newClaimSlice.actions;
 
 export default newClaimSlice.reducer;

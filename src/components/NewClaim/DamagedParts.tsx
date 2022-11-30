@@ -10,7 +10,7 @@ import { BiCar } from "react-icons/bi";
 import { useTranslation } from "react-i18next";
 
 import DamagedPartModalContent from "./DamagedPartModalContent";
-import { DamagedPartType } from "../../types/new-claim.types";
+import { DamagedPartType, PartDamagedDetailsVehicle } from "../../types/new-claim.types";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import useApplication from "../../hooks/useApplication";
@@ -33,6 +33,7 @@ const TableDamagedPartsRow = styled.tr`
 
   td {
     padding: 0.5em 0;
+    text-align: center;
 
     &:first-child {
       padding: 1em 0;
@@ -55,6 +56,10 @@ const DamangeIconStyled = styled.td`
 const TableDamagedHeader = styled.tr`
   text-transform: uppercase;
   border-bottom: 1px solid #aaa;
+
+  td {
+    text-align: center;
+  }
 `;
 
 export type PartModalType = {
@@ -66,7 +71,7 @@ export type PartModalType = {
 const DamagedParts = () => {
   const { t } = useTranslation();
   const app = useApplication();
-  const damagedParts = useSelector((state: RootState) => state.newClaim.damagedParts);
+  const { damagedParts, responsability } = useSelector((state: RootState) => state.newClaim);
 
   const [partModal, setPartModal] = useState<PartModalType>({
     isOpen: false,
@@ -100,15 +105,19 @@ const DamagedParts = () => {
       subjectDetails = `${p.subject.giuridical_person.business_name}`;
     }
 
-    const hasVehicleDamage = true;
-    const hasPersonDamage = true;
-    const howManyThingDamages = 2;
+    const hasVehicleDamage =
+      (p.damages.find((d) => d.damageType === "Vehicle")?.details as PartDamagedDetailsVehicle)?.collisionPoints
+        ?.length > 0;
+    const hasPersonDamage = p.damages.find((d) => d.damageType === "Person") !== undefined;
+    const howManyThingDamages = p.damages.filter((d) => d.damageType === "Thing").length;
 
     return (
       <TableDamagedPartsRow key={i}>
         <td onClick={() => showPartModal(i)}>{subjectDetails}</td>
-        <td onClick={() => showPartModal(i)}>{roleLabel}</td>
-        <td>{managementType}</td>
+        <td onClick={() => showPartModal(i)} style={{ fontSize: "0.9em" }}>
+          {roleLabel}
+        </td>
+        <td onClick={() => showPartModal(i)}>{t(`management_type_${managementType}`)}</td>
         <td>
           <DamangeIconStyled>{hasVehicleDamage && <BiCar />}</DamangeIconStyled>
         </td>
@@ -119,7 +128,7 @@ const DamagedParts = () => {
           <DamangeIconStyled>
             {howManyThingDamages > 0 && (
               <>
-                <span style={{ fontSize: "0.6em" }}>{howManyThingDamages}</span>
+                <span style={{ fontSize: "0.6em" }}>{howManyThingDamages > 1 ? howManyThingDamages : ""}</span>
                 <BsBox />
               </>
             )}
@@ -133,6 +142,8 @@ const DamagedParts = () => {
       </TableDamagedPartsRow>
     );
   };
+
+  const managementType = responsability?.responsabilityType || "";
 
   return (
     <>
@@ -148,9 +159,7 @@ const DamagedParts = () => {
             </TableDamagedHeader>
           </thead>
           <tbody>
-            {damagedParts.map((p: DamagedPartType, i: number) =>
-              renderDamagePartRow(p, i, damagedParts[0].managementType)
-            )}
+            {damagedParts.map((p: DamagedPartType, i: number) => renderDamagePartRow(p, i, managementType))}
           </tbody>
         </TableDamagedParts>
         <CenteredRow>
@@ -168,7 +177,7 @@ const DamagedParts = () => {
         {partModal.part && (
           <DamagedPartModalContent
             part={partModal.part}
-            managementType={damagedParts[0].managementType}
+            managementType={managementType}
             partIndex={partModal.index}
             onCancel={handlePartModalCancel}
             onOk={handlePartModalOk}
