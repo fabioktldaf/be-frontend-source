@@ -11,9 +11,12 @@ import {
   removeDamagedPart,
   addDamagedPart,
   updateCounterpartData,
+  setAdditionalInfo,
+  removeAdditionalInfo,
 } from "../redux/features/newClaimSlice";
 import { defaultClaimPolicyData } from "../config/dummy-data";
 import {
+  AdditionalInfoDataType,
   ClaimType,
   DamagedPartType,
   NewClaimStateType,
@@ -47,13 +50,23 @@ export default {
     store.dispatch(clear());
     store.dispatch(setStatus(NewClaimStateType.MandatoryData));
     store.dispatch(setPolicyData(defaultClaimPolicyData));
+
+    defaultClaimPolicyData.damagedParts.forEach((dp: DamagedPartType, i) => {
+      store.dispatch(
+        setDamagedPart({
+          index: i,
+          damagedPart: dp,
+        })
+      );
+    });
+
     store.dispatch(
       setDamagedPart({
         index: 0,
         damagedPart: {
           pdNumber: Date.now().toString(),
           subject: defaultClaimPolicyData.owner,
-          roleType: "",
+          roleType: "CP",
           damages: [
             {
               damageType: "Vehicle",
@@ -116,7 +129,7 @@ export default {
     checkClaimDataCompleted();
   },
   updateClaimData: (val: any, fieldName: UpdateNewClaimDataFieldsType) => {
-    const updatedClaimData = Object.assign({}, store.getState().newClaim.clamiData, { [fieldName]: val });
+    const updatedClaimData = Object.assign({}, store.getState().newClaim.claimData, { [fieldName]: val });
 
     store.dispatch(updateClaimData(updatedClaimData));
     checkClaimDataCompleted();
@@ -233,6 +246,12 @@ export default {
 
     return availableDamages;
   },
+  setAdditionalInfo: (additionalInfo: AdditionalInfoDataType, index: number) => {
+    store.dispatch(setAdditionalInfo({ additionalInfo, index }));
+  },
+  removeAdditionalInfo: (id: number) => {
+    store.dispatch(removeAdditionalInfo(id));
+  },
 };
 
 ///////////////
@@ -240,8 +259,13 @@ export default {
 const notEmpty = (s: string | null | undefined) => !!s && s !== "";
 
 const checkClaimDataCompleted = () => {
-  const { clamiData, stepperData, counterpartDataCompleted, responsabilityDataCompleted, damagedPartsDataCompleted } =
-    store.getState().newClaim;
+  const {
+    claimData: clamiData,
+    stepperData,
+    counterpartDataCompleted,
+    responsabilityDataCompleted,
+    damagedPartsDataCompleted,
+  } = store.getState().newClaim;
 
   const claimDataCompleted =
     stepperData.tipoSinistro === "CARD" &&

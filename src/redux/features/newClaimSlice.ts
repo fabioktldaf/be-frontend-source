@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import {
+  AdditionalInfoDataType,
   ClaimDataCounterpartDataType,
   ClaimDataPolicyDataType,
   ClaimDataType,
@@ -7,21 +8,25 @@ import {
   DamagedPartType,
   NewClaimStateType,
   ResponsabilityDataType,
+  SetAdditionalInfoPayloadType,
   StepperDataType,
 } from "../../types/new-claim.types";
 
 export interface NewClaimState {
   status?: NewClaimStateType;
   step: number;
-  policyData?: ClaimDataPolicyDataType;
-  clamiData?: ClaimDataType;
-  claimDataCompleted: boolean;
   stepperData: StepperDataType;
+  policyData?: ClaimDataPolicyDataType;
+  claimData?: ClaimDataType;
+
   responsability?: ResponsabilityDataType;
-  responsabilityDataCompleted: boolean;
   damagedParts: DamagedPartType[];
-  damagedPartsDataCompleted: boolean;
   counterpartData?: ClaimDataCounterpartDataType;
+  additionalInfo: AdditionalInfoDataType[];
+
+  claimDataCompleted: boolean;
+  responsabilityDataCompleted: boolean;
+  damagedPartsDataCompleted: boolean;
   counterpartDataCompleted: boolean;
 }
 
@@ -53,7 +58,8 @@ const buildInitialState = () => {
       inItalia: false,
       tipoSinistro: "---",
     },
-    clamiData: {
+    claimData: {
+      number: Date.now().toString(),
       receiptDate: today,
       registrationDate: today,
       occurrenceDate: today,
@@ -64,6 +70,7 @@ const buildInitialState = () => {
       note: "",
     },
     damagedParts: [],
+    additionalInfo: [],
     claimDataCompleted: false,
     responsabilityDataCompleted: false,
     damagedPartsDataCompleted: false,
@@ -85,6 +92,7 @@ export const newClaimSlice = createSlice({
       state.damagedParts = [];
       state.responsability = undefined;
       state.counterpartData = undefined;
+      state.additionalInfo = [];
       state.claimDataCompleted = false;
       state.counterpartDataCompleted = false;
       state.responsabilityDataCompleted = false;
@@ -140,7 +148,7 @@ export const newClaimSlice = createSlice({
       state.stepperData = action.payload;
     },
     updateClaimData(state, action: PayloadAction<ClaimDataType>) {
-      state.clamiData = action.payload;
+      state.claimData = action.payload;
     },
     updateCounterpartData(state, action: PayloadAction<ClaimDataCounterpartDataType>) {
       state.counterpartData = action.payload;
@@ -150,6 +158,15 @@ export const newClaimSlice = createSlice({
       state.counterpartDataCompleted = action.payload[1];
       state.responsabilityDataCompleted = action.payload[2];
       state.damagedPartsDataCompleted = action.payload[3];
+    },
+    setAdditionalInfo(state, action: PayloadAction<SetAdditionalInfoPayloadType>) {
+      const { additionalInfo, index } = action.payload;
+      if (index === -1) {
+        state.additionalInfo = [...state.additionalInfo, additionalInfo];
+      } else state.additionalInfo[index] = additionalInfo;
+    },
+    removeAdditionalInfo(state, action: PayloadAction<number>) {
+      state.additionalInfo = state.additionalInfo.filter((ai) => ai.id !== action.payload);
     },
   },
 });
@@ -166,6 +183,8 @@ export const {
   setDamagedPart,
   removeDamagedPart,
   addDamagedPart,
+  setAdditionalInfo,
+  removeAdditionalInfo,
 } = newClaimSlice.actions;
 
 export default newClaimSlice.reducer;

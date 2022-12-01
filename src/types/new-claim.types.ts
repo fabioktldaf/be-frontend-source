@@ -47,6 +47,7 @@ export type NewClaimCardQuestion = {
 };
 
 export type ClaimDataType = {
+  number: string;
   registrationDate: string;
   receiptDate: string;
   occurrenceDate: string;
@@ -210,4 +211,48 @@ export type ClaimDataCounterpartDataType = {
 export type SelectPair = {
   value: any;
   label: string;
+};
+
+export type AdditionaInfoTypes = "subject" | "document" | "payment" | "contact";
+export type AdditionalInfoSubjectRoleTypes = "---" | "coachbuilder" | "expert" | "lawyer";
+
+export type AdditionalInfoSubjectType = {
+  role: AdditionalInfoSubjectRoleTypes;
+  personalData: any;
+};
+
+export type AdditionalInfoDocumentTypes = "---" | "id-card" | "passport" | "expertise" | "police-report";
+
+export type AdditionalInfoDocumentType = {
+  type: AdditionalInfoDocumentTypes;
+  filename: string[];
+};
+
+export type AdditionalInfoPaymentTypes = "---" | "transfer" | "check";
+
+export type AdditionalInfoPaymentType = {
+  type: AdditionalInfoPaymentTypes;
+  iban: string;
+};
+
+export type AdditionalInfoContactType = {
+  shippingAddress: string;
+  email: string;
+  phone: string;
+};
+
+export type AdditionalInfoDataType = {
+  id: number;
+  type: AdditionaInfoTypes;
+  damagedPartNumber: string;
+  details:
+    | AdditionalInfoSubjectType
+    | AdditionalInfoDocumentType
+    | AdditionalInfoPaymentType
+    | AdditionalInfoContactType;
+};
+
+export type SetAdditionalInfoPayloadType = {
+  additionalInfo: AdditionalInfoDataType;
+  index: number;
 };

@@ -1,4 +1,4 @@
-import { SelectPair } from "../types/new-claim.types";
+import { DamagedPartType, SelectPair } from "../types/new-claim.types";
 
 export const defaultClaimPolicyData = {
   policy_number: "AB-12345789",
@@ -30,6 +30,93 @@ export const defaultClaimPolicyData = {
       format: "Targa Italiana",
     },
   },
+  damagedParts: [
+    {
+      pdNumber: "1669798161516",
+      subject: {
+        natural_person: {
+          id: 1,
+          name: "Mario",
+          lastname: "Rossi",
+          fiscal_code: "RSSMRA73L09Z103F",
+          province_of_residence: "Milano",
+          city_of_residence: "Rho",
+        },
+      },
+      roleType: "CP",
+      damages: [
+        {
+          damageType: "Vehicle",
+          details: {
+            plate: "AB123CD",
+            format: "Targa Italiana",
+            type: "A",
+            collisionPoints: ["11"],
+            note: "",
+          },
+        },
+        {
+          damageType: "Person",
+          details: {
+            personWoundedPoints: ["front_trunc", "rear_trunc"],
+          },
+        },
+        {
+          damageType: "Thing",
+          details: {
+            note: "gameboy",
+          },
+        },
+      ],
+      note: "Sedia",
+    } as DamagedPartType,
+    {
+      pdNumber: "1669909946930",
+      subject: {
+        id: 1,
+        name: "Luigi",
+        lastname: "Verdi",
+        fiscal_code: "VRDMRA73L09Z103F",
+        province_of_residence: "Bologna",
+        city_of_residence: "Bologna",
+      },
+      roleType: "TN",
+      damages: [
+        {
+          damageType: "Person",
+          details: {
+            personWoundedPoints: ["front_head", "rear_head"],
+          },
+        },
+        {
+          damageType: "Thing",
+          details: {
+            note: "Notebook",
+          },
+        },
+      ],
+    } as DamagedPartType,
+    {
+      pdNumber: "1669909992417",
+      subject: {
+        id: 1,
+        name: "Alice",
+        lastname: "Cooper",
+        fiscal_code: "CPPR73L09Z103F",
+        province_of_residence: "Genova",
+        city_of_residence: "Genova",
+      },
+      roleType: "TS",
+      damages: [
+        {
+          damageType: "Thing",
+          details: {
+            note: "Sedia",
+          },
+        },
+      ],
+    } as DamagedPartType,
+  ],
 };
 
 export const insuranceCodes: SelectPair[] = [

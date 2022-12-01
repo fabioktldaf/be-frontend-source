@@ -70,6 +70,26 @@ export const VehicleTypeOptions = [
   { value: "S", label: "MACCHINE AGRICOLE" },
 ];
 
+export const plateFormats = [
+  { value: "---", label: "---" },
+  {
+    value: "T",
+    label: "Targa Italia",
+  },
+  {
+    value: "X",
+    label: "Targg Prova",
+  },
+  {
+    value: "Y",
+    label: "Targg Provvisorie",
+  },
+  {
+    value: "J",
+    label: "Targa Filobus",
+  },
+];
+
 export type ClaimType = "CARD" | "NO CARD";
 
 export const CardVehicleTypes = ["A", "B", "C", "M", "Q", "T", "W"];
@@ -264,19 +284,6 @@ export const AllPartRoles = [
   PartRoleTD,
 ];
 
-/* export const NotOwnerRolesType = [
-  PartRoleEmpty,
-  PartRoleCN,
-  PartRoleTN,
-  // PartRoleCPC,
-  // PartRoleCNC,
-  // PartRoleTPC,
-  // PArtRoleTNC,
-  PartRoleTS,
-  PartRoleTD,
-];
-*/
-
 export const DamageTypeEmpty: SelectPair = { value: "---", label: "---" };
 export const DamageTypeThing: SelectPair = { value: "Thing", label: "Cose" };
 export const DamageTypePerson: SelectPair = { value: "Person", label: "Persone" };
@@ -284,18 +291,54 @@ export const DamageTypeVehicle: SelectPair = { value: "Vehicle", label: "Veicolo
 export const DamageTypeLocation: SelectPair = { value: "Location", label: "Ubicazione" };
 export const DamageTypeGeneric: SelectPair = { value: "Generic", label: "Generico" };
 
-// export const DamageTypeCard = [
-//   { value: "---", label: "---" },
-//   { value: "Person", label: "Persone" },
-//   { value: "Thing", label: "Cose" },
-//   { value: "Vehicle", label: "Veicolo" },
-// ];
+export const AdditionalInfoEmpty: SelectPair = { value: "", label: "---" };
+export const AdditionalInfoSubject: SelectPair = { value: "subject", label: "Soggetto" };
+export const AdditionalInfoDoc: SelectPair = { value: "document", label: "Documento" };
+export const AdditionalInfoPayment: SelectPair = { value: "payment", label: "Info Pagamento" };
+export const AdditionalInfoContact: SelectPair = { value: "contact", label: "Info Contatto" };
 
-// export const DamageTypeNoCard = [
-//   { value: "---", label: "---" },
-//   { value: "Person", label: "Persone" },
-//   { value: "Thing", label: "Cose" },
-//   { value: "Vehicle", label: "Veicolo" },
-//   { value: "Location", label: "Ubicazione" },
-//   { value: "Generic", label: "Generico" },
-// ];
+export const AdditionalInfoTypes = [
+  AdditionalInfoEmpty,
+  AdditionalInfoSubject,
+  AdditionalInfoDoc,
+  AdditionalInfoPayment,
+  AdditionalInfoContact,
+];
+
+export const AdditionalInfoSubjectRoleEmpty: SelectPair = { value: "", label: "---" };
+export const AdditionalInfoSubjectRoleCoachbuilder: SelectPair = { value: "coachbuilder", label: "Carrozziere" };
+export const AdditionalInfoSubjectRoleExpert: SelectPair = { value: "expert", label: "Perito" };
+export const AdditionalInfoSubjectRoleLawyer: SelectPair = { value: "lawyer", label: "Avvocato" };
+
+export const AdditionalInfoSubjectRoles = [
+  AdditionalInfoSubjectRoleEmpty,
+  AdditionalInfoSubjectRoleCoachbuilder,
+  AdditionalInfoSubjectRoleExpert,
+  AdditionalInfoSubjectRoleLawyer,
+];
+
+export const AdditionalInfoDocTypeEmpty: SelectPair = { value: "", label: "---" };
+export const AdditionalInfoDocTypeIdCard: SelectPair = { value: "id-card", label: "Carta d'identità" };
+export const AdditionalInfoDocTypePassport: SelectPair = { value: "passport", label: "Passaporto" };
+export const AdditionalInfoDocTypeExpertise: SelectPair = { value: "expertise", label: "Perizia" };
+export const AdditionalInfoDocTypePoliceReport: SelectPair = { value: "police-report", label: "Verbale polizia" };
+
+export const AdditionalInfoDocTypes = [
+  AdditionalInfoDocTypeEmpty,
+  AdditionalInfoDocTypeIdCard,
+  AdditionalInfoDocTypePassport,
+  AdditionalInfoDocTypeExpertise,
+  AdditionalInfoDocTypePoliceReport,
+];
+
+export const UploadDocumentsAction = "localhost";
+
+export const AdditionalInfoPaymentEmpty: SelectPair = { value: "", label: "---" };
+export const AdditionalInfoPaymentTransfer: SelectPair = { value: "transfer", label: "Bonifico" };
+export const AdditionalInfoPaymentCheck: SelectPair = { value: "check", label: "Assegno" };
+
+export const AdditionalInfoPaymentTypes = [
+  AdditionalInfoPaymentEmpty,
+  AdditionalInfoPaymentTransfer,
+  AdditionalInfoPaymentCheck,
+];

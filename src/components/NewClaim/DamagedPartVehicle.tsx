@@ -6,7 +6,7 @@ import { FormSubTitle, FormInput } from "../../style/form";
 import { RiDeleteBinFill } from "react-icons/ri";
 
 import { useTranslation } from "react-i18next";
-import { vehicleCollisionPoints, VehicleTypeOptions } from "../../config/const";
+import { plateFormats, vehicleCollisionPoints, VehicleTypeOptions } from "../../config/const";
 import { PartDamagedDetailsVehicle } from "../../types/new-claim.types";
 
 const DamagedPartVehicleStyled = styled.div``;
@@ -15,26 +15,6 @@ interface DamagedPartVehicleProps {
   details: PartDamagedDetailsVehicle;
   readOnly?: boolean;
 }
-
-export const plateFormats = [
-  { value: "---", label: "---" },
-  {
-    value: "T",
-    label: "Targa Italia",
-  },
-  {
-    value: "X",
-    label: "Targg Prova",
-  },
-  {
-    value: "Y",
-    label: "Targg Provvisorie",
-  },
-  {
-    value: "J",
-    label: "Targa Filobus",
-  },
-];
 
 const DamagedPartVehicle = (props: DamagedPartVehicleProps) => {
   const { t } = useTranslation();

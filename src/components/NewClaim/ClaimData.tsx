@@ -88,7 +88,7 @@ const ClaimData = () => {
   const policyData = useSelector((state: RootState) => state.newClaim.policyData);
   const { owner, contractor } = policyData || {};
   const stepperData = useSelector((state: RootState) => state.newClaim.stepperData);
-  const claimData = useSelector((state: RootState) => state.newClaim.clamiData);
+  const claimData = useSelector((state: RootState) => state.newClaim.claimData);
 
   const checkDataAccadimento = () => {
     if (!claimData?.occurrenceDate) return true;

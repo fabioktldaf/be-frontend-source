@@ -3,6 +3,7 @@ import { setLanguage } from "../redux/features/userSlice";
 import i18next from "i18next";
 import NewClaim from "./newClaim";
 import {
+  AdditionalInfoDataType,
   DamagedPartType,
   SteppedChangeDataType,
   UpdateNewClaimDataFieldsType,
@@ -23,6 +24,8 @@ export interface IApplication {
   addDamagedPart: () => void;
   getAvailableDamageTypes: (index: number, part: DamagedPartType) => any[];
   damagedPartsRemoveOtherDrivers: () => void;
+  setAdditionalInfo: (additionalInfo: AdditionalInfoDataType, index: number) => void;
+  removeAdditionalInfo: (id: number) => void;
 }
 
 export default (): IApplication => {
@@ -66,6 +69,12 @@ export default (): IApplication => {
     },
     damagedPartsRemoveOtherDrivers: () => {
       NewClaim.damagedPartsRemoveOtherDrivers();
+    },
+    setAdditionalInfo: (additionalInfo: AdditionalInfoDataType, index: number) => {
+      NewClaim.setAdditionalInfo(additionalInfo, index);
+    },
+    removeAdditionalInfo: (id: number) => {
+      NewClaim.removeAdditionalInfo(id);
     },
   };
 };

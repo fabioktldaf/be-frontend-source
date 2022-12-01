@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Steps, Space, Spin, Button } from "antd";
 import styled from "styled-components";
 
+import cnApproved from "../../images/cn-approved.jpg";
+
 const CheckSendingANIAContainer = styled.div`
   width: 60vw;
   display: flex;
@@ -36,7 +38,7 @@ const CheckSic = (props: CheckSicProps) => {
   useEffect(() => {
     setTimeout(() => {
       setVerified(true);
-    }, 3000);
+    }, 2000);
   });
 
   return (
@@ -49,17 +51,14 @@ const CheckSic = (props: CheckSicProps) => {
       )}
       {verified && (
         <ResultANIA>
-          <div>[[Messaggio/Risposta da SIC]]</div>
-          <br />
-          <div>
-            I dati inseriti risultano corretti{" "}
+          <div style={{ display: "flex", flexDirection: "column" }}>
+            <div style={{ textAlign: "center", marginBottom: "1em" }}>I DATI DELLA CINQUINA SONO CORRETTI</div>
+            <img src={cnApproved} />
+            <br />
             <Button type="primary" onClick={() => props.onForward()}>
               Avanti
             </Button>
-          </div>
-          <br />
-          <div>
-            Torna indietro e correggi i dati{" "}
+            <br />
             <Button type="primary" onClick={() => props.onBackward()}>
               Indietro
             </Button>

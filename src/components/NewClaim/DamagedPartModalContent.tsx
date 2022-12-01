@@ -423,7 +423,7 @@ const DamagedPartModalContent = (props: DamagedPartModalContentProps) => {
                     label="Note oggetto"
                     tooltip="Inserisci una descrizione per il danno"
                     placeholder="descrizione del danno"
-                    onChange={(val) => handleModalPartChange("damage-type", { value: val, index: i })}
+                    onChange={(val) => handleModalPartChange("thing-note", { value: val, index: i })}
                   />
 
                   <ButtonDeleteOtherDamage type="primary" shape="circle" onClick={() => handleDeleteDamageType(i)}>

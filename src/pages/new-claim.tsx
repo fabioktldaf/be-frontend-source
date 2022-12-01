@@ -145,7 +145,7 @@ const NewClaimPage = () => {
         />
       )}
       {step === 2 && <AdditionalData onSave={() => handleChangeStatus(NewClaimStateType.Resume)} />}
-      {step === 3 && <Resume />}
+      {step === 3 && <Resume onBackward={() => handleChangeStatus(NewClaimStateType.AdditionalData)} />}
     </Col>
   );
 };
