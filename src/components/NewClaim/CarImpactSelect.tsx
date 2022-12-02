@@ -35,17 +35,17 @@ const PathStyled = styled.path<{ selected?: boolean }>`
 
 interface CarImpactSelectorProps {
   areas: string[];
-  onChange: (areas: string[]) => void;
+  onChange?: (areas: string[]) => void;
+  readOnly?: boolean;
 }
 
 const CarImpactSelector = (props: CarImpactSelectorProps) => {
-  //const [areas, setAreas] = useState<string[]>(props.areas || []);
-
   const handleChangeSelection = (code: string) => {
+    if (props.readOnly) return;
+
     const toggle = props.areas.indexOf(code) !== -1;
     const newAreas = toggle ? props.areas.filter((a) => a !== code) : [...props.areas, code];
-    //setAreas(newAreas);
-    props.onChange(newAreas);
+    if (props.onChange) props.onChange(newAreas);
   };
 
   return (

@@ -4,7 +4,14 @@ import { Form, Input, Button, Select, Modal, Divider } from "antd";
 import { Col, Hidden, Row, RowSpacer } from "../../style/containers";
 import { FormSubTitle, FormInput, FormDatePicker, FormRow } from "../../style/form";
 import { useTranslation } from "react-i18next";
-import { Barems, BaremsToManagement, BaremsToResponsability, Responsabilities } from "../../config/const";
+import {
+  Barems,
+  BaremsToManagement,
+  BaremsToResponsability,
+  ForceReasons,
+  Responsabilities,
+  SignatureTypes,
+} from "../../config/const";
 import useApplication from "../../hooks/useApplication";
 import { BaremsResultType } from "../../types/new-claim.types";
 import { useSelector } from "react-redux";
@@ -228,11 +235,7 @@ const Responsability = (props: ResponsabilityProps) => {
             <Select
               defaultValue="---"
               onChange={(val) => app.updateResponsabilityData(val, "forced-reason")}
-              options={[
-                { value: "---", label: "---" },
-                { value: "1", label: "Mancato rispetto limiti velocità" },
-                { value: "2", label: "Mancato rispetto norme regola strada per svolte sx dx" },
-              ]}
+              options={ForceReasons}
               value={responsabilityData?.forcedReason}
             />
           </FormInput>
@@ -258,11 +261,7 @@ const Responsability = (props: ResponsabilityProps) => {
         <SelectStyled
           defaultValue="---"
           onChange={(val) => app.updateResponsabilityData(val, "signature-type")}
-          options={[
-            { value: "---", label: "---" },
-            { value: "1", label: "Monofirma" },
-            { value: "2", label: "Doppia Firma" },
-          ]}
+          options={SignatureTypes}
           value={responsabilityData?.signatureType}
         />
 

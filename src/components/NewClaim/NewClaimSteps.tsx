@@ -10,6 +10,16 @@ import { NewClaimSteps } from "../../config/const";
 
 const StepsContainer = styled.div`
   margin: 2em 0;
+  width: 80%;
+  margin-left: 10%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .ant-steps-item {
+    text-align: center;
+    flex: 1;
+  }
 `;
 
 const NewClaimsSteps = () => {

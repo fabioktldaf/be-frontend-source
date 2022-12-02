@@ -30,11 +30,17 @@ const getItem = (
     type,
   } as MenuItem);
 
-const buildMenuItems = (lang: string, t: (txt: string) => string) => {
+const buildMenuItems = (t: (txt: string) => string) => {
   return MenuConfig.items.map((entry: MenuEntry, i: number) => {
     const key = "" + i;
     const text = t(entry.label);
-    const label = entry.url ? <Link to={entry.url}>{text}</Link> : text;
+    const label = entry.url ? (
+      <Link to={entry.url}>{text}</Link>
+    ) : entry.action ? (
+      <span onClick={entry.action}>{text}</span>
+    ) : (
+      text
+    );
 
     return getItem(
       label,
@@ -56,9 +62,8 @@ type Props = {
 
 const SideMenu: React.FC<Props> = (props: Props) => {
   const { t } = useTranslation();
-  const language = useSelector((state: RootState) => state.user.language);
 
-  const items: MenuProps["items"] = buildMenuItems(language, t);
+  const items: MenuProps["items"] = buildMenuItems(t);
 
   return <SideMenuStyled defaultSelectedKeys={["1"]} mode="inline" items={items} />;
 };

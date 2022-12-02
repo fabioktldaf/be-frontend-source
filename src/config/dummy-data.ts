@@ -73,12 +73,14 @@ export const defaultClaimPolicyData = {
     {
       pdNumber: "1669909946930",
       subject: {
-        id: 1,
-        name: "Luigi",
-        lastname: "Verdi",
-        fiscal_code: "VRDMRA73L09Z103F",
-        province_of_residence: "Bologna",
-        city_of_residence: "Bologna",
+        natural_person: {
+          id: 1,
+          name: "Luigi",
+          lastname: "Verdi",
+          fiscal_code: "VRDMRA73L09Z103F",
+          province_of_residence: "Bologna",
+          city_of_residence: "Bologna",
+        },
       },
       roleType: "TN",
       damages: [
@@ -99,12 +101,13 @@ export const defaultClaimPolicyData = {
     {
       pdNumber: "1669909992417",
       subject: {
-        id: 1,
-        name: "Alice",
-        lastname: "Cooper",
-        fiscal_code: "CPPR73L09Z103F",
-        province_of_residence: "Genova",
-        city_of_residence: "Genova",
+        giuridical_person: {
+          id: 10,
+          business_name: "Alice s.r.l",
+          iva: "12456789",
+          registered_office_province: "Genova",
+          registered_office_city: "Genova",
+        },
       },
       roleType: "TS",
       damages: [

@@ -218,21 +218,21 @@ export const NewClaimSteps: NewClaimStepItem[] = [
       description: "Completato",
     },
   },
-  {
-    number: 4,
-    waiting: {
-      title: "Riepilogo",
-      description: "",
-    },
-    inProgress: {
-      title: "Riepilogo",
-      description: "Sinistro",
-    },
-    done: {
-      title: "---",
-      description: "---",
-    },
-  },
+  // {
+  //   number: 4,
+  //   waiting: {
+  //     title: "Riepilogo",
+  //     description: "",
+  //   },
+  //   inProgress: {
+  //     title: "Riepilogo",
+  //     description: "Sinistro",
+  //   },
+  //   done: {
+  //     title: "---",
+  //     description: "---",
+  //   },
+  //},
 ];
 
 export const Responsabilities: ResponsabilitiesType = {
@@ -309,12 +309,14 @@ export const AdditionalInfoSubjectRoleEmpty: SelectPair = { value: "", label: "-
 export const AdditionalInfoSubjectRoleCoachbuilder: SelectPair = { value: "coachbuilder", label: "Carrozziere" };
 export const AdditionalInfoSubjectRoleExpert: SelectPair = { value: "expert", label: "Perito" };
 export const AdditionalInfoSubjectRoleLawyer: SelectPair = { value: "lawyer", label: "Avvocato" };
+export const AdditionalInfoSubjectRoleWitness: SelectPair = { value: "witness", label: "Testimone" };
 
 export const AdditionalInfoSubjectRoles = [
   AdditionalInfoSubjectRoleEmpty,
   AdditionalInfoSubjectRoleCoachbuilder,
   AdditionalInfoSubjectRoleExpert,
   AdditionalInfoSubjectRoleLawyer,
+  AdditionalInfoSubjectRoleWitness,
 ];
 
 export const AdditionalInfoDocTypeEmpty: SelectPair = { value: "", label: "---" };
@@ -342,3 +344,21 @@ export const AdditionalInfoPaymentTypes = [
   AdditionalInfoPaymentTransfer,
   AdditionalInfoPaymentCheck,
 ];
+
+export const ForceReasonEmpty: SelectPair = { value: "", label: "---" };
+export const ForceReasonSpeedLimit: SelectPair = { value: "1", label: "Mancato rispetto limiti velocità" };
+export const ForceReasonSpeedTurn: SelectPair = {
+  value: "2",
+  label: "Mancato rispetto norme regola strada per svolte sx dx",
+};
+
+export const ForceReasons = [ForceReasonEmpty, ForceReasonSpeedLimit, ForceReasonSpeedTurn];
+
+export const SignatureTypeEmpty: SelectPair = { value: "", label: "---" };
+export const SignatureTypeSingle: SelectPair = { value: "1", label: "Monofirma" };
+export const SignatureTypeDouble: SelectPair = {
+  value: "2",
+  label: "Doppia Firma",
+};
+
+export const SignatureTypes = [SignatureTypeEmpty, SignatureTypeSingle, SignatureTypeDouble];

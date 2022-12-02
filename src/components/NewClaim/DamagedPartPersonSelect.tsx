@@ -70,7 +70,9 @@ const FrontHeadStyled = styled(BaseImageStyled)`
     props.selected
       ? "background-image:  url(" + front_head_selected + ");"
       : " &:hover { \
-          background-image: url(" + front_head_hover + "); \
+          background-image: url(" +
+        front_head_hover +
+        "); \
         }"}
 `;
 
@@ -83,7 +85,9 @@ const FrontTruncStyled = styled(BaseImageStyled)`
     props.selected
       ? "background-image:  url(" + front_trunc_selected + ");"
       : " &:hover { \
-          background-image: url(" + front_trunc_hover + "); \
+          background-image: url(" +
+        front_trunc_hover +
+        "); \
         }"}
 `;
 
@@ -96,7 +100,9 @@ const FrontArmLeftStyled = styled(BaseImageStyled)`
     props.selected
       ? "background-image:  url(" + front_arm_left_selected + ");"
       : " &:hover { \
-          background-image: url(" + front_arm_left_hover + "); \
+          background-image: url(" +
+        front_arm_left_hover +
+        "); \
         }"}
 `;
 
@@ -109,7 +115,9 @@ const FrontArmRightStyled = styled(BaseImageStyled)`
     props.selected
       ? "background-image:  url(" + front_arm_right_selected + ");"
       : " &:hover { \
-          background-image: url(" + front_arm_right_hover + "); \
+          background-image: url(" +
+        front_arm_right_hover +
+        "); \
         }"}
 `;
 
@@ -122,7 +130,9 @@ const FrontLegLeftStyled = styled(BaseImageStyled)`
     props.selected
       ? "background-image:  url(" + front_leg_left_selected + ");"
       : " &:hover { \
-          background-image: url(" + front_leg_left_hover + "); \
+          background-image: url(" +
+        front_leg_left_hover +
+        "); \
         }"}
 `;
 
@@ -136,7 +146,9 @@ const FrontLegRightStyled = styled(BaseImageStyled)`
     props.selected
       ? "background-image:  url(" + front_leg_right_selected + ");"
       : " &:hover { \
-          background-image: url(" + front_leg_right_hover + "); \
+          background-image: url(" +
+        front_leg_right_hover +
+        "); \
         }"}
 `;
 
@@ -149,7 +161,9 @@ const RearHeadStyled = styled(BaseImageStyled)`
     props.selected
       ? "background-image:  url(" + rear_head_selected + ");"
       : " &:hover { \
-          background-image: url(" + rear_head_hover + "); \
+          background-image: url(" +
+        rear_head_hover +
+        "); \
         }"}
 `;
 
@@ -162,7 +176,9 @@ const RearTruncStyled = styled(BaseImageStyled)`
     props.selected
       ? "background-image:  url(" + rear_trunc_selected + ");"
       : " &:hover { \
-          background-image: url(" + rear_trunc_hover + "); \
+          background-image: url(" +
+        rear_trunc_hover +
+        "); \
         }"}
 `;
 
@@ -175,7 +191,9 @@ const RearArmLeftStyled = styled(BaseImageStyled)`
     props.selected
       ? "background-image:  url(" + rear_arm_left_selected + ");"
       : " &:hover { \
-          background-image: url(" + front_arm_left_hover + "); \
+          background-image: url(" +
+        front_arm_left_hover +
+        "); \
         }"}
 `;
 
@@ -188,7 +206,9 @@ const RearArmRightStyled = styled(BaseImageStyled)`
     props.selected
       ? "background-image:  url(" + rear_arm_right_selected + ");"
       : " &:hover { \
-          background-image: url(" + rear_arm_right_hover + "); \
+          background-image: url(" +
+        rear_arm_right_hover +
+        "); \
         }"}
 `;
 
@@ -201,7 +221,9 @@ const RearLegLeftStyled = styled(BaseImageStyled)`
     props.selected
       ? "background-image:  url(" + rear_leg_left_selected + ");"
       : " &:hover { \
-          background-image: url(" + rear_leg_left_hover + "); \
+          background-image: url(" +
+        rear_leg_left_hover +
+        "); \
         }"}
 `;
 
@@ -215,7 +237,9 @@ const RearLegRightStyled = styled(BaseImageStyled)`
     props.selected
       ? "background-image:  url(" + rear_leg_right_selected + ");"
       : " &:hover { \
-          background-image: url(" + rear_leg_right_hover + "); \
+          background-image: url(" +
+        rear_leg_right_hover +
+        "); \
         }"}
 `;
 
@@ -236,7 +260,8 @@ export type PersonDamagesSelection = {
 
 interface DamagedPartPersonProps {
   details?: PartDamagedDetailsPerson;
-  onChange: (localizations: string[]) => void;
+  onChange?: (localizations: string[]) => void;
+  readOnly?: boolean;
 }
 
 const DamagedPartPersonSelect = (props: DamagedPartPersonProps) => {
@@ -246,63 +271,15 @@ const DamagedPartPersonSelect = (props: DamagedPartPersonProps) => {
   const personWoundedPoints = details?.personWoundedPoints || [];
   const hasWound = (wound: string) => personWoundedPoints.indexOf(wound) >= 0 || false;
 
-  // const [selection, setSelection] = useState<PersonDamagesSelection>({
-  //   front_head: hasWound("front_head"),
-  //   front_trunc: hasWound("front_trunc"),
-  //   front_arm_right: hasWound("front_arm_right"),
-  //   front_arm_left: hasWound("front_arm_left"),
-  //   front_leg_right: hasWound("front_leg_right"),
-  //   front_leg_left: hasWound("front_leg_left"),
-  //   rear_head: hasWound("rear_head"),
-  //   rear_trunc: hasWound("rear_trunc"),
-  //   rear_arm_right: hasWound("rear_arm_right"),
-  //   rear_arm_left: hasWound("rear_arm_left"),
-  //   rear_leg_right: hasWound("rear_leg_right"),
-  //   rear_leg_left: hasWound("rear_leg_left"),
-  // });
-
-  // useEffect(() => {
-  //   setSelection({
-  //     front_head: hasWound("front_head"),
-  //     front_trunc: hasWound("front_trunc"),
-  //     front_arm_right: hasWound("front_arm_right"),
-  //     front_arm_left: hasWound("front_arm_left"),
-  //     front_leg_right: hasWound("front_leg_right"),
-  //     front_leg_left: hasWound("front_leg_left"),
-  //     rear_head: hasWound("rear_head"),
-  //     rear_trunc: hasWound("rear_trunc"),
-  //     rear_arm_right: hasWound("rear_arm_right"),
-  //     rear_arm_left: hasWound("rear_arm_left"),
-  //     rear_leg_right: hasWound("rear_leg_right"),
-  //     rear_leg_left: hasWound("rear_leg_left"),
-  //   });
-  // }, [personWoundedPoints]);
-
   const handleToggleSelection = (localization: string) => {
+    if (props.readOnly) return;
+
     let newSelection: string[] = [...(props.details?.personWoundedPoints || [])];
     if (newSelection.find((s) => s === localization)) {
       newSelection = newSelection.filter((s) => s !== localization);
     } else newSelection.push(localization);
 
-    // newSelection[localization] = !newSelection[localization];
-    // //setSelection(newSelection);
-    // const localizationsLabel: string[] = [];
-
-    // if (newSelection.front_head) localizationsLabel.push("front_head");
-    // if (newSelection.front_trunc) localizationsLabel.push("front_trunc");
-    // if (newSelection.front_arm_right) localizationsLabel.push("front_arm_right");
-    // if (newSelection.front_arm_left) localizationsLabel.push("front_arm_left");
-    // if (newSelection.front_leg_right) localizationsLabel.push("front_leg_righ");
-    // if (newSelection.front_leg_left) localizationsLabel.push("front_leg_left");
-    // if (newSelection.rear_head) localizationsLabel.push("rear_head");
-    // if (newSelection.rear_trunc) localizationsLabel.push("rear_trunc");
-    // if (newSelection.rear_arm_right) localizationsLabel.push("rear_arm_right");
-    // if (newSelection.rear_arm_left) localizationsLabel.push("rear_arm_left");
-    // if (newSelection.rear_leg_right) localizationsLabel.push("rear_leg_right");
-    // if (newSelection.rear_leg_left) localizationsLabel.push("rear_leg_left");
-
-    console.log("newSelection ", newSelection);
-    props.onChange(newSelection);
+    if (props.onChange) props.onChange(newSelection);
   };
 
   return (

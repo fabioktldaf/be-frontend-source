@@ -8,6 +8,7 @@ export type MenuEntry = {
   label: string;
   icon?: React.ReactNode;
   url?: string;
+  action?: () => void;
   children?: MenuEntry[];
 };
 

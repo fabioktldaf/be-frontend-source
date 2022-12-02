@@ -24,7 +24,7 @@ export const MainForm = ({ layout, title, actions, children }: FormProps) => {
         {title}
         <FormActions>
           {actions?.map((action, i) => (
-            <FormActionButton key={i} icon={action.icon} size="small" onClick={() => action.execute}>
+            <FormActionButton key={i} icon={action.icon} size="small" onClick={() => action.execute()}>
               {action.label}
             </FormActionButton>
           ))}
