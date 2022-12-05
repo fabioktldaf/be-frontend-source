@@ -362,3 +362,17 @@ export const SignatureTypeDouble: SelectPair = {
 };
 
 export const SignatureTypes = [SignatureTypeEmpty, SignatureTypeSingle, SignatureTypeDouble];
+
+export const LocalStorageKeys = {
+  newClaim: {
+    status: "new-claim.status",
+    step: "new-claim.step",
+    stepperData: "new-claim.stepperData",
+    policyData: "new-claim.policyData",
+    claimData: "new-claim.claimData",
+    responsability: "new-claim.responsability",
+    damagedParts: "new-claim.damagedParts",
+    counterpartData: "new-claim.counterpartData",
+    additionalInfo: "new-claim.additionalInfo",
+  },
+};

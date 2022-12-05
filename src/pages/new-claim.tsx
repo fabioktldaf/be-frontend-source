@@ -5,7 +5,7 @@ import { store, RootState } from "../redux/store";
 import { setStatus } from "../redux/features/newClaimSlice";
 
 import NewClaim from "../components/NewClaim";
-import AdditionalData from "../components/NewClaim/AdditionalData";
+import AdditionalInfo from "../components/NewClaim/AdditionalInfo";
 import CheckSic from "../components/NewClaim/CheckSic";
 import NewClaimsSteps from "../components/NewClaim/NewClaimSteps";
 import Resume from "../components/NewClaim/Resume";
@@ -29,7 +29,7 @@ const NewClaimPage = () => {
           onBackward={() => handleChangeStatus(NewClaimStateType.MandatoryData)}
         />
       )}
-      {step === 2 && <AdditionalData onSave={() => handleChangeStatus(NewClaimStateType.Resume)} />}
+      {step === 2 && <AdditionalInfo onSave={() => handleChangeStatus(NewClaimStateType.Resume)} />}
       {step === 3 && <Resume onBackward={() => handleChangeStatus(NewClaimStateType.AdditionalData)} />}
     </Col>
   );

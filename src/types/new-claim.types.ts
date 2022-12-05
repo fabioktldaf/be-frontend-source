@@ -232,13 +232,13 @@ export type AdditionalInfoPaymentTypes = "---" | "transfer" | "check";
 
 export type AdditionalInfoPaymentType = {
   type: AdditionalInfoPaymentTypes;
-  iban: string;
+  iban?: string;
 };
 
 export type AdditionalInfoContactType = {
-  shippingAddress: string;
-  email: string;
-  phone: string;
+  shippingAddress?: string;
+  email?: string;
+  phone?: string;
 };
 
 export type AdditionalInfoDataType = {
@@ -252,7 +252,7 @@ export type AdditionalInfoDataType = {
     | AdditionalInfoContactType;
 };
 
-export type SetAdditionalInfoPayloadType = {
+export type AdditionalInfoPair = {
   additionalInfo: AdditionalInfoDataType;
   index: number;
 };

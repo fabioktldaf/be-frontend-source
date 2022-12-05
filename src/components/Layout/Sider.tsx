@@ -7,6 +7,8 @@ import SideMenu from "./SideMenu";
 import styled from "styled-components";
 import useApplication from "../../hooks/useApplication";
 
+import { defaultClaimPolicyData } from "../../config/dummy-data";
+
 const SiderStyled = styled(Layout.Sider)`
   background-color: white;
   box-shadow: 0 0 5px #aaa;
@@ -55,6 +57,7 @@ const Sider = () => {
               app.updateClaimData("corso Italia 4", "occurrencePlace");
               app.updateClaimData(true, "policeIntervention");
               app.updateClaimData(true, "witnesses");
+              app.updateClaimData(defaultClaimPolicyData.claimNote, "note");
             }}
           >
             Fill "Sinistro"
@@ -99,50 +102,21 @@ const Sider = () => {
             size="small"
             style={{ marginBottom: "1em" }}
             onClick={() => {
-              app.updateDamagedPart(
-                {
-                  pdNumber: "1669798161516",
-                  subject: {
-                    natural_person: {
-                      id: 1,
-                      name: "Mario",
-                      lastname: "Rossi",
-                      fiscal_code: "RSSMRA73L09Z103F",
-                      province_of_residence: "Milano",
-                      city_of_residence: "Rho",
-                    },
-                  },
-                  roleType: "CP",
-                  damages: [
-                    {
-                      damageType: "Vehicle",
-                      details: {
-                        plate: "AB123CD",
-                        format: "Targa Italiana",
-                        type: "A",
-                        collisionPoints: ["11"],
-                        note: "",
-                      },
-                    },
-                    {
-                      damageType: "Person",
-                      details: {
-                        personWoundedPoints: ["front_trunc", "rear_trunc"],
-                      },
-                    },
-                    {
-                      damageType: "Thing",
-                      details: {
-                        note: "gameboy",
-                      },
-                    },
-                  ],
-                },
-                0
-              );
+              defaultClaimPolicyData.damagedParts.forEach((dp, i) => app.updateDamagedPart(dp, i));
             }}
           >
             Fill "PD Owner"
+          </Button>
+          &nbsp;
+          <Button
+            type="primary"
+            size="small"
+            style={{ marginBottom: "1em" }}
+            onClick={() => {
+              defaultClaimPolicyData.additionalInfo.forEach((ai, i) => app.setAdditionalInfo(ai, i));
+            }}
+          >
+            Fill "Add Infos"
           </Button>
         </Collapse.Panel>
       </Collapse>

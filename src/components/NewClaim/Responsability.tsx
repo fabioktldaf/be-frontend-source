@@ -209,7 +209,7 @@ const Responsability = (props: ResponsabilityProps) => {
               </thead>
               <tbody>
                 {baremsArray().map((i: number) => (
-                  <tr>
+                  <tr key={i}>
                     <BaremCaseLabel>{t(`barem_label_${i}`)}</BaremCaseLabel>
                     <BaremCaseTd onClick={() => handleBaremChange("vehicleA", i)}>
                       <div style={{ display: "flex", justifyContent: "center" }}>

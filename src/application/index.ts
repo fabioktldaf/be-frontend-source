@@ -14,6 +14,7 @@ export interface IApplication {
   init: () => void;
   changeLanguage: (lang: string) => void;
   startNewClaim: () => void;
+  clearLocalStorage: () => void;
   updatedStepperData: (val: any, field: SteppedChangeDataType) => void;
   updateClaimData: (val: any, field: UpdateNewClaimDataFieldsType) => void;
   updateCounterpartData: (val: any, field: UpdateNewClaimDataFieldsType) => void;
@@ -32,6 +33,7 @@ export default (): IApplication => {
   return {
     init: () => {
       console.log("init");
+      NewClaim.checkDataEntryInterruption();
     },
     changeLanguage: (lang: string) => {
       i18next.changeLanguage(lang);
@@ -39,6 +41,9 @@ export default (): IApplication => {
     },
     startNewClaim: () => {
       NewClaim.startNewClaim();
+    },
+    clearLocalStorage: () => {
+      NewClaim.clearLocalStorage();
     },
     updatedStepperData: (val: any, field: SteppedChangeDataType) => {
       NewClaim.updateStepperData(val, field);

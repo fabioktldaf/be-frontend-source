@@ -8,7 +8,7 @@ import {
   DamagedPartType,
   NewClaimStateType,
   ResponsabilityDataType,
-  SetAdditionalInfoPayloadType,
+  AdditionalInfoPair,
   StepperDataType,
 } from "../../types/new-claim.types";
 
@@ -82,6 +82,9 @@ export const newClaimSlice = createSlice({
   name: "new-claim",
   initialState: buildInitialState(),
   reducers: {
+    clearLocalStorage(state) {
+      // handled in localstoareMiddleware
+    },
     clear(state) {
       const newState = buildInitialState();
 
@@ -130,7 +133,7 @@ export const newClaimSlice = createSlice({
         );
       }
     },
-    addDamagedPart(state, action: PayloadAction<string>) {
+    addDamagedPart(state) {
       state.damagedParts = [
         ...state.damagedParts,
         {
@@ -159,7 +162,7 @@ export const newClaimSlice = createSlice({
       state.responsabilityDataCompleted = action.payload[2];
       state.damagedPartsDataCompleted = action.payload[3];
     },
-    setAdditionalInfo(state, action: PayloadAction<SetAdditionalInfoPayloadType>) {
+    setAdditionalInfo(state, action: PayloadAction<AdditionalInfoPair>) {
       const { additionalInfo, index } = action.payload;
       if (index === -1) {
         state.additionalInfo = [...state.additionalInfo, additionalInfo];
@@ -172,6 +175,7 @@ export const newClaimSlice = createSlice({
 });
 
 export const {
+  clearLocalStorage,
   clear,
   setStatus,
   setPolicyData,

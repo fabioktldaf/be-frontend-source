@@ -6,12 +6,18 @@ import styled from "styled-components";
 
 import { ImFilePdf } from "react-icons/im";
 import { BsPrinter } from "react-icons/bs";
+import { SlUser } from "react-icons/sl";
+import { RiDeleteBinFill, RiMoneyEuroCircleLine } from "react-icons/ri";
+import { AiOutlineContacts } from "react-icons/ai";
+import { HiOutlineDocumentText } from "react-icons/hi";
+import { FaBackward } from "react-icons/fa";
 
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import { Link } from "react-router-dom";
 import {
   AdditionalInfoDocTypes,
+  AdditionalInfoPaymentTransfer,
   AdditionalInfoPaymentTypes,
   AdditionalInfoSubjectRoles,
   AllPartRoles,
@@ -22,10 +28,12 @@ import {
 } from "../../config/const";
 import {
   AdditionalInfoContactType,
+  AdditionalInfoDataType,
   AdditionalInfoDocumentType,
   AdditionalInfoPaymentType,
   AdditionalInfoSubjectType,
   DamagedType,
+  NewClaimStateType,
   PartDamagedDetailsPerson,
   PartDamagedDetailsThing,
   PartDamagedDetailsVehicle,
@@ -36,6 +44,9 @@ import DamagedPartPersonSelect from "./DamagedPartPersonSelect";
 import { t } from "i18next";
 import moment from "moment";
 import { insuranceCodes } from "../../config/dummy-data";
+import { HiUserGroup } from "react-icons/hi";
+import { CenteredRow } from "../../style/containers";
+import { setStatus } from "../../redux/features/newClaimSlice";
 
 const ResumeContainer = styled.div`
   width: 900px;
@@ -112,11 +123,47 @@ const ReadonlyValue = styled.span``;
 
 const DataRow = styled.div``;
 
+const AddInfoIcon = styled.div`
+  font-size: 1.4em;
+  color: #888;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 1em;
+  margin-bottom: 0.5em;
+`;
+
+const TdClaimDataLabel = styled.td`
+  width: 16em;
+  vertical-align: top;
+  padding: 0.5em 0;
+  text-transform: uppercase;
+  font-size: 0.9em;
+`;
+
+const TdClaimDataValue = styled.td`
+  font-weight: lighter;
+  vertical-align: top;
+  padding: 0.5em 0;
+`;
+
+const AddInfoRow = styled.div`
+  display: flex;
+  border-bottom: 1px dotted #eee;
+  width: 100%;
+  margin-bottom: 0.5em;
+`;
+const AddInfoValue = styled.div`
+  flex: 1;
+  text-align: right;
+`;
+
 interface ResumeProps {
   onBackward: () => void;
 }
 
 const Resume = (props: ResumeProps) => {
+  const dispatch = useDispatch();
   const [saved, setSaved] = useState(false);
   const printAreaRef = React.useRef<HTMLDivElement>(null);
   const { claimData, policyData, counterpartData, damagedParts, additionalInfo, responsability } = useSelector(
@@ -130,6 +177,10 @@ const Resume = (props: ResumeProps) => {
   });
 
   const handlePrintResume = useReactToPrint({ content: () => printAreaRef.current });
+
+  const handleBackward = () => {
+    dispatch(setStatus(NewClaimStateType.AdditionalData));
+  };
 
   const renderDetailsGroupDataField = (field: any, i: number) => (
     <ReadonlyField key={i}>
@@ -563,6 +614,108 @@ const Resume = (props: ResumeProps) => {
     );
   }
 
+  const renderAdditionalInfo = (ai: AdditionalInfoDataType) => {
+    switch (ai.type) {
+      case "subject":
+        const subjectDetails = ai.details as AdditionalInfoSubjectType;
+
+        return (
+          <div
+            style={{
+              display: "flex",
+              fontWeight: "lighter",
+              alignItems: "center",
+              fontSize: "0.9em",
+            }}
+          >
+            <AddInfoIcon>
+              <SlUser style={{ fontSize: "0.9em" }} />
+            </AddInfoIcon>
+            <AddInfoRow>
+              <div>{AdditionalInfoSubjectRoles.find((r) => r.value === subjectDetails.role)?.label}</div>
+              <AddInfoValue>{subjectDetails.personalData || " [nome cognome]"}</AddInfoValue>
+            </AddInfoRow>
+          </div>
+        );
+      case "document":
+        const documentDetails = ai.details as AdditionalInfoDocumentType;
+        return (
+          <div
+            style={{
+              display: "flex",
+              fontWeight: "lighter",
+              alignItems: "center",
+              fontSize: "0.9em",
+            }}
+          >
+            <AddInfoIcon>
+              <HiOutlineDocumentText />
+            </AddInfoIcon>
+            {AdditionalInfoDocTypes.find((d) => d.value === documentDetails.type)?.label}
+          </div>
+        );
+      case "payment":
+        const paymentDetails = ai.details as AdditionalInfoPaymentType;
+        return (
+          <div
+            style={{
+              display: "flex",
+              fontWeight: "lighter",
+              alignItems: "center",
+              fontSize: "0.9em",
+            }}
+          >
+            <AddInfoIcon>
+              <RiMoneyEuroCircleLine />
+            </AddInfoIcon>
+            <AddInfoRow>
+              <div>{AdditionalInfoPaymentTypes.find((p) => p.value === paymentDetails.type)?.label}</div>
+              <AddInfoValue>
+                {paymentDetails.type === AdditionalInfoPaymentTransfer.value && " IBAN: " + paymentDetails.iban}
+              </AddInfoValue>
+            </AddInfoRow>
+          </div>
+        );
+      case "contact":
+        const contactDetails = ai.details as AdditionalInfoContactType;
+
+        return (
+          <div
+            style={{
+              display: "flex",
+              fontWeight: "lighter",
+              alignItems: "flex-start",
+              fontSize: "0.9em",
+            }}
+          >
+            <AddInfoIcon>
+              <AiOutlineContacts />
+            </AddInfoIcon>
+            <div style={{ width: "100%" }}>
+              {contactDetails.email && (
+                <AddInfoRow>
+                  <div>Email:</div>
+                  <AddInfoValue>{contactDetails.email}</AddInfoValue>
+                </AddInfoRow>
+              )}
+              {contactDetails.phone && (
+                <AddInfoRow>
+                  <div>Telefono:</div>
+                  <AddInfoValue>{contactDetails.phone}</AddInfoValue>
+                </AddInfoRow>
+              )}
+              {contactDetails.shippingAddress && (
+                <AddInfoRow>
+                  <div>Indirizzo di spedizione:</div>
+                  <AddInfoValue>{contactDetails.shippingAddress}</AddInfoValue>
+                </AddInfoRow>
+              )}
+            </div>
+          </div>
+        );
+    }
+  };
+
   return (
     <ResumeContainer>
       {!saved && (
@@ -573,7 +726,17 @@ const Resume = (props: ResumeProps) => {
       )}
       {saved && (
         <div>
-          <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "1em" }}>
+          <div style={{ display: "flex", marginBottom: "1em" }}>
+            <Tooltip title="Modifica Informazioni Addizionali">
+              <Button
+                icon={<FaBackward />}
+                onClick={handleBackward}
+                type="primary"
+                shape="circle"
+                style={{ paddingTop: "4px" }}
+              ></Button>
+            </Tooltip>
+            <div style={{ width: "1em", height: "1em" }}> </div>
             <Tooltip title="Stampa o salva in PDF">
               <Button
                 icon={<BsPrinter />}
@@ -583,9 +746,17 @@ const Resume = (props: ResumeProps) => {
                 style={{ paddingTop: "4px" }}
               ></Button>
             </Tooltip>
+            <div style={{ flex: "1", height: "1em" }}> </div>
           </div>
           <ResumeContent ref={printAreaRef}>
-            <div style={{ display: "flex", textTransform: "uppercase", marginBottom: "4em" }}>
+            <div
+              style={{
+                display: "flex",
+                textTransform: "uppercase",
+                marginBottom: "2em",
+                borderBottom: "5px double #eee",
+              }}
+            >
               <h3 style={{ flex: 1 }}>Riepilogo del sinistro n° {claimData?.number} </h3>
               <div> registrato il giorno {moment(Date.now()).format("DD/MM/YYYY")}</div>
             </div>
@@ -593,70 +764,63 @@ const Resume = (props: ResumeProps) => {
             <table>
               <tbody>
                 <tr>
-                  <td style={{ width: "20em", verticalAlign: "top" }}>Polizza n°: </td>
-                  <td style={{ fontWeight: "lighter" }}>{policyData?.policy_number}</td>
+                  <TdClaimDataLabel>Polizza n°: </TdClaimDataLabel>
+                  <TdClaimDataValue style={{ fontWeight: "lighter" }}>{policyData?.policy_number}</TdClaimDataValue>
                 </tr>
                 <tr>
-                  <td style={{ width: "20em", verticalAlign: "top" }}>Proprietario del veicolo: </td>
-                  <td>{ownerDetails}</td>
+                  <TdClaimDataLabel>Proprietario del veicolo: </TdClaimDataLabel>
+                  <TdClaimDataValue>{ownerDetails}</TdClaimDataValue>
                 </tr>
                 <tr>
-                  <td style={{ verticalAlign: "top" }}>Data e luogo accadimento:</td>
-                  <td>
+                  <TdClaimDataLabel>Data e luogo accadimento:</TdClaimDataLabel>
+                  <TdClaimDataValue>
                     <SpanSmall style={{ marginLeft: "0.5em" }}>
                       {claimData?.occurrenceDate} alle ore {claimData?.occurrenceTime} in località{" "}
                       {claimData?.occurrencePlace}
                     </SpanSmall>
-                  </td>
+                  </TdClaimDataValue>
                 </tr>
                 <tr>
-                  <td style={{ verticalAlign: "top" }}>Note ANIA: </td>
-                  <td>{claimData?.note}</td>
+                  <TdClaimDataLabel>Note ANIA: </TdClaimDataLabel>
+                  <TdClaimDataValue>{claimData?.note}</TdClaimDataValue>
                 </tr>
                 <tr>
-                  <td style={{ verticalAlign: "top" }}>Controparte: </td>
-                  <td>{counterpartDetails}</td>
+                  <TdClaimDataLabel>Controparte: </TdClaimDataLabel>
+                  <TdClaimDataValue>{counterpartDetails}</TdClaimDataValue>
                 </tr>
                 <tr>
-                  <td style={{ verticalAlign: "top" }}>Caso Circostanza: </td>
-                  <td style={{ fontWeight: "lighter" }}>
-                    Il veicolo A {t(`barem_label_${responsability?.barems.vehicleA}`)}
-                  </td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td style={{ fontWeight: "lighter" }}>
-                    Il veicolo B {t(`barem_label_${responsability?.barems.vehicleB}`)}
-                  </td>
+                  <TdClaimDataLabel>Caso Circostanza: </TdClaimDataLabel>
+                  <TdClaimDataValue>
+                    <div>Il veicolo A {t(`barem_label_${responsability?.barems.vehicleA}`)}</div>
+                    <div>Il veicolo B {t(`barem_label_${responsability?.barems.vehicleB}`)}</div>
+                  </TdClaimDataValue>
                 </tr>
                 {responsability?.forcedReason && (
                   <tr>
-                    <td style={{ verticalAlign: "top" }}>Motivo Forzatura: </td>
-                    <td style={{ fontWeight: "lighter" }}>
+                    <TdClaimDataLabel style={{ verticalAlign: "top" }}>Motivo Forzatura: </TdClaimDataLabel>
+                    <TdClaimDataValue>
                       {ForceReasons.find((fr) => fr.value === responsability?.forcedReason)?.label}
-                    </td>
+                    </TdClaimDataValue>
                   </tr>
                 )}
                 <tr>
-                  <td style={{ verticalAlign: "top" }}>Responsabilità: </td>
-                  <td style={{ fontWeight: "lighter" }}>
+                  <TdClaimDataLabel style={{ verticalAlign: "top" }}>Responsabilità: </TdClaimDataLabel>
+                  <TdClaimDataValue>
                     {t(`management_type_${responsability?.responsabilityType}`)}
                     <span style={{ margin: "0 0.25em" }}>-</span>
                     <span>{responsability?.responsabilityPercentage}</span>
-                  </td>
+                  </TdClaimDataValue>
                 </tr>
                 <tr>
-                  <td style={{ verticalAlign: "top" }}>Tipo Firma: </td>
-                  <td style={{ fontWeight: "lighter" }}>
+                  <TdClaimDataLabel style={{ verticalAlign: "top" }}>Tipo Firma: </TdClaimDataLabel>
+                  <TdClaimDataValue style={{ fontWeight: "lighter" }}>
                     {SignatureTypes.find((st) => st.value === responsability?.signatureType)?.label}
-                  </td>
+                  </TdClaimDataValue>
                 </tr>
               </tbody>
             </table>
-
             <p>
               <br />
-              <h3>Partite di Danno</h3>
             </p>
             <table>
               <tbody>
@@ -674,31 +838,225 @@ const Resume = (props: ResumeProps) => {
                       dpAddress = `Sede legale ${subject.registered_office_city} provincia di ${subject.registered_office_province}`;
                     }
 
+                    const vehicleDamage = dp.damages.find((damage) => damage.damageType === "Vehicle")
+                      ?.details as PartDamagedDetailsVehicle;
+                    const personDamage = dp.damages.find((damage) => damage.damageType === "Person")
+                      ?.details as PartDamagedDetailsPerson;
+                    const objectsDamage: PartDamagedDetailsThing[] = dp.damages
+                      .filter((damage) => damage.damageType === "Thing")
+                      .map((d) => d.details as PartDamagedDetailsThing);
+
+                    const addInfo = additionalInfo.filter((ai) => ai.damagedPartNumber === dp.pdNumber);
+
+                    const vehiclePersoneBorder = vehicleDamage && personDamage;
+
                     return (
-                      <tr>
-                        <td style={{ width: "20em", verticalAlign: "top" }}>
-                          {AllPartRoles.find((r) => r.value === dp.roleType)?.label}
-                        </td>
-                        <td style={{ fontWeight: "lighter" }}>
-                          {dpNominative} <br /> {dpAddress}
-                        </td>
-                      </tr>
+                      <>
+                        <tr>
+                          <td colSpan={2}>
+                            <h4
+                              style={{
+                                fontSize: "1em",
+                                padding: "0.2em 2em 0.1em 2em",
+                                textTransform: "uppercase",
+                                backgroundColor: "#f5f5f5",
+                              }}
+                            >
+                              Partita di Danno - {AllPartRoles.find((r) => r.value === dp.roleType)?.label}
+                            </h4>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td></td>
+                          <td style={{ fontWeight: "lighter", padding: "0 2em" }}>
+                            {dpNominative}, {dpAddress}
+                          </td>
+                        </tr>
+                        <tr>
+                          <td></td>
+                          <td style={{ padding: "0 2em" }}>
+                            <div style={{ display: "flex" }}>
+                              <div
+                                style={{
+                                  display: "flex",
+                                  flexDirection: "column",
+                                  alignItems: "center",
+                                  flex: "1",
+                                  width: "250px",
+                                  borderRight: `${vehiclePersoneBorder ? "2px dashed #eee" : "none"}`,
+                                }}
+                              >
+                                {vehicleDamage && (
+                                  <>
+                                    <div
+                                      style={{
+                                        fontWeight: "lighter",
+                                        textTransform: "uppercase",
+                                        fontSize: "0.9em",
+                                        marginTop: "1em",
+                                        marginBottom: "1em",
+                                        alignItems: "center",
+                                        backgroundColor: "#f5f5f5",
+                                        padding: "0 1em",
+                                        textAlign: "center",
+                                      }}
+                                    >
+                                      danni al veicolo
+                                    </div>
+                                    <div style={{ transform: "scale(0.5) translateY(-50%)", height: "190px" }}>
+                                      <CarImpactSelector readOnly={true} areas={vehicleDamage.collisionPoints} />
+                                    </div>
+                                    <ul style={{ fontWeight: "lighter" }}>
+                                      {vehicleDamage.collisionPoints.map((cp) => (
+                                        <li>{vehicleCollisionPoints.find((p) => p.code === cp)?.label}</li>
+                                      ))}
+                                    </ul>
+                                    {vehicleDamage.note && (
+                                      <div
+                                        style={{
+                                          fontWeight: "lighter",
+                                          marginTop: "1em",
+                                          fontSize: "0.9em",
+                                          textAlign: "justify",
+                                          paddingRight: "1em",
+                                        }}
+                                      >
+                                        NOTE: {vehicleDamage.note}
+                                      </div>
+                                    )}
+                                  </>
+                                )}
+                              </div>
+
+                              {personDamage && (
+                                <div
+                                  style={{
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    alignItems: "center",
+                                    flex: "1",
+                                    width: "250px",
+                                  }}
+                                >
+                                  <div
+                                    style={{
+                                      fontWeight: "lighter",
+                                      textTransform: "uppercase",
+                                      fontSize: "0.9em",
+                                      marginTop: "1em",
+                                      marginBottom: "1em",
+                                      alignItems: "center",
+                                      backgroundColor: "#f5f5f5",
+                                      padding: "0 1em",
+                                      textAlign: "center",
+                                    }}
+                                  >
+                                    danni alla persona
+                                  </div>
+                                  <div style={{ transform: "scale(0.5) translateY(-100%)", height: "190px" }}>
+                                    <DamagedPartPersonSelect readOnly={true} details={personDamage} />
+                                  </div>
+                                  <div
+                                    style={{
+                                      fontWeight: "lighter",
+                                      display: "flex",
+                                      alignItems: "center",
+                                    }}
+                                  >
+                                    <ul>
+                                      {personDamage.personWoundedPoints.map((w) => (
+                                        <li>{t(`person_injury_${w}`)}</li>
+                                      ))}
+                                    </ul>
+                                  </div>
+                                  {personDamage.note && (
+                                    <div
+                                      style={{
+                                        fontWeight: "lighter",
+                                        marginTop: "1em",
+                                        fontSize: "0.9em",
+                                        textAlign: "justify",
+                                        paddingLeft: "1em",
+                                      }}
+                                    >
+                                      NOTE: {personDamage.note}
+                                    </div>
+                                  )}
+                                </div>
+                              )}
+                            </div>
+                          </td>
+                        </tr>
+
+                        {objectsDamage?.length > 0 && (
+                          <tr>
+                            <td></td>
+                            <td style={{ padding: "0 2em" }}>
+                              <div>
+                                <div
+                                  style={{
+                                    fontWeight: "lighter",
+                                    textTransform: "uppercase",
+                                    fontSize: "0.9em",
+                                    marginTop: "1em",
+                                    marginBottom: "1em",
+                                    alignItems: "center",
+                                    backgroundColor: "#f5f5f5",
+                                    padding: "0 1em",
+                                  }}
+                                >
+                                  danni alle cose
+                                </div>
+                                <div>
+                                  <ul style={{ fontWeight: "lighter" }}>
+                                    {objectsDamage.map((od: PartDamagedDetailsThing) => (
+                                      <li>{od.note}</li>
+                                    ))}
+                                  </ul>
+                                </div>
+                              </div>
+                            </td>
+                          </tr>
+                        )}
+                        {addInfo?.length > 0 && (
+                          <tr>
+                            <td></td>
+                            <td style={{ padding: "0 2em" }}>
+                              <div>
+                                <div
+                                  style={{
+                                    fontWeight: "lighter",
+                                    textTransform: "uppercase",
+                                    fontSize: "0.9em",
+                                    marginTop: "1em",
+                                    marginBottom: "1em",
+                                    alignItems: "center",
+                                    backgroundColor: "#f5f5f5",
+                                    padding: "0 1em",
+                                  }}
+                                >
+                                  Informazioni Addizionali
+                                </div>
+                                <div style={{ paddingLeft: "1em", marginBottom: "1em" }}>
+                                  {addInfo.map((ai: AdditionalInfoDataType) => renderAdditionalInfo(ai))}
+                                </div>
+                              </div>
+                            </td>
+                          </tr>
+                        )}
+                        {i < damagedParts.length - 1 && (
+                          <tr>
+                            <td>
+                              <div style={{ height: "3em" }}></div>
+                            </td>
+                            <td></td>
+                          </tr>
+                        )}
+                      </>
                     );
                   })}
               </tbody>
             </table>
-
-            {damagedParts &&
-              damagedParts.map((dp, i) => (
-                <>
-                  {renderDetailsGroupData(
-                    `P.D. - ${AllPartRoles.find((r) => r.value === dp.roleType)?.label}`,
-                    damagedPartsFields(i, !!dp.subject.natural_person)
-                  )}
-                  {dp.damages.map((damage, i) => renderDetailsGroupData("", damagedPartDamagesFields(damage)))}
-                  {renderDamagedPartAdditionalInfo(dp.pdNumber)}
-                </>
-              ))}
           </ResumeContent>
         </div>
       )}

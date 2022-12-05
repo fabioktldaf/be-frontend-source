@@ -30,10 +30,14 @@ import { MainForm } from "../Layout/Forms";
 import { IoBodyOutline } from "react-icons/io5";
 import { BsBox } from "react-icons/bs";
 import { BiCar, BiEditAlt } from "react-icons/bi";
-import { RiDeleteBinFill } from "react-icons/ri";
+import { RiDeleteBinFill, RiMoneyEuroCircleLine } from "react-icons/ri";
+import { AiOutlineContacts } from "react-icons/ai";
+import { SlUser } from "react-icons/sl";
+import { HiOutlineDocumentText } from "react-icons/hi";
 import AdditionalInfoModalContent from "./AdditionaInfoModalContent";
 import TabSubject from "../PolicyManualInsert/TabSubject";
 import { CenteredRow } from "../../style/containers";
+import { clearLocalStorage } from "../../redux/features/newClaimSlice";
 
 const DamagedPartsTable = styled.table`
   width: 90%;
@@ -51,7 +55,7 @@ const DamagedPartResumeTd = styled.td`
   padding: 1em 1em;
 `;
 
-const DamangeIconStyled = styled.td`
+const DamangeIconStyled = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -87,7 +91,6 @@ const TooltipContainer = styled.div`
 `;
 
 const AddInfoResume = styled.td`
-  text-align: right;
   padding-right: 2em;
   border-bottom: 1px dotted #eee;
 `;
@@ -124,11 +127,20 @@ const ButtonDeleteAddInfo = styled(RiDeleteBinFill)`
   }
 `;
 
+const AddInfoIcon = styled.div`
+  font-size: 1.8em;
+  color: #888;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 1em;
+`;
+
 interface AdditionalDataProps {
   onSave: () => void;
 }
 
-const AdditionalData = (props: AdditionalDataProps) => {
+const AdditionalInfo = (props: AdditionalDataProps) => {
   const { t } = useTranslation();
   const app = useApplication();
   const [modalOpen, setModalOpen] = useState(false);
@@ -166,6 +178,11 @@ const AdditionalData = (props: AdditionalDataProps) => {
     setModalOpen(true);
   };
 
+  const handleOnSave = () => {
+    app.clearLocalStorage();
+    props.onSave();
+  };
+
   const renderDamagedPartResume = (p: DamagedPartType, index: number) => {
     const managementType = t(`management_type_${claimData.responsability?.responsabilityType}`);
     const roleLabel = AllPartRoles.find((r) => r.value === p.roleType)?.label || "";
@@ -183,7 +200,7 @@ const AdditionalData = (props: AdditionalDataProps) => {
     const collisionPointsLabel = collisionPoints.map(
       (cp) => vehicleCollisionPoints.find((vcp) => vcp.code === cp)?.label
     );
-    const liCollisionPoints = collisionPointsLabel.map((cpl) => <li>{cpl}</li>);
+    const liCollisionPoints = collisionPointsLabel.map((cpl, i) => <li key={i}>{cpl}</li>);
     const tooltipDamagesVehicle = (
       <TooltipContainer>
         <div className="title">Punti di Collisione</div>
@@ -195,8 +212,8 @@ const AdditionalData = (props: AdditionalDataProps) => {
     const wounds = personDamages ? (personDamages.details as PartDamagedDetailsPerson).personWoundedPoints : [];
     const woundsLabelFront = wounds.filter((w) => w.indexOf("front") >= 0).map((w) => t(`person_injury_${w}`));
     const woundsLabelRear = wounds.filter((w) => w.indexOf("rear") >= 0).map((w) => t(`person_injury_${w}`));
-    const liWoundsFront = woundsLabelFront.map((wl) => <li>{wl}</li>);
-    const liWoundsRear = woundsLabelRear.map((wl) => <li>{wl}</li>);
+    const liWoundsFront = woundsLabelFront.map((wl, i) => <li key={i}>{wl}</li>);
+    const liWoundsRear = woundsLabelRear.map((wl, i) => <li key={i}>{wl}</li>);
     const tooltipDamagePerson = (
       <TooltipContainer>
         <div className="title">Danni alla Persona</div>
@@ -215,7 +232,9 @@ const AdditionalData = (props: AdditionalDataProps) => {
       </TooltipContainer>
     );
 
-    const liThingDamages = p.damages.filter((d) => d.damageType === "Thing").map((d) => <li>{d.details.note}</li>);
+    const liThingDamages = p.damages
+      .filter((d) => d.damageType === "Thing")
+      .map((d, i) => <li key={i}>{d.details.note}</li>);
     const howManyThingDamages = liThingDamages.length;
     const tooltipDamagesThings = (
       <TooltipContainer>
@@ -298,9 +317,33 @@ const AdditionalData = (props: AdditionalDataProps) => {
   const renderAdditionalInfo = (pdNumber: string, pdIndex: number) => {
     const pdAdditionalInfo = additionalInfo.filter((ai) => ai.damagedPartNumber === pdNumber);
 
-    return pdAdditionalInfo.map((ai) => (
-      <TrAdditionalInfo>
-        <TdBorderBottom></TdBorderBottom>
+    return pdAdditionalInfo.map((ai, i) => (
+      <TrAdditionalInfo key={i}>
+        <TdBorderBottom style={{ textAlign: "right" }}>
+          {ai.type === AdditionalInfoSubject.value && (
+            <AddInfoIcon>
+              <SlUser style={{ fontSize: "0.9em" }} />
+            </AddInfoIcon>
+          )}
+          {ai.type === AdditionalInfoDoc.value && (
+            <AddInfoIcon>
+              <HiOutlineDocumentText />
+            </AddInfoIcon>
+          )}
+
+          {ai.type === AdditionalInfoPayment.value && (
+            <AddInfoIcon>
+              <RiMoneyEuroCircleLine />
+            </AddInfoIcon>
+          )}
+
+          {ai.type === AdditionalInfoContact.value && (
+            <AddInfoIcon>
+              <AiOutlineContacts />
+            </AddInfoIcon>
+          )}
+        </TdBorderBottom>
+
         <AddInfoResume colSpan={5}>
           {ai.type === AdditionalInfoSubject.value && renderResumeSubject(ai.details as AdditionalInfoSubjectType)}
           {ai.type === AdditionalInfoDoc.value && renderResumeDocument(ai.details as AdditionalInfoDocumentType)}
@@ -334,7 +377,7 @@ const AdditionalData = (props: AdditionalDataProps) => {
           </tbody>
         </DamagedPartsTable>
         <CenteredRow>
-          <Button type="primary" onClick={() => props.onSave()}>
+          <Button type="primary" onClick={handleOnSave}>
             Salva
           </Button>
         </CenteredRow>
@@ -356,4 +399,4 @@ const AdditionalData = (props: AdditionalDataProps) => {
   );
 };
 
-export default AdditionalData;
+export default AdditionalInfo;

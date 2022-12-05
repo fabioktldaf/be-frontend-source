@@ -1,4 +1,12 @@
-import { DamagedPartType, SelectPair } from "../types/new-claim.types";
+import {
+  AdditionaInfoTypes,
+  AdditionalInfoDocumentTypes,
+  AdditionalInfoPaymentTypes,
+  AdditionalInfoSubjectRoleTypes,
+  AdditionalInfoSubjectType,
+  DamagedPartType,
+  SelectPair,
+} from "../types/new-claim.types";
 
 export const defaultClaimPolicyData = {
   policy_number: "AB-12345789",
@@ -20,7 +28,7 @@ export const defaultClaimPolicyData = {
       business_name: "Acme Inc.",
       iva: "01960170684",
       registered_office_province: "Bologna",
-      registered_office_city: "Bologna",
+      registered_office_city: "Cadriano",
     },
   },
   ownerVehicle: {
@@ -30,6 +38,8 @@ export const defaultClaimPolicyData = {
       format: "Targa Italiana",
     },
   },
+  claimNote:
+    "At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque",
   damagedParts: [
     {
       pdNumber: "1669798161516",
@@ -51,24 +61,25 @@ export const defaultClaimPolicyData = {
             plate: "AB123CD",
             format: "Targa Italiana",
             type: "A",
-            collisionPoints: ["11"],
-            note: "",
+            collisionPoints: ["11", "12", "13"],
+            note: "Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur",
           },
         },
         {
           damageType: "Person",
           details: {
-            personWoundedPoints: ["front_trunc", "rear_trunc"],
+            personWoundedPoints: ["front_trunc", "rear_trunc", "front_arm_right"],
+            note: "At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque",
           },
         },
         {
           damageType: "Thing",
           details: {
-            note: "gameboy",
+            note: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
           },
         },
       ],
-      note: "Sedia",
+      note: "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
     } as DamagedPartType,
     {
       pdNumber: "1669909946930",
@@ -79,21 +90,29 @@ export const defaultClaimPolicyData = {
           lastname: "Verdi",
           fiscal_code: "VRDMRA73L09Z103F",
           province_of_residence: "Bologna",
-          city_of_residence: "Bologna",
+          city_of_residence: "Cadriano",
         },
+        note: "Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur",
       },
       roleType: "TN",
       damages: [
         {
           damageType: "Person",
           details: {
-            personWoundedPoints: ["front_head", "rear_head"],
+            personWoundedPoints: ["front_head", "rear_head", "front_arm_left"],
+            note: "Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur",
           },
         },
         {
           damageType: "Thing",
           details: {
-            note: "Notebook",
+            note: "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur",
+          },
+        },
+        {
+          damageType: "Thing",
+          details: {
+            note: "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum",
           },
         },
       ],
@@ -106,19 +125,64 @@ export const defaultClaimPolicyData = {
           business_name: "Alice s.r.l",
           iva: "12456789",
           registered_office_province: "Genova",
-          registered_office_city: "Genova",
+          registered_office_city: "Bogliasco",
         },
       },
-      roleType: "TS",
+      roleType: "TD",
       damages: [
         {
           damageType: "Thing",
           details: {
-            note: "Sedia",
+            note: "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam",
+          },
+        },
+        {
+          damageType: "Thing",
+          details: {
+            note: "Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione",
           },
         },
       ],
     } as DamagedPartType,
+  ],
+  additionalInfo: [
+    {
+      id: 1670246570138,
+      type: "subject" as AdditionaInfoTypes,
+      damagedPartNumber: "1669798161516",
+      details: {
+        role: "coachbuilder",
+        personalData: null,
+      },
+    },
+    {
+      id: 1670246577652,
+      type: "document" as AdditionaInfoTypes,
+      damagedPartNumber: "1669798161516",
+      details: {
+        type: "id-card",
+        filename: ["fronte.jpg", "retro.jpg"],
+      },
+    },
+    {
+      id: 1670246585293,
+      type: "payment" as AdditionaInfoTypes,
+      damagedPartNumber: "1669798161516",
+      details: {
+        type: "transfer",
+        iban: "123456",
+      },
+    },
+    {
+      id: 1670246667839,
+      type: "contact" as AdditionaInfoTypes,
+      damagedPartNumber: "1669798161516",
+      details: {
+        shippingAddress: "via Ledita Dalnaso 3",
+        email: "fabio@fabio.com",
+        phone: "0034 123456789",
+      },
+    },
   ],
 };
 

@@ -289,14 +289,14 @@ const ClaimData = () => {
       {stepperData?.tipoSinistro === "CARD" && (
         <>
           <FormRow>
-            <FormInput label="Nota Ania" name="nota_ania" tooltip="Inserisci una nota utente">
-              <FormTextArea
-                placeholder="nota utente ..."
-                rows={1}
-                maxLength={100}
-                onChange={(val) => app.updateClaimData(val, "note")}
-              />
-            </FormInput>
+            <InputTextStyled
+              label="Nota Ania"
+              tooltip="Inserisci una nota utente"
+              placeholder="nota utente ..."
+              maxLength={100}
+              onChange={(val) => app.updateClaimData(val, "note")}
+              value={claimData?.note}
+            />
           </FormRow>
         </>
       )}

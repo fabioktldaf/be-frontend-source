@@ -13,17 +13,24 @@ import {
   updateCounterpartData,
   setAdditionalInfo,
   removeAdditionalInfo,
+  clearLocalStorage,
 } from "../redux/features/newClaimSlice";
 import { defaultClaimPolicyData } from "../config/dummy-data";
 import {
   AdditionalInfoDataType,
+  ClaimDataCounterpartDataType,
+  ClaimDataPolicyDataType,
+  ClaimDataType,
   ClaimType,
   DamagedPartType,
   NewClaimStateType,
   PartDamagedDetailsPerson,
   PartDamagedDetailsVehicle,
+  ResponsabilityDataType,
   SelectPair,
+  AdditionalInfoPair,
   SteppedChangeDataType,
+  StepperDataType,
   UpdateNewClaimDataFieldsType,
   UpdateNewClaimResponsabilityDataFieldsType,
 } from "../types/new-claim.types";
@@ -41,7 +48,9 @@ import {
   PartRoleTN,
   PartRoleTS,
   PartRoleTD,
+  LocalStorageKeys,
 } from "../config/const";
+import { appendFile } from "fs";
 
 const isCardVehicle = (type: ClaimType) => CardVehicleTypes.indexOf(type) >= 0;
 
@@ -50,38 +59,9 @@ export default {
     store.dispatch(clear());
     store.dispatch(setStatus(NewClaimStateType.MandatoryData));
     store.dispatch(setPolicyData(defaultClaimPolicyData));
-
-    defaultClaimPolicyData.damagedParts.forEach((dp: DamagedPartType, i) => {
-      store.dispatch(
-        setDamagedPart({
-          index: i,
-          damagedPart: dp,
-        })
-      );
-    });
-
-    store.dispatch(
-      setDamagedPart({
-        index: 0,
-        damagedPart: {
-          pdNumber: Date.now().toString(),
-          subject: defaultClaimPolicyData.owner,
-          roleType: "CP",
-          damages: [
-            {
-              damageType: "Vehicle",
-              details: {
-                plate: defaultClaimPolicyData.ownerVehicle.plate.number,
-                format: defaultClaimPolicyData.ownerVehicle.plate.format,
-                type: defaultClaimPolicyData.ownerVehicle.type,
-                collisionPoints: [],
-                note: "",
-              } as PartDamagedDetailsVehicle,
-            },
-          ],
-        },
-      })
-    );
+  },
+  clearLocalStorage: () => {
+    store.dispatch(clearLocalStorage());
   },
   updateStepperData: (val: any, field: SteppedChangeDataType) => {
     const updatedStepperData = Object.assign({}, store.getState().newClaim.stepperData);
@@ -211,9 +191,7 @@ export default {
     checkDamagedPartsDataCompleted();
   },
   addDamagedPart: () => {
-    const ownerManagementPart = store.getState().newClaim.responsability?.responsabilityType || "---";
-
-    store.dispatch(addDamagedPart(ownerManagementPart));
+    store.dispatch(addDamagedPart());
     checkDamagedPartsDataCompleted();
   },
   removeDamagedPart: (index: number) => {
@@ -251,6 +229,67 @@ export default {
   },
   removeAdditionalInfo: (id: number) => {
     store.dispatch(removeAdditionalInfo(id));
+  },
+  checkDataEntryInterruption: () => {
+    // POLICY DATA
+    const policyDataTxt = localStorage.getItem(LocalStorageKeys.newClaim.policyData);
+    if (policyDataTxt?.length && policyDataTxt?.length > 0) {
+      const policyData = JSON.parse(policyDataTxt) as ClaimDataPolicyDataType;
+      store.dispatch(setPolicyData(policyData));
+    }
+
+    // STEPPER DATA
+    const stepperDataTxt = localStorage.getItem(LocalStorageKeys.newClaim.stepperData);
+    if (stepperDataTxt?.length && stepperDataTxt?.length > 0) {
+      const stepperData = JSON.parse(stepperDataTxt) as StepperDataType;
+      store.dispatch(updateStepperData(stepperData));
+    }
+
+    // CLAIM DATA
+    const claimDataTxt = localStorage.getItem(LocalStorageKeys.newClaim.claimData);
+    if (claimDataTxt?.length && claimDataTxt?.length > 0) {
+      const claimData = JSON.parse(claimDataTxt) as ClaimDataType;
+      store.dispatch(updateClaimData(claimData));
+      checkClaimDataCompleted();
+    }
+
+    // COUNTERPART DATA
+    const counterpartDataTxt = localStorage.getItem(LocalStorageKeys.newClaim.counterpartData);
+    if (counterpartDataTxt?.length && counterpartDataTxt?.length > 0) {
+      const counterpartData = JSON.parse(counterpartDataTxt) as ClaimDataCounterpartDataType;
+      store.dispatch(updateCounterpartData(counterpartData));
+      checkCounterpatDataCompleted();
+    }
+
+    // RESPONSABILITY DATA
+    const responsabilityTxt = localStorage.getItem(LocalStorageKeys.newClaim.responsability);
+    if (responsabilityTxt?.length && responsabilityTxt?.length > 0) {
+      const responsability = JSON.parse(responsabilityTxt) as ResponsabilityDataType;
+      store.dispatch(setResponsabilityData(responsability));
+      checkResponsabilityDataCompleted();
+    }
+
+    // DAMAGED PARTS
+    const damagedPartsTxt = localStorage.getItem(LocalStorageKeys.newClaim.damagedParts);
+    if (damagedPartsTxt?.length && damagedPartsTxt?.length > 0) {
+      const damagedParts = JSON.parse(damagedPartsTxt) as DamagedPartType[];
+      damagedParts.forEach((dp, i) => store.dispatch(setDamagedPart({ damagedPart: dp, index: i })));
+      checkDamagedPartsDataCompleted();
+    }
+
+    // ADDITIONAL INFO
+    const additionalInfoTxt = localStorage.getItem(LocalStorageKeys.newClaim.additionalInfo);
+    if (additionalInfoTxt?.length && additionalInfoTxt?.length > 0) {
+      const additionalInfos = JSON.parse(additionalInfoTxt) as AdditionalInfoDataType[];
+      additionalInfos.forEach((ai, i) => store.dispatch(setAdditionalInfo({ additionalInfo: ai, index: i })));
+    }
+
+    // STATUS
+    const statusTxt = localStorage.getItem(LocalStorageKeys.newClaim.status);
+    if (statusTxt?.length && statusTxt?.length > 0) {
+      const status = JSON.parse(statusTxt) as NewClaimStateType;
+      store.dispatch(setStatus(status));
+    }
   },
 };
 

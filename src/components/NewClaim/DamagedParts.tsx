@@ -41,7 +41,7 @@ const TableDamagedPartsRow = styled.tr`
   }
 `;
 
-const DamangeIconStyled = styled.td`
+const DamangeIconStyled = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;

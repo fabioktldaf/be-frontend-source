@@ -3,6 +3,11 @@ import { Steps, Space, Spin, Button } from "antd";
 import styled from "styled-components";
 
 import cnApproved from "../../images/cn-approved.jpg";
+import useApplication from "../../hooks/useApplication";
+import { useDispatch, useSelector } from "react-redux";
+import { setStatus } from "../../redux/features/newClaimSlice";
+import { NewClaimStateType } from "../../types/new-claim.types";
+import { RootState } from "../../redux/store";
 
 const CheckSendingANIAContainer = styled.div`
   width: 60vw;
@@ -33,12 +38,18 @@ interface CheckSicProps {
 }
 
 const CheckSic = (props: CheckSicProps) => {
+  const dispatch = useDispatch();
   const [verified, setVerified] = useState(false);
+  const status = useSelector((state: RootState) => state.newClaim.status);
 
   useEffect(() => {
-    setTimeout(() => {
-      setVerified(true);
-    }, 2000);
+    if (status === NewClaimStateType.SicCorrect || status === NewClaimStateType.SicError) setVerified(true);
+    else {
+      setTimeout(() => {
+        setVerified(true);
+        dispatch(setStatus(NewClaimStateType.SicCorrect));
+      }, 2000);
+    }
   });
 
   return (

@@ -14,6 +14,11 @@ import { InputTextStyled, SegmentedStyled, SelectStyled } from "../../style/Inpu
 
 const ClaimDataStyled = styled.div``;
 
+const insuranceCodesWithCodes = insuranceCodes.map((ic) => ({
+  value: ic.value,
+  label: `${ic.value.padStart(3, "0")} - ${ic.label}`,
+}));
+
 const CounterpartData = () => {
   const app = useApplication();
   const counterpartData = useSelector((state: RootState) => state.newClaim.counterpartData);
@@ -101,7 +106,7 @@ const CounterpartData = () => {
           filterOption={(input, option) => (option?.label.toLowerCase() ?? "").includes(input.toLocaleLowerCase())}
           value={counterpartData?.insuranceCode}
           onChange={(val) => app.updateCounterpartData(val, "insuranceCode")}
-          options={insuranceCodes}
+          options={insuranceCodesWithCodes}
         />
       </FormRow>
     </ClaimDataStyled>

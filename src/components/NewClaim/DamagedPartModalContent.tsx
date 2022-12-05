@@ -200,6 +200,7 @@ const DamagedPartModalContent = (props: DamagedPartModalContentProps) => {
             tooltip="Note"
             placeholder="note veicolo ..."
             onChange={(val: string) => handleModalPartChange("owner-vehicle-note", val)}
+            value={part.damages[0].details.note}
           />
         </FormRow>
         {part.damages.map((damage, i) => {
@@ -424,6 +425,7 @@ const DamagedPartModalContent = (props: DamagedPartModalContentProps) => {
                     tooltip="Inserisci una descrizione per il danno"
                     placeholder="descrizione del danno"
                     onChange={(val) => handleModalPartChange("thing-note", { value: val, index: i })}
+                    value={damage.details.note}
                   />
 
                   <ButtonDeleteOtherDamage type="primary" shape="circle" onClick={() => handleDeleteDamageType(i)}>
