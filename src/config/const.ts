@@ -1,4 +1,5 @@
 import { NewClaimStepItem, ResponsabilitiesType, SelectPair } from "../types/new-claim.types";
+import { insuranceCodes } from "./dummy-data";
 
 export const defaultLanguage = "it";
 export const languages = ["it", "en", "empty"];
@@ -8,7 +9,9 @@ export const Urls = {
   policy_searchFulltext: "/policy-search-fulltext",
   policy_searchByfields: "/policy-search-byfields",
   policy_manualInsert: "/policy-manual-insert",
-  new_claim: "new-claim",
+  new_claim: "/new-claim",
+  subjects_data: "/subjects-data",
+  subject_details: "/subject-details",
 };
 
 const _R = "R";
@@ -218,21 +221,21 @@ export const NewClaimSteps: NewClaimStepItem[] = [
       description: "Completato",
     },
   },
-  // {
-  //   number: 4,
-  //   waiting: {
-  //     title: "Riepilogo",
-  //     description: "",
-  //   },
-  //   inProgress: {
-  //     title: "Riepilogo",
-  //     description: "Sinistro",
-  //   },
-  //   done: {
-  //     title: "---",
-  //     description: "---",
-  //   },
-  //},
+  {
+    number: 4,
+    waiting: {
+      title: "Conferma e Invio",
+      description: "",
+    },
+    inProgress: {
+      title: "Conferma e Invio",
+      description: "al Liquidatore",
+    },
+    done: {
+      title: "---",
+      description: "---",
+    },
+  },
 ];
 
 export const Responsabilities: ResponsabilitiesType = {
@@ -376,3 +379,55 @@ export const LocalStorageKeys = {
     additionalInfo: "new-claim.additionalInfo",
   },
 };
+
+export const insuranceCodesWithCodes = insuranceCodes.map((ic) => ({
+  value: ic.value,
+  label: `${ic.value.padStart(3, "0")} - ${ic.label}`,
+}));
+
+export const GenderTypeEmpty: SelectPair = { value: "", label: "---" };
+export const GenderTypeMale: SelectPair = { value: "male", label: "Uomo" };
+export const GenderTypeFemale: SelectPair = {
+  value: "female",
+  label: "Female",
+};
+
+export const GenderTypes = [GenderTypeEmpty, GenderTypeMale, GenderTypeFemale];
+
+export const GiuridicalPersonTypeEmpty: SelectPair = { value: "", label: "---" };
+export const GiuridicalPersonTypeSrl: SelectPair = { value: "spa", label: "S.p.A." };
+export const GiuridicalPersonTypeSpa: SelectPair = {
+  value: "srl",
+  label: "S.r.l",
+};
+export const GiuridicalPersonTypeIndividual: SelectPair = { value: "proprietorship", label: "Ditta Individuale" };
+
+export const GiuridicalPersonTypes = [
+  GiuridicalPersonTypeEmpty,
+  GiuridicalPersonTypeSrl,
+  GiuridicalPersonTypeSpa,
+  GiuridicalPersonTypeIndividual,
+];
+
+export const ContactTypeEmpty: SelectPair = { value: "", label: "---" };
+export const ContactTypePec: SelectPair = { value: "pec", label: "PEC" };
+export const ContactTypeEmail: SelectPair = { value: "email", label: "Email" };
+export const ContactTypePhone: SelectPair = { value: "phone", label: "Telefono" };
+export const ContactTypeMobile: SelectPair = { value: "mobile", label: "Cellulare" };
+
+export const ContactTypes = [ContactTypeEmpty, ContactTypePec, ContactTypeEmail, ContactTypePhone, ContactTypeMobile];
+
+export const ContactUseCaseTypeEmpty: SelectPair = { value: "", label: "---" };
+export const ContactUseCaseTypeCommunications: SelectPair = { value: "communications", label: "Invio Comunicazioni" };
+export const ContactUseCaseTypeContactMode: SelectPair = { value: "contact-mode", label: "Modalità Contatto" };
+export const ContactUseCaseTypeSendInformations: SelectPair = {
+  value: "send-informations",
+  label: "Invio Informazioni",
+};
+
+export const ContactUseCaseTypes = [
+  ContactUseCaseTypeEmpty,
+  ContactUseCaseTypeCommunications,
+  ContactUseCaseTypeContactMode,
+  ContactUseCaseTypeSendInformations,
+];

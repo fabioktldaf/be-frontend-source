@@ -5,6 +5,7 @@ import { Hidden } from "./containers";
 import { SelectPair } from "../types/new-claim.types";
 import moment from "moment";
 import { SegmentedValue } from "antd/lib/segmented";
+import { StringMappingType } from "typescript";
 
 export const FormItemStyled = styled(Form.Item)`
   flex: 1;
@@ -36,12 +37,13 @@ interface InputProps {
   tooltip?: string;
   rules?: any;
   placeholder?: string;
+  readOnly?: boolean;
 }
 
 interface InputTextProps extends InputProps {
   maxLength?: number;
   mimLength?: number;
-  onChange: (text: string) => void;
+  onChange?: (text: string) => void;
 }
 
 export const InputTextStyled = (props: InputTextProps) => {
@@ -58,7 +60,7 @@ export const InputTextStyled = (props: InputTextProps) => {
         style={props.styleInput}
         min={props.mimLength}
         max={props.maxLength}
-        onChange={(e) => props.onChange(e.target.value)}
+        onChange={(e) => (props.onChange ? props.onChange(e.target.value) : null)}
         value={props.value}
         defaultValue={props.defaultValue}
         placeholder={props.placeholder}
@@ -93,6 +95,7 @@ export const InputNumberStyled = (props: InputNumberProps) => {
         onChange={(val) => props.onChange(val)}
         value={props.value}
         defaultValue={props.defaultValue}
+        readOnly={props.readOnly}
       />
       <Hidden>{props.value}</Hidden>
     </FormItemStyled>
@@ -150,7 +153,7 @@ export const DatePickerStyled = (props: DatePickerProps) => {
         value={moment(props.value as string, props.format)}
         format={props.format}
       />
-      <Hidden>{props.value.toString()}</Hidden>
+      <Hidden>{props.value?.toString()}</Hidden>
     </FormItemStyled>
   );
 };
@@ -202,5 +205,30 @@ export const SegmentedStyled = (props: SegmentedProps) => {
       />
       <Hidden>{props.value?.toString()}</Hidden>
     </FormItemStyled>
+  );
+};
+
+interface FiscalCodeProps extends InputTextProps {
+  name?: string;
+  lastname?: string;
+  dateOfBirth?: string;
+  cityOfBirth?: string;
+  countryOfBirth?: string;
+}
+
+export const FiscalCodeStyled = (props: FiscalCodeProps) => {
+  const handleOnChange = (val: string) => {
+    props.onChange!(val);
+  };
+
+  return (
+    <InputTextStyled
+      label={props.label}
+      tooltip={props.tooltip}
+      rules={props.rules}
+      placeholder={props.placeholder}
+      onChange={handleOnChange}
+      value={props.value}
+    />
   );
 };

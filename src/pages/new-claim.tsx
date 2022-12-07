@@ -20,7 +20,7 @@ const NewClaimPage = () => {
 
   return (
     <Col>
-      {step < 3 && <NewClaimsSteps />}
+      <NewClaimsSteps />
 
       {step === 0 && <NewClaim onForward={() => handleChangeStatus(NewClaimStateType.VerifingSic)} />}
       {step === 1 && (

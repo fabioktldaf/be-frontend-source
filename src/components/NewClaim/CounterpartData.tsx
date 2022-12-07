@@ -11,13 +11,9 @@ import { useSelector } from "react-redux";
 import useApplication from "../../hooks/useApplication";
 import { insuranceCodes } from "../../config/dummy-data";
 import { InputTextStyled, SegmentedStyled, SelectStyled } from "../../style/Input";
+import { insuranceCodesWithCodes } from "../../config/const";
 
 const ClaimDataStyled = styled.div``;
-
-const insuranceCodesWithCodes = insuranceCodes.map((ic) => ({
-  value: ic.value,
-  label: `${ic.value.padStart(3, "0")} - ${ic.label}`,
-}));
 
 const CounterpartData = () => {
   const app = useApplication();

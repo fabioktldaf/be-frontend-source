@@ -1,7 +1,10 @@
 import { store } from "../redux/store";
+import { NavigateFunction, useNavigate } from "react-router-dom";
 import { setLanguage } from "../redux/features/userSlice";
 import i18next from "i18next";
 import NewClaim from "./newClaim";
+import SearchSubject from "./searchSubject";
+import EditSubject from "./editSubject";
 import {
   AdditionalInfoDataType,
   DamagedPartType,
@@ -9,10 +12,15 @@ import {
   UpdateNewClaimDataFieldsType,
   UpdateNewClaimResponsabilityDataFieldsType,
 } from "../types/new-claim.types";
+import { SubjectData } from "../types/uses-data.types";
+import { editSubject, showSubject } from "../redux/features/subjectsSlice";
+import { Urls } from "../config/const";
 
 export interface IApplication {
   init: () => void;
   changeLanguage: (lang: string) => void;
+
+  // NEW CLAIM
   startNewClaim: () => void;
   clearLocalStorage: () => void;
   updatedStepperData: (val: any, field: SteppedChangeDataType) => void;
@@ -27,6 +35,14 @@ export interface IApplication {
   damagedPartsRemoveOtherDrivers: () => void;
   setAdditionalInfo: (additionalInfo: AdditionalInfoDataType, index: number) => void;
   removeAdditionalInfo: (id: number) => void;
+
+  // SUBJECTS DATA
+  clearSearchSubject: () => void;
+  searchSubject: (term: string) => void;
+  editSubject: (subject: SubjectData, navigate: NavigateFunction) => void;
+  showSubject: (subject: SubjectData, navigate: NavigateFunction) => void;
+  editingSubjectAddContact: () => void;
+  editingSubjectRemoveContact: (index: number) => void;
 }
 
 export default (): IApplication => {
@@ -80,6 +96,26 @@ export default (): IApplication => {
     },
     removeAdditionalInfo: (id: number) => {
       NewClaim.removeAdditionalInfo(id);
+    },
+    clearSearchSubject: () => {
+      SearchSubject.clear();
+    },
+    searchSubject: (term: string) => {
+      SearchSubject.startSearch(term);
+    },
+    editSubject: (subject: SubjectData, navigate: NavigateFunction) => {
+      store.dispatch(editSubject(subject));
+      navigate(Urls.subject_details);
+    },
+    showSubject: (subject: SubjectData, navigate: NavigateFunction) => {
+      store.dispatch(showSubject(subject));
+      navigate(Urls.subject_details);
+    },
+    editingSubjectAddContact: () => {
+      EditSubject.addContact();
+    },
+    editingSubjectRemoveContact: (index: number) => {
+      EditSubject.removeContact(index);
     },
   };
 };

@@ -36,11 +36,11 @@ const Sider = () => {
       <SideMenu />
 
       <Collapse>
-        <Collapse.Panel header="Don't Touch!" key="1">
+        <Collapse.Panel header="Fill Nuovo Sinistro" key="1">
           <Button type="primary" size="small" onClick={() => app.startNewClaim()} style={{ marginBottom: "1em" }}>
-            Carica Dati Polizza
+            Dati Polizza
           </Button>
-          &nbsp;
+          <br />
           <Button
             type="primary"
             size="small"
@@ -60,9 +60,9 @@ const Sider = () => {
               app.updateClaimData(defaultClaimPolicyData.claimNote, "note");
             }}
           >
-            Fill "Sinistro"
+            Sinistro
           </Button>
-          &nbsp;
+          <br />
           <Button
             type="primary"
             size="small"
@@ -75,9 +75,9 @@ const Sider = () => {
               app.updateCounterpartData("667", "insuranceCode");
             }}
           >
-            Fill "Controparte"
+            Controparte
           </Button>
-          &nbsp;
+          <br />
           <Button
             type="primary"
             size="small"
@@ -94,9 +94,9 @@ const Sider = () => {
               app.updateResponsabilityData("1", "signature-type");
             }}
           >
-            Fill "Responsabilità"
+            Responsabilità
           </Button>
-          &nbsp;
+          <br />
           <Button
             type="primary"
             size="small"
@@ -105,9 +105,9 @@ const Sider = () => {
               defaultClaimPolicyData.damagedParts.forEach((dp, i) => app.updateDamagedPart(dp, i));
             }}
           >
-            Fill "PD Owner"
+            Partite di Danno
           </Button>
-          &nbsp;
+          <br />
           <Button
             type="primary"
             size="small"
@@ -116,7 +116,7 @@ const Sider = () => {
               defaultClaimPolicyData.additionalInfo.forEach((ai, i) => app.setAdditionalInfo(ai, i));
             }}
           >
-            Fill "Add Infos"
+            Info Add
           </Button>
         </Collapse.Panel>
       </Collapse>

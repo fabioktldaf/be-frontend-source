@@ -13,6 +13,8 @@ import { FormContainer } from "../../style/form";
 import NewClaimPage from "../../pages/new-claim";
 
 import "antd/dist/antd.css";
+import SubjectsData from "../../pages/subjects-data";
+import SubjectDetails from "../SubjectsData/SubjectDetails";
 
 const LayoutStyled = styled(Layout)`
   height: 100vh;
@@ -63,6 +65,8 @@ const AppLayout: React.FC<Props> = (props: Props) => {
               />
               <Route path={Urls.policy_manualInsert} element={<PolicyManualInsert />} />
               <Route path={Urls.new_claim} element={<NewClaimPage />} />
+              <Route path={Urls.subjects_data} element={<SubjectsData />} />
+              <Route path={Urls.subject_details} element={<SubjectDetails />} />
             </Routes>
 
             {children}

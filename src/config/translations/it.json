@@ -1,5 +1,9 @@
 {
+  "search": "Cerca",
+  "search-subject-btn-placeholder": "cerca soggetto",
+
   "sideMenu_createClaim": "Nuovo Sinistro",
+  "sideMenu_subjectsData": "Anagrafica",
   "sideMenu_home": "Home",
   "sideMenu_policy": "Polizza",
   "sideMenu_policy_manualInsert": "Inserimento Manuale",

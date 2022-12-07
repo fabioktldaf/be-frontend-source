@@ -2,6 +2,7 @@ import React from "react";
 import { BiHomeAlt, BiSearch } from "react-icons/bi";
 import { CgFileDocument } from "react-icons/cg";
 import { BsLightning } from "react-icons/bs";
+import { FiUsers } from "react-icons/fi";
 import { Urls } from "../config/const";
 
 export type MenuEntry = {
@@ -41,6 +42,11 @@ export const MenuConfig = {
       label: "sideMenu_createClaim",
       url: Urls.new_claim,
       icon: <BsLightning />,
+    },
+    {
+      label: "sideMenu_subjectsData",
+      url: Urls.subjects_data,
+      icon: <FiUsers />,
     },
   ],
 };

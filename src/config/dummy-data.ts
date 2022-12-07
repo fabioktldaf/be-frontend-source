@@ -7,6 +7,7 @@ import {
   DamagedPartType,
   SelectPair,
 } from "../types/new-claim.types";
+import { SubjectData } from "../types/uses-data.types";
 
 export const defaultClaimPolicyData = {
   policy_number: "AB-12345789",
@@ -388,4 +389,160 @@ export const insuranceCodes: SelectPair[] = [
   { label: "ZURICH INSURANCE COMPANY LIMITED", value: "198" },
   { label: "ZURICH INSURANCE PLC", value: "864" },
   { label: "ZURICH INVESTMENTS LIFE S.p.A.", value: "143" },
+];
+
+//https://www.fakenamegenerator.com/gen-random-it-it.php
+export const Subjects: SubjectData[] = [
+  {
+    person: {
+      name: "Tranquillino",
+      lastname: " Pirozzi",
+      gender: "male",
+      fiscalCode: "BK35710027",
+      birth: {
+        date: "25/11/1939",
+        city: "San Giuseppe Alla Rena",
+        province: "Catania",
+        country: "Italia",
+      },
+    },
+    contacts: [
+      {
+        type: "phone",
+        value: "0383 9285872",
+        description: "numero di telefono principale",
+        useCase: "contact-mode",
+        preferred: true,
+      },
+      {
+        type: "email",
+        value: "TranquillinoPirozzi@rhyta.com",
+        description: "email principale",
+        useCase: "send-informations",
+        preferred: false,
+      },
+    ],
+    addresses: [
+      {
+        type: "residence",
+        street: "Viale delle Province",
+        civic: "78",
+        cap: "95121",
+        city: "San Giuseppe Alla Rena",
+        province: "CT",
+        country: "Italia",
+      },
+    ],
+    documents: [
+      {
+        type: "card-id",
+        data: "526652153518",
+      },
+    ],
+  },
+  {
+    person: {
+      name: "Nadia",
+      lastname: " Marcelo",
+      gender: "female",
+      fiscalCode: "FM45872015",
+      birth: {
+        date: "30/08/1971",
+        city: "Lauro Di Sessa Aurunca",
+        province: "Cesena",
+        country: "Italia",
+      },
+    },
+    contacts: [
+      {
+        type: "phone",
+        value: "0350 3221582",
+      },
+      {
+        type: "email",
+        value: "NadiaMarcelo@armyspy.com",
+      },
+    ],
+    addresses: [
+      {
+        type: "residence",
+        street: "Via Cavour",
+        civic: "93",
+        cap: "81030",
+        city: "Lauro Di Sessa Aurunca",
+        province: "CE",
+        country: "Italia",
+      },
+    ],
+    documents: [
+      {
+        type: "passport",
+        data: "6867222728377",
+      },
+    ],
+  },
+  {
+    person: {
+      isProprietorship: true,
+      business_name: "Ornella Pirozzi",
+      type: "proprietorship",
+      p_iva: "123456789",
+      proprietorship: {
+        name: "Ornella",
+        lastname: " Pirozzi",
+        gender: "female",
+        fiscalCode: "VM87422970",
+        birth: {
+          date: "26/03/1949",
+          city: "Gaiato",
+          province: "Modena",
+          country: "Italia",
+        },
+      },
+    },
+    contacts: [
+      {
+        type: "phone",
+        value: "0368 6001893",
+      },
+      {
+        type: "email",
+        value: "OrnellaPirozzi@jourrapide.com",
+      },
+    ],
+    addresses: [
+      {
+        type: "residence",
+        street: "Piazza Bovio",
+        civic: "133",
+        cap: "41026",
+        city: "Gaiato",
+        province: "MO",
+        country: "Italia",
+      },
+      {
+        type: "shipping",
+        street: "Via Giotto",
+        civic: "111",
+        cap: "37030",
+        city: "Velo Veronese",
+        province: "VR",
+        country: "Italia",
+      },
+    ],
+    documents: [
+      {
+        type: "card-id",
+        data: "544029655075",
+      },
+      {
+        type: "passport",
+        data: "WL99890921",
+      },
+      {
+        type: "driving-license",
+        data: "47819964",
+      },
+    ],
+  },
 ];
