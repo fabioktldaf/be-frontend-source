@@ -30,6 +30,7 @@ import {
   AdditionalInfoSubjectType,
 } from "../../types/new-claim.types";
 import useApplication from "../../hooks/useApplication";
+import { IconInbox } from "../../config/icons";
 
 const FormContainer = styled.div`
   margin: 3em 0em;
@@ -202,7 +203,7 @@ const AdditionalInfoModalContent = (props: AdditionalInfoModalContentProps) => {
           onDrop={() => {}}
         >
           <p className="ant-upload-drag-icon">
-            <InboxOutlined />
+            <IconInbox />
           </p>
           <p className="ant-upload-hint">Trascina qui il file o clicca per selezionare</p>
         </Upload.Dragger>

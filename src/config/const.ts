@@ -431,3 +431,33 @@ export const ContactUseCaseTypes = [
   ContactUseCaseTypeContactMode,
   ContactUseCaseTypeSendInformations,
 ];
+
+export const AddressTypeEmpty: SelectPair = { value: "", label: "---" };
+export const AddressTypeDomicile: SelectPair = { value: "domicile", label: "Domicilio" };
+export const AddressTypeResidential: SelectPair = { value: "residential", label: "Residenza" };
+export const AddressTypeShipping: SelectPair = { value: "shipping", label: "Spedizione" };
+export const AddressTypeRegisteredOffice: SelectPair = { value: "registered-office", label: "Sede Legale" };
+export const AddressTypeOperaingOffice: SelectPair = { value: "operating-office", label: "Sede Operativa" };
+
+export const AddressTypes = [
+  AddressTypeEmpty,
+  AddressTypeDomicile,
+  AddressTypeResidential,
+  AddressTypeShipping,
+  AddressTypeRegisteredOffice,
+  AddressTypeOperaingOffice,
+];
+
+export const DocumentTypeEmpty: SelectPair = { value: "", label: "---" };
+export const DocumentTypeCardId: SelectPair = { value: "card-id", label: "Carta d'Identità" };
+export const DocumentTypeDrivingLicense: SelectPair = { value: "driving-license", label: "Patente" };
+export const DocumentTypePassport: SelectPair = { value: "passport", label: "Passaporto" };
+export const DocumentTypeFiscalCode: SelectPair = { value: "fiscal-code", label: "Codice Fiscale" };
+
+export const DocumentTypes = [
+  DocumentTypeEmpty,
+  DocumentTypeCardId,
+  DocumentTypeDrivingLicense,
+  DocumentTypePassport,
+  DocumentTypeFiscalCode,
+];

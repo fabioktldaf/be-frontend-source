@@ -8,9 +8,10 @@ import { useNavigate } from "react-router-dom";
 const SubjectsData = () => {
   const app = useApplication();
   const navigate = useNavigate();
+
   const handleSelect = (subject: SubjectData) => {
     console.log(subject);
-    app.editSubject(subject, navigate);
+    app.editSubject(Object.assign({}, subject), navigate);
   };
 
   return (

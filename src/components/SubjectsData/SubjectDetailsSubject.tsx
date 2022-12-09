@@ -4,11 +4,20 @@ import styled from "styled-components";
 import { SubjectData, SubjectGiuridicalPersonData, SubjectNaturalPersonData } from "../../types/uses-data.types";
 import { IApplication } from "../../application";
 import { TFunction } from "i18next";
-import { DatePickerStyled, FiscalCodeStyled, InputTextStyled, SelectStyled } from "../../style/Input";
+import { DatePickerStyled, FiscalCodeStyled, InputAddress, InputTextStyled, SelectStyled } from "../../style/Input";
 import { Row, RowSpacer } from "../../style/containers";
 import { GenderTypes, GiuridicalPersonTypes, GiuridicalPersonTypeSpa } from "../../config/const";
 import { IconEdit } from "../../config/icons";
 import { BiEditAlt } from "react-icons/bi";
+import { FormContentTab, FormRow } from "../../style/form";
+import { TitleHr } from "../Layout/Titles";
+
+const ProprietorshipTitle = styled.div`
+  font-size: 1.2em;
+  margin: 1em 0;
+  border-top: 1px solid #eee;
+  text-align: center;
+`;
 
 type subectType = undefined | "natural" | "business" | "proprietorship";
 
@@ -33,8 +42,8 @@ const SubjectDetailsSubject = (props: SubjectDetailsSubjectProps) => {
 
   const renderNaturalPerson = () => {
     return (
-      <>
-        <Row>
+      <FormContentTab>
+        <FormRow>
           <InputTextStyled
             label="Nome"
             tooltip="Inserisci il nome"
@@ -52,37 +61,30 @@ const SubjectDetailsSubject = (props: SubjectDetailsSubjectProps) => {
             onChange={(txt) => onChange(txt, "lastname")}
             value={naturalPerson.lastname}
           />
-        </Row>
-        <Row>
-          <SelectStyled
-            label="Sesso"
-            tooltip="Seleziona Sesso"
-            defaultValue="---"
-            value={naturalPerson.gender}
-            onChange={(txt) => onChange(txt, "gender")}
-            options={GenderTypes}
-          />
+        </FormRow>
+        <FormRow>
+          <Row style={{ flex: 1 }}>
+            <DatePickerStyled
+              label="Data di Nascita"
+              tooltip="Seleziona la data di Nascita"
+              placeholder="data di nascita ..."
+              onChange={(txt) => onChange(txt, "birt.date")}
+              value={naturalPerson.birth.date}
+              format={"DD/MM/YYYY"}
+            />
+            <RowSpacer />
+            <SelectStyled
+              label="Sesso"
+              tooltip="Seleziona Sesso"
+              defaultValue="---"
+              value={naturalPerson.gender}
+              onChange={(txt) => onChange(txt, "gender")}
+              options={GenderTypes}
+            />
+          </Row>
           <RowSpacer />
-          <DatePickerStyled
-            label="Data di Nascita"
-            tooltip="Seleziona la data di Nascita"
-            placeholder="data di nascita ..."
-            onChange={(txt) => onChange(txt, "birt.date")}
-            value={naturalPerson.birth.date}
-            format={"DD/MM/YYYY"}
-          />
-        </Row>
-        <Row>
-          <InputTextStyled
-            label="Luogo di Nascita"
-            tooltip="Luogo di nascita"
-            placeholder="nome del soggetto..."
-            value={`${naturalPerson.birth.city} - ${naturalPerson.birth.province} - ${naturalPerson.birth.country}`}
-          />
-          <BiEditAlt style={{ cursor: "pointer" }} />
-        </Row>
-        <Row>
           <FiscalCodeStyled
+            style={{ flex: 1 }}
             label="Codice Fiscale"
             tooltip="Inserisci il codice fiscale"
             rules={[{ required: true, message: "Il codice fiscale è obbligatorio" }]}
@@ -90,15 +92,25 @@ const SubjectDetailsSubject = (props: SubjectDetailsSubjectProps) => {
             onChange={(txt) => onChange(txt, "fiscalCode")}
             value={naturalPerson.fiscalCode}
           />
-        </Row>
-      </>
+        </FormRow>
+        <FormRow>
+          <InputAddress
+            label="Luogo di Nascita"
+            tooltip="Luogo di nascita"
+            placeholder="luogo di nascita.."
+            onEdit={() => {}}
+            value={`${naturalPerson.birth.city} - ${naturalPerson.birth.province} - ${naturalPerson.birth.country}`}
+            onChange={(data) => onChange(data, "birt.place")}
+          />
+        </FormRow>
+      </FormContentTab>
     );
   };
 
   const renderGiuridicalPerson = () => {
     return (
-      <>
-        <Row>
+      <FormContentTab>
+        <FormRow>
           <InputTextStyled
             label="Ragione Sociale"
             tooltip="Inserisci la ragione sociale"
@@ -116,8 +128,8 @@ const SubjectDetailsSubject = (props: SubjectDetailsSubjectProps) => {
             onChange={(txt) => onChange(txt, "type")}
             options={GiuridicalPersonTypes}
           />
-        </Row>
-        <Row>
+        </FormRow>
+        <FormRow>
           <InputTextStyled
             label="Partita IVA"
             tooltip="Inserisci la partita iva"
@@ -126,12 +138,15 @@ const SubjectDetailsSubject = (props: SubjectDetailsSubjectProps) => {
             onChange={(txt) => onChange(txt, "p_iva")}
             value={giuridicalPerson.p_iva}
           />
-        </Row>
+          <RowSpacer />
+          <div style={{ flex: 1 }}></div>
+        </FormRow>
 
         {giuridicalPerson.isProprietorship && (
           <>
-            <div>Ditta Individuale</div>
-            <Row>
+            <TitleHr text="Ditta Individuale" />
+
+            <FormRow>
               <InputTextStyled
                 label="Nome"
                 tooltip="Inserisci il nome"
@@ -149,36 +164,28 @@ const SubjectDetailsSubject = (props: SubjectDetailsSubjectProps) => {
                 onChange={(txt) => onChange(txt, "lastname")}
                 value={giuridicalPerson.proprietorship?.lastname}
               />
-            </Row>
-            <Row>
-              <SelectStyled
-                label="Sesso"
-                tooltip="Seleziona Sesso"
-                defaultValue="---"
-                value={giuridicalPerson.proprietorship?.gender}
-                onChange={(txt) => onChange(txt, "gender")}
-                options={GenderTypes}
-              />
+            </FormRow>
+            <FormRow>
+              <Row style={{ flex: 1 }}>
+                <DatePickerStyled
+                  label="Data di Nascita"
+                  tooltip="Seleziona la data di Nascita"
+                  placeholder="data di nascita ..."
+                  onChange={(txt) => onChange(txt, "birt.date")}
+                  value={giuridicalPerson.proprietorship?.birth.date}
+                  format={"DD/MM/YYYY"}
+                />
+                <RowSpacer />
+                <SelectStyled
+                  label="Sesso"
+                  tooltip="Seleziona Sesso"
+                  defaultValue="---"
+                  value={giuridicalPerson.proprietorship?.gender}
+                  onChange={(txt) => onChange(txt, "gender")}
+                  options={GenderTypes}
+                />
+              </Row>
               <RowSpacer />
-              <DatePickerStyled
-                label="Data di Nascita"
-                tooltip="Seleziona la data di Nascita"
-                placeholder="data di nascita ..."
-                onChange={(txt) => onChange(txt, "birt.date")}
-                value={giuridicalPerson.proprietorship?.birth.date}
-                format={"DD/MM/YYYY"}
-              />
-            </Row>
-            <Row>
-              <InputTextStyled
-                label="Luogo di Nascita"
-                tooltip="Luogo di nascita"
-                placeholder="nome del soggetto..."
-                value={`${giuridicalPerson.proprietorship?.birth.city} - ${giuridicalPerson.proprietorship?.birth.province} - ${giuridicalPerson.proprietorship?.birth.country}`}
-              />
-              <BiEditAlt style={{ cursor: "pointer" }} />
-            </Row>
-            <Row>
               <FiscalCodeStyled
                 label="Codice Fiscale"
                 tooltip="Inserisci il codice fiscale"
@@ -187,10 +194,20 @@ const SubjectDetailsSubject = (props: SubjectDetailsSubjectProps) => {
                 onChange={(txt) => onChange(txt, "fiscalCode")}
                 value={giuridicalPerson.proprietorship?.fiscalCode}
               />
-            </Row>
+            </FormRow>
+            <FormRow>
+              <InputAddress
+                label="Luogo di Nascita"
+                tooltip="Luogo di nascita"
+                placeholder="luogo di nascita.."
+                onEdit={() => {}}
+                value={`${giuridicalPerson.birth?.city} - ${giuridicalPerson.birth?.province} - ${giuridicalPerson.birth?.country}`}
+                onChange={(data) => onChange(data, "birt.place")}
+              />
+            </FormRow>
           </>
         )}
-      </>
+      </FormContentTab>
     );
   };
 

@@ -22,6 +22,7 @@ export type SubjectGiuridicalPersonData = {
   type: GiuridicalPersonType;
   p_iva: string;
   proprietorship?: SubjectNaturalPersonData;
+  birth?: NaturalPersonBirth;
 };
 
 export type SubjectContactDataType = "" | "pec" | "phone" | "email" | "mobile";
@@ -33,21 +34,31 @@ export type SubjectContactData = {
   preferred?: boolean;
 };
 
-export type SubjectAddressDataType = "domicile" | "residence" | "shipping" | "registered-office";
+export type SubjectAddressDataType =
+  | ""
+  | "domicile"
+  | "residence"
+  | "shipping"
+  | "registered-office"
+  | "operating-office";
 export type SubjectAddressData = {
   type: SubjectAddressDataType;
-  street: string;
-  civic: string;
-  cap: string;
-  city: string;
-  province: string;
-  country: string;
+  street?: string;
+  civic?: string;
+  cap?: string;
+  city?: string;
+  province?: string;
+  country?: string;
+  preferred?: boolean;
 };
 
-export type SubjectDocumentDataType = "card-id" | "passport" | "driving-license";
+export type SubjectDocumentDataType = "" | "card-id" | "passport" | "driving-license" | "fiscal-code";
 export type SubjectDocumentData = {
   type: SubjectDocumentDataType;
-  data: any;
+  number: string;
+  issuingDate: string;
+  expirationDate: string;
+  issuingInstitution: string;
 };
 
 export type SubjectData = {

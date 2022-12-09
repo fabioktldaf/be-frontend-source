@@ -436,7 +436,10 @@ export const Subjects: SubjectData[] = [
     documents: [
       {
         type: "card-id",
-        data: "526652153518",
+        number: "526652153518",
+        issuingDate: "01/01/2020",
+        expirationDate: "01/01/2030",
+        issuingInstitution: "comune di Catania",
       },
     ],
   },
@@ -477,7 +480,10 @@ export const Subjects: SubjectData[] = [
     documents: [
       {
         type: "passport",
-        data: "6867222728377",
+        number: "6867222728377",
+        issuingDate: "01/01/2021",
+        expirationDate: "01/01/2031",
+        issuingInstitution: "carabinieri di Cesena",
       },
     ],
   },
@@ -533,15 +539,24 @@ export const Subjects: SubjectData[] = [
     documents: [
       {
         type: "card-id",
-        data: "544029655075",
+        number: "544029655075",
+        issuingDate: "01/01/2022",
+        expirationDate: "01/01/2032",
+        issuingInstitution: "comune di Gaiato",
       },
       {
         type: "passport",
-        data: "WL99890921",
+        number: "WL99890921",
+        issuingDate: "01/01/2019",
+        expirationDate: "01/01/2029",
+        issuingInstitution: "polizia di Gaiato",
       },
       {
         type: "driving-license",
-        data: "47819964",
+        number: "47819964",
+        issuingDate: "01/01/2018",
+        expirationDate: "01/01/2028",
+        issuingInstitution: "motorizzazione civile",
       },
     ],
   },

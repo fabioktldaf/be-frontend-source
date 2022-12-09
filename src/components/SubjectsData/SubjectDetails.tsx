@@ -1,5 +1,5 @@
 import React from "react";
-import { Tabs, Tooltip } from "antd";
+import { Button, Tabs, Tooltip } from "antd";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
@@ -11,8 +11,8 @@ import SubjectDetailsSubject from "./SubjectDetailsSubject";
 import SubjectDetailsDocuments from "./SubjectDetailsDocuments";
 import SubjectDetailsAddresses from "./SubjectDetailsAddresses";
 import SubjectDetailsContacts from "./SubjectDetailsContacts";
-
-type subectType = "natural" | "business" | "proprietorship";
+import { Col } from "../../style/containers";
+import { IconUsers } from "../../config/icons";
 
 const SubjectDetails = () => {
   const { t } = useTranslation();
@@ -23,66 +23,81 @@ const SubjectDetails = () => {
     //
   };
 
-  const title = <> {readOnly ? "Dati in sola lettura" : "Dati modificabili"}</>;
-  const actions = [
-    {
-      label: "Salva",
-      icon: <></>,
-      execute: () => {
-        console.log("salva");
-      },
-    },
-  ];
+  const naturalPerson = subject?.person as SubjectNaturalPersonData;
+  const giuridicalPerson = subject?.person as SubjectGiuridicalPersonData;
+
+  let title = "Anagrafica - ";
+  if (naturalPerson?.name?.length > 0) title += "persona fisica";
+  if (giuridicalPerson?.business_name?.length > 0) title += "persona giuridica";
+  if (giuridicalPerson?.isProprietorship) title += " (ditta individuale)";
 
   return (
-    <MainForm title={title} actions={actions}>
-      <Tabs
-        defaultActiveKey="1"
-        tabPosition="left"
-        items={[
-          {
-            label: <>Soggetto</>,
-            key: "1",
-            children: (
-              <SubjectDetailsSubject subject={subject} app={app} readOnly={readOnly} t={t} onChange={handleOnChange} />
-            ),
-          },
-          {
-            label: <>Contatti</>,
-            key: "2",
-            children: (
-              <SubjectDetailsContacts subject={subject} app={app} readOnly={readOnly} t={t} onChange={handleOnChange} />
-            ),
-          },
-          {
-            label: <>Indirizzi</>,
-            key: "3",
-            children: (
-              <SubjectDetailsAddresses
-                subject={subject}
-                app={app}
-                readOnly={readOnly}
-                t={t}
-                onChange={handleOnChange}
-              />
-            ),
-          },
-          {
-            label: <>Documenti</>,
-            key: "4",
-            children: (
-              <SubjectDetailsDocuments
-                subject={subject}
-                app={app}
-                readOnly={readOnly}
-                t={t}
-                onChange={handleOnChange}
-              />
-            ),
-          },
-        ]}
-      />
-    </MainForm>
+    <Col>
+      <MainForm
+        icon={<IconUsers />}
+        title={title}
+        actions={[{ label: "salva", execute: () => console.log("saving natural person") }]}
+      >
+        <Tabs
+          defaultActiveKey="1"
+          tabPosition="left"
+          items={[
+            {
+              label: <>Soggetto</>,
+              key: "1",
+              children: (
+                <SubjectDetailsSubject
+                  subject={subject}
+                  app={app}
+                  readOnly={readOnly}
+                  t={t}
+                  onChange={handleOnChange}
+                />
+              ),
+            },
+            {
+              label: <>Contatti</>,
+              key: "2",
+              children: (
+                <SubjectDetailsContacts
+                  subject={subject}
+                  app={app}
+                  readOnly={readOnly}
+                  t={t}
+                  onChange={handleOnChange}
+                />
+              ),
+            },
+            {
+              label: <>Indirizzi</>,
+              key: "3",
+              children: (
+                <SubjectDetailsAddresses
+                  subject={subject}
+                  app={app}
+                  readOnly={readOnly}
+                  t={t}
+                  onChange={handleOnChange}
+                />
+              ),
+            },
+            {
+              label: <>Documenti</>,
+              key: "4",
+              children: (
+                <SubjectDetailsDocuments
+                  subject={subject}
+                  app={app}
+                  readOnly={readOnly}
+                  t={t}
+                  onChange={handleOnChange}
+                />
+              ),
+            },
+          ]}
+        />
+      </MainForm>
+    </Col>
   );
 };
 

@@ -4,11 +4,24 @@ import { HiOutlineDocumentText } from "react-icons/hi";
 import { AiOutlineContacts } from "react-icons/ai";
 import { BiEditAlt } from "react-icons/bi";
 import { RiDeleteBinFill } from "react-icons/ri";
+import { InboxOutlined } from "@ant-design/icons";
+import { BiHomeAlt, BiSearch } from "react-icons/bi";
+import { BsLightning } from "react-icons/bs";
+import { FiUser, FiUsers } from "react-icons/fi";
 
-export const IconAddress = () => <></>;
-export const IconContact = () => <AiOutlineContacts />;
-export const IconDelete = () => <RiDeleteBinFill />;
-export const IconDocument = () => <HiOutlineDocumentText />;
-export const IconDocuments = () => <></>;
-export const IconEdit = () => <BiEditAlt />;
-export const IconSubject = () => <SlUser />;
+interface IconProps {
+  style?: any;
+}
+
+export const IconAddress = (props: IconProps) => <></>;
+export const IconClaim = (props: IconProps) => <BsLightning style={props.style} />;
+export const IconContact = (props: IconProps) => <AiOutlineContacts style={props.style} />;
+export const IconDelete = (props: IconProps) => <RiDeleteBinFill style={props.style} />;
+export const IconDocument = (props: IconProps) => <HiOutlineDocumentText style={props.style} />;
+export const IconDocuments = (props: IconProps) => <></>;
+export const IconEdit = (props: IconProps) => <BiEditAlt style={props.style} />;
+export const IconHome = (props: IconProps) => <BiHomeAlt style={props.style} />;
+export const IconInbox = (props: IconProps) => <InboxOutlined style={props.style} />;
+export const IconSubject = (props: IconProps) => <SlUser style={props.style} />;
+export const IconUser = (props: IconProps) => <FiUser style={props.style} />;
+export const IconUsers = (props: IconProps) => <FiUsers style={props.style} />;

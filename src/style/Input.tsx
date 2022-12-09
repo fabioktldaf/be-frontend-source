@@ -1,5 +1,5 @@
 import React from "react";
-import { Input, Form, Select as SelectAnt, InputNumber, DatePicker, TimePicker, Segmented } from "antd";
+import { Input, Form, Select as SelectAnt, InputNumber, DatePicker, TimePicker, Segmented, Switch } from "antd";
 import styled from "styled-components";
 import { Hidden } from "./containers";
 import { SelectPair } from "../types/new-claim.types";
@@ -214,6 +214,7 @@ interface FiscalCodeProps extends InputTextProps {
   dateOfBirth?: string;
   cityOfBirth?: string;
   countryOfBirth?: string;
+  style?: any;
 }
 
 export const FiscalCodeStyled = (props: FiscalCodeProps) => {
@@ -229,6 +230,57 @@ export const FiscalCodeStyled = (props: FiscalCodeProps) => {
       placeholder={props.placeholder}
       onChange={handleOnChange}
       value={props.value}
+      styleInput={props.style}
     />
   );
 };
+
+interface InputAddressProps extends InputTextProps {
+  onEdit: (data: any) => void;
+  value: string;
+}
+
+export const InputAddress = (props: InputAddressProps) => {
+  return (
+    <FormItemStyled
+      className={props.classNameItem}
+      name={props.name}
+      style={props.styleItem}
+      label={props.label}
+      tooltip={props.tooltip}
+    >
+      <Input value={props.value} readOnly={true} style={Object.assign({}, props.styleInput, { cursor: "pointer" })} />
+
+      <Hidden>{props.value}</Hidden>
+    </FormItemStyled>
+  );
+};
+
+interface SwitchProps {
+  classNameItem?: string;
+  classNameInput?: string;
+  styleItem?: any;
+  styleInput?: any;
+  label?: string;
+  tooltip?: string;
+  rules?: any;
+  placeholder?: string;
+  readOnly?: boolean;
+  checked?: boolean;
+  unCheckedChildren: string;
+  checkedChildren: string;
+  onChange?: (checked: boolean) => void;
+}
+
+export const SwitchStyled = (props: SwitchProps) => (
+  <FormItemStyled className={props.classNameItem} style={props.styleItem} label={props.label} tooltip={props.tooltip}>
+    <Switch
+      className={props.classNameInput}
+      unCheckedChildren={"No"}
+      checkedChildren={"Si"}
+      onChange={(val) => (props.onChange ? props.onChange(val) : null)}
+      checked={props.checked}
+    />
+    <Hidden>{props.checked}</Hidden>
+  </FormItemStyled>
+);

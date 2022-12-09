@@ -13,7 +13,7 @@ import {
   UpdateNewClaimResponsabilityDataFieldsType,
 } from "../types/new-claim.types";
 import { SubjectData } from "../types/uses-data.types";
-import { editSubject, showSubject } from "../redux/features/subjectsSlice";
+import { editingSubjectAddAddress, editSubject, showSubject } from "../redux/features/subjectsSlice";
 import { Urls } from "../config/const";
 
 export interface IApplication {
@@ -43,6 +43,10 @@ export interface IApplication {
   showSubject: (subject: SubjectData, navigate: NavigateFunction) => void;
   editingSubjectAddContact: () => void;
   editingSubjectRemoveContact: (index: number) => void;
+  editingSubjectAddAddress: () => void;
+  editingSubjectRemoveAddress: (index: number) => void;
+  editingSubjectAddDocument: () => void;
+  editingSubjectRemoveDocument: (index: number) => void;
 }
 
 export default (): IApplication => {
@@ -116,6 +120,18 @@ export default (): IApplication => {
     },
     editingSubjectRemoveContact: (index: number) => {
       EditSubject.removeContact(index);
+    },
+    editingSubjectAddAddress: () => {
+      EditSubject.addAddress();
+    },
+    editingSubjectRemoveAddress: (index: number) => {
+      EditSubject.removeAddress(index);
+    },
+    editingSubjectAddDocument: () => {
+      EditSubject.editingSubjectAddDocument();
+    },
+    editingSubjectRemoveDocument: (index: number) => {
+      EditSubject.editingSubjectRemoveDocument(index);
     },
   };
 };

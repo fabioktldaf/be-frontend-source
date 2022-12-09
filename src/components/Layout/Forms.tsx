@@ -1,35 +1,38 @@
 import React from "react";
-import { FormContainer, FormTitle, FormActions, FormActionButton, FormContent } from "../../style/form";
+import { FormContainer, FormTitle, FormActions, FormContent, FormHeader } from "../../style/form";
 
 import styled from "styled-components";
 import { FormLayout } from "antd/es/form/Form";
+import { Button } from "antd";
+import { ButtonConfirm } from "./Buttons";
 
 export type FormActionType = {
   label: string;
-  icon: JSX.Element;
   execute: () => void;
 };
 
 interface FormProps {
   layout?: FormLayout;
-  title?: JSX.Element;
+  icon?: JSX.Element;
+  title?: JSX.Element | string;
   actions?: FormActionType[];
   children?: JSX.Element;
 }
 
-export const MainForm = ({ layout, title, actions, children }: FormProps) => {
+export const MainForm = ({ layout, title, icon, actions, children }: FormProps) => {
   return (
     <FormContainer layout={layout}>
-      <FormTitle>
-        {title}
+      <FormHeader>
+        <FormTitle>
+          {icon}
+          {title}
+        </FormTitle>
         <FormActions>
           {actions?.map((action, i) => (
-            <FormActionButton key={i} icon={action.icon} size="small" onClick={() => action.execute()}>
-              {action.label}
-            </FormActionButton>
+            <ButtonConfirm key={i} onClick={() => action.execute()} text={action.label} />
           ))}
         </FormActions>
-      </FormTitle>
+      </FormHeader>
       <FormContent>{children}</FormContent>
     </FormContainer>
   );

@@ -10,19 +10,15 @@ import {
 import { IApplication } from "../../application";
 import { TFunction } from "i18next";
 import { IconDelete } from "../../config/icons";
-import { InputTextStyled, SelectStyled } from "../../style/Input";
+import { InputTextStyled, SelectStyled, SwitchStyled } from "../../style/Input";
 import { ContactTypes, ContactUseCaseTypes } from "../../config/const";
-import { Row, RowSpacer } from "../../style/containers";
+import { Col, Row, RowSpacer } from "../../style/containers";
+import { FormContentTab, FormRow } from "../../style/form";
+import { TitleHr } from "../Layout/Titles";
+import { ButtonConfirm, ButtonDelete } from "../Layout/Buttons";
 
 const ContactStyled = styled.div`
-  display: flex;
-  padding-bottom: 2em;
-  margin-bottom: 2em;
-  border-bottom: 1px solid #eee;
-`;
-
-const ButtonDeleteContact = styled.div`
-  cursor: pointer;
+  margin-bottom: 4em;
 `;
 
 interface SubjectDetailsContactsProps {
@@ -45,6 +41,10 @@ const SubjectDetailsContacts = (props: SubjectDetailsContactsProps) => {
     console.log("removing contact ", index);
     app.editingSubjectRemoveContact(index);
   };
+  const ButtonDeleteContact = styled(Button)`
+    font-size: 0.9em;
+    text-transform: uppercase;
+  `;
 
   const renderContact = (contact: SubjectContactData, index: number) => {
     const handleChangeContact = (value: any, field: string) => {
@@ -64,28 +64,58 @@ const SubjectDetailsContacts = (props: SubjectDetailsContactsProps) => {
 
     return (
       <>
-        <div>
-          <Row>
-            <SelectStyled
-              label="Tipo Contatto"
-              tooltip="Seleziona il tipo contatto"
-              defaultValue="---"
-              value={contact.type}
-              onChange={(val) => app.updateCounterpartData(val, "insuranceCode")}
-              options={ContactTypes}
+        <div style={{ position: "relative", zIndex: "1" }}>
+          <TitleHr text="Contatto" containerStyle={{ zIndex: "1" }} />
+          <RowSpacer />
+          <ButtonDelete
+            text="Elimina"
+            onClick={() => handleRemoveContact(index)}
+            style={{ position: "absolute", right: "0", top: "1.2em", zIndex: "2" }}
+          />
+        </div>
+
+        <FormRow>
+          <SelectStyled
+            label="Tipo Contatto"
+            tooltip="Seleziona il tipo contatto"
+            defaultValue="---"
+            value={contact.type}
+            onChange={(val) => app.updateCounterpartData(val, "insuranceCode")}
+            options={ContactTypes}
+          />
+          <RowSpacer />
+          <SelectStyled
+            label="Tipo Utilizzo"
+            tooltip="Seleziona il tipo utilizzo"
+            defaultValue="---"
+            value={contact.useCase}
+            onChange={(val) => handleChangeContact(val, "useCase")}
+            options={ContactUseCaseTypes}
+          />
+        </FormRow>
+        <FormRow>
+          {contact.type !== "" ? (
+            <InputTextStyled
+              label={valueLabel}
+              tooltip="Inserisci il valore del campo"
+              rules={[{ required: true, message: "Questo valore è obbligatorio" }]}
+              placeholder={`${valueLabel.toLowerCase()}...`}
+              value={contact.value}
+              onChange={(val) => handleChangeContact(val, "value")}
             />
-            <RowSpacer />
-            {contact.type !== "" && (
-              <InputTextStyled
-                label={valueLabel}
-                tooltip="Inserisci il valore del campo"
-                rules={[{ required: true, message: "Questo valore è obbligatorio" }]}
-                placeholder={`${valueLabel.toLowerCase()}...`}
-                value={contact.value}
-                onChange={(val) => handleChangeContact(val, "value")}
-              />
-            )}
-          </Row>
+          ) : (
+            <div style={{ flex: 1 }}></div>
+          )}
+          <RowSpacer />
+          <SwitchStyled
+            label="Preferito"
+            unCheckedChildren={"No"}
+            checkedChildren={"Si"}
+            onChange={(val) => handleChangeContact(val, "preferred")}
+            checked={contact.preferred}
+          />
+        </FormRow>
+        <FormRow>
           <InputTextStyled
             label="Descrizione"
             tooltip="Inserisci il valore del campo"
@@ -94,38 +124,20 @@ const SubjectDetailsContacts = (props: SubjectDetailsContactsProps) => {
             value={contact.description}
             onChange={(val) => handleChangeContact(val, "value")}
           />
-          <Row>
-            <SelectStyled
-              label="Tipo Utilizzo"
-              tooltip="Seleziona il tipo utilizzo"
-              defaultValue="---"
-              value={contact.useCase}
-              onChange={(val) => handleChangeContact(val, "useCase")}
-              options={ContactUseCaseTypes}
-            />
-            <RowSpacer />
-            <Switch
-              unCheckedChildren={"No"}
-              checkedChildren={"Si"}
-              onChange={(val) => handleChangeContact(val, "preferred")}
-              checked={contact.preferred}
-            />
-          </Row>
-        </div>
-        <ButtonDeleteContact onClick={() => handleRemoveContact(index)}>
-          <IconDelete />
-        </ButtonDeleteContact>
+        </FormRow>
       </>
     );
   };
 
   return (
-    <>
+    <FormContentTab>
       {contacts.map((contact, i) => {
         return <ContactStyled key={i}>{renderContact(contact, i)}</ContactStyled>;
       })}
-      <Button onClick={handleAddContact}>Aggiungi Contatto</Button>
-    </>
+      <FormRow style={{ justifyContent: "center" }}>
+        <ButtonConfirm onClick={handleAddContact} text="Aggiungi contatto" />
+      </FormRow>
+    </FormContentTab>
   );
 };
 

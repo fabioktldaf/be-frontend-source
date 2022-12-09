@@ -8,6 +8,7 @@ import styled from "styled-components";
 import useApplication from "../../hooks/useApplication";
 
 import { defaultClaimPolicyData } from "../../config/dummy-data";
+import LanguageSelect from "./LaguageSelect";
 
 const SiderStyled = styled(Layout.Sider)`
   background-color: white;
@@ -36,7 +37,7 @@ const Sider = () => {
       <SideMenu />
 
       <Collapse>
-        <Collapse.Panel header="Fill Nuovo Sinistro" key="1">
+        <Collapse.Panel header="Miscellaneous" key="1">
           <Button type="primary" size="small" onClick={() => app.startNewClaim()} style={{ marginBottom: "1em" }}>
             Dati Polizza
           </Button>
@@ -118,6 +119,7 @@ const Sider = () => {
           >
             Info Add
           </Button>
+          <LanguageSelect />
         </Collapse.Panel>
       </Collapse>
     </SiderStyled>

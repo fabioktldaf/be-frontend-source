@@ -1,9 +1,6 @@
 import React from "react";
-import { BiHomeAlt, BiSearch } from "react-icons/bi";
-import { CgFileDocument } from "react-icons/cg";
-import { BsLightning } from "react-icons/bs";
-import { FiUsers } from "react-icons/fi";
 import { Urls } from "../config/const";
+import { IconClaim, IconDocument, IconHome, IconUsers } from "./icons";
 
 export type MenuEntry = {
   label: string;
@@ -13,16 +10,22 @@ export type MenuEntry = {
   children?: MenuEntry[];
 };
 
+const iconsStyle = {
+  marginRight: "0.5em",
+  marginTop: "-3px",
+  fontSize: "1.2em",
+};
+
 export const MenuConfig = {
   items: [
     {
       label: "sideMenu_home",
       url: Urls.home,
-      icon: <BiHomeAlt />,
+      icon: <IconHome style={iconsStyle} />,
     },
     {
       label: "sideMenu_policy",
-      icon: <CgFileDocument />,
+      icon: <IconDocument style={iconsStyle} />,
       children: [
         {
           label: "sideMenu_searchFulltext",
@@ -41,12 +44,12 @@ export const MenuConfig = {
     {
       label: "sideMenu_createClaim",
       url: Urls.new_claim,
-      icon: <BsLightning />,
+      icon: <IconClaim style={iconsStyle} />,
     },
     {
       label: "sideMenu_subjectsData",
       url: Urls.subjects_data,
-      icon: <FiUsers />,
+      icon: <IconUsers style={iconsStyle} />,
     },
   ],
 };
