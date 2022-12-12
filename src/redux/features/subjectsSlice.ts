@@ -34,7 +34,9 @@ export const subjectsSlice = createSlice({
   initialState: buildInitialState(),
   reducers: {
     clear(state) {
-      state = buildInitialState();
+      const { search, editing } = buildInitialState();
+      state.search = search;
+      state.editing = editing;
     },
     searchSubject(state, action: PayloadAction<string>) {
       state.search = {

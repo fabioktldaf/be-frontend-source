@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { Select, Button, Popconfirm } from "antd";
+import { Select, Button, Popconfirm, Modal } from "antd";
 import { Col, Hidden, Row, RowSpacer } from "../../style/containers";
 import { FormSubTitle, FormInput, FormRow } from "../../style/form";
 import { RiDeleteBinFill } from "react-icons/ri";
@@ -22,6 +22,11 @@ import {
 import useApplication from "../../hooks/useApplication";
 import { PartRoleCP, PartRoleNP, Responsabilities } from "../../config/const";
 import { InputTextStyled, SelectStyled } from "../../style/Input";
+import SubjectDetails from "../SubjectsData/SubjectDetails";
+import { SubjectData, SubjectGiuridicalPersonData, SubjectNaturalPersonData } from "../../types/uses-data.types";
+import { ButtonConfirm, ButtonDelete } from "../Layout/Buttons";
+import SearchSubject from "../SubjectsData/SearchSubject";
+import SearchResults from "../SubjectsData/SearchResults";
 
 const PersonDamageList = styled(Col)`
   width: 25em;
@@ -59,8 +64,12 @@ interface DamagedPartModalContentProps {
 }
 
 const DamagedPartModalContent = (props: DamagedPartModalContentProps) => {
+  const [isOpenSubjectModal, setIsOpenSubjectModal] = useState(false);
+  const [isOpenSearchSubjectModal, setIsOpenSearchSubjectModal] = useState(false);
+
   const app = useApplication();
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   const [part, setPart] = useState<DamagedPartType>(props.part);
 
@@ -81,6 +90,22 @@ const DamagedPartModalContent = (props: DamagedPartModalContentProps) => {
   const handleOnOk = () => {
     app.updateDamagedPart(Object.assign({}, part), props.partIndex);
     props.onOk();
+  };
+
+  const handleEditSubject = (person: SubjectNaturalPersonData | SubjectGiuridicalPersonData) => {
+    console.log("person ", person);
+    app.editSubject({ person: Object.assign({}, person) }, navigate);
+    setIsOpenSubjectModal(true);
+  };
+
+  const handleSearchSubject = () => {
+    app.clearSearchSubject();
+    setIsOpenSearchSubjectModal(true);
+  };
+
+  const handleSelectSubject = (subject: SubjectData) => {
+    handleModalPartChange("subject", subject.person);
+    setIsOpenSearchSubjectModal(false);
   };
 
   const handleModalPartChange = (type: PartChangeType, val: any) => {
@@ -118,6 +143,17 @@ const DamagedPartModalContent = (props: DamagedPartModalContentProps) => {
 
       case "thing-note":
         updatedPart.damages[val.index].details.note = val.value;
+        break;
+
+      case "subject":
+        if (!val) {
+          updatedPart.subject = {};
+        } else {
+          const naturalPerson = val as SubjectNaturalPersonData;
+          const giuridicalPerson = val as SubjectGiuridicalPersonData;
+          if (naturalPerson.fiscalCode?.length > 0) updatedPart.subject.natural_person = val;
+          else if (giuridicalPerson.p_iva?.length > 0) updatedPart.subject.giuridical_person = val;
+        }
         break;
     }
 
@@ -170,7 +206,9 @@ const DamagedPartModalContent = (props: DamagedPartModalContentProps) => {
           <RowSpacer />
 
           <FormInput label="Proprietario" tooltip="Seleziona l'anagrafica">
-            <Link to={"#"}>{ownerDetails}</Link>
+            <Link to={"#"} onClick={() => handleEditSubject(part.subject as SubjectNaturalPersonData)}>
+              {ownerDetails}
+            </Link>
           </FormInput>
         </FormRow>
         <FormRow>
@@ -335,6 +373,8 @@ const DamagedPartModalContent = (props: DamagedPartModalContentProps) => {
       subjectDetails = part.subject.giuridical_person.business_name;
     }
 
+    console.log("part ", part);
+
     return (
       <>
         <FormSubTitle>ALTRA PARTITA DI DANNO</FormSubTitle>
@@ -350,12 +390,15 @@ const DamagedPartModalContent = (props: DamagedPartModalContentProps) => {
 
           <RowSpacer />
           <FormInput label="Anagrafica" name={`anagrafica_other_${part.pdNumber}`} tooltip="Seleziona l'anagrafica">
-            {subjectDetails !== "" && <Link to={"#"}>{subjectDetails}</Link>}
-            {subjectDetails === "" && (
-              <Button type="primary" size="small">
-                Seleziona
-              </Button>
+            {subjectDetails !== "" && (
+              <>
+                <Link to={"#"} onClick={() => handleEditSubject(part.subject as SubjectNaturalPersonData)}>
+                  {subjectDetails}
+                </Link>
+                <ButtonDelete text={"elimina"} onClick={() => handleModalPartChange("subject", null)} />
+              </>
             )}
+            {subjectDetails === "" && <ButtonConfirm text={"Seleziona"} onClick={handleSearchSubject} />}
           </FormInput>
         </FormRow>
         <FormRow>
@@ -479,7 +522,27 @@ const DamagedPartModalContent = (props: DamagedPartModalContentProps) => {
     );
   };
 
-  return isOwner() ? renderDamageOwner() : renderDamageOther();
+  return (
+    <>
+      {isOwner() ? renderDamageOwner() : renderDamageOther()}
+      <Modal open={isOpenSubjectModal} onCancel={() => setIsOpenSubjectModal(false)} width="1000px" footer={null}>
+        <div style={{ padding: "3em 2em 2em 2em" }}>
+          <SubjectDetails />
+        </div>
+      </Modal>
+      <Modal
+        open={isOpenSearchSubjectModal}
+        onCancel={() => setIsOpenSearchSubjectModal(false)}
+        width="1000px"
+        footer={null}
+      >
+        <div style={{ padding: "3em 2em 2em 2em" }}>
+          <SearchSubject />
+          <SearchResults onSelect={handleSelectSubject} />
+        </div>
+      </Modal>
+    </>
+  );
 };
 
 export default DamagedPartModalContent;

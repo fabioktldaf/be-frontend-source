@@ -12,6 +12,7 @@ import useApplication from "../../hooks/useApplication";
 import { insuranceCodes } from "../../config/dummy-data";
 import { InputTextStyled, SegmentedStyled, SelectStyled } from "../../style/Input";
 import { insuranceCodesWithCodes } from "../../config/const";
+import { TabContentStyled } from ".";
 
 const ClaimDataStyled = styled.div``;
 
@@ -20,8 +21,7 @@ const CounterpartData = () => {
   const counterpartData = useSelector((state: RootState) => state.newClaim.counterpartData);
 
   return (
-    <ClaimDataStyled>
-      <FormSubTitle>DATI CONTROPARTE</FormSubTitle>
+    <TabContentStyled>
       <FormRow>
         <SegmentedStyled
           label="Proprietario tipo persona"
@@ -105,7 +105,7 @@ const CounterpartData = () => {
           options={insuranceCodesWithCodes}
         />
       </FormRow>
-    </ClaimDataStyled>
+    </TabContentStyled>
   );
 };
 

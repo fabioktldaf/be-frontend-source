@@ -17,8 +17,7 @@ import { BaremsResultType } from "../../types/new-claim.types";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import { SelectStyled } from "../../style/Input";
-
-const ResponsabilityStyled = styled.div``;
+import { TabContentStyled } from ".";
 
 const BaremTable = styled.table``;
 
@@ -150,8 +149,7 @@ const Responsability = (props: ResponsabilityProps) => {
   };
 
   return (
-    <ResponsabilityStyled>
-      <FormSubTitle>Ripartizione Responsabilità (Barèmes)</FormSubTitle>
+    <TabContentStyled>
       <FormRow>
         <FormInput
           label="Caso Circostanza"
@@ -242,8 +240,6 @@ const Responsability = (props: ResponsabilityProps) => {
         </FormRow>
       )}
 
-      <FormSubTitle>Responsabilità</FormSubTitle>
-
       <FormRow>
         {
           <FormInput label="Tipo Responsabilità" name="tipo_responsabilità">
@@ -264,22 +260,8 @@ const Responsability = (props: ResponsabilityProps) => {
           options={SignatureTypes}
           value={responsabilityData?.signatureType}
         />
-
-        {/* <FormInput label="Tipo Firma" name="tipo_firma" tooltip="Seleziona il tipo firma">
-          <Select
-            defaultValue="---"
-            onChange={(val) => app.updateResponsabilityData(val, "signature-type")}
-            options={[
-              { value: "---", label: "---" },
-              { value: "1", label: "Monofirma" },
-              { value: "2", label: "Doppia Firma" },
-            ]}
-            value={responsabilityData?.signatureType}
-          />
-          <Hidden>{responsabilityData?.signatureType}</Hidden>
-        </FormInput> */}
       </FormRow>
-    </ResponsabilityStyled>
+    </TabContentStyled>
   );
 };
 

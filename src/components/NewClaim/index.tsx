@@ -3,7 +3,7 @@ import { Button, Tabs, Tooltip } from "antd";
 import { HiOutlineSave } from "react-icons/hi";
 import { VscCopy } from "react-icons/vsc";
 import { AiOutlineCheck } from "react-icons/ai";
-import { MainForm } from "../Layout/Forms";
+import { FormActionType, MainForm } from "../Layout/Forms";
 import Responsability from "./Responsability";
 import ClaimData from "./ClaimData";
 import DamagedParts from "./DamagedParts";
@@ -12,10 +12,10 @@ import { RootState } from "../../redux/store";
 import { useSelector } from "react-redux";
 import CounterpartData from "./CounterpartData";
 
-const SaveIconStyled = styled(HiOutlineSave)`
-  font-size: 1.2em;
-  color: #555;
-  margin: -3px 0.25em 0 0;
+export const TabContentStyled = styled.div`
+  display: flex;
+  flex-direction: column;
+  padding: 3em 2em 3em 0;
 `;
 
 const PolicyNumberStyled = styled.div`
@@ -32,13 +32,6 @@ const CheckedIcon = styled(AiOutlineCheck)`
 const TabItemLabelContainer = styled.div`
   display: flex;
   align-items: center;
-`;
-
-const ButtonSendContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-top: 2em;
 `;
 
 interface NewClaimProps {
@@ -73,13 +66,17 @@ const NewClaim = (props: NewClaimProps) => {
     </>
   );
 
-  const actions = [
+  const actions: FormActionType[] = [
     {
       label: "Salva",
-      icon: <SaveIconStyled />,
       execute: () => {
         console.log("saving new claim data");
       },
+    },
+    {
+      label: "Verifica SIC",
+      disabled: !claimDataCompleted || !responsabilityDataCompleted || !damagedPartsDataCompleted,
+      execute: () => props.onForward(),
     },
   ];
 
@@ -137,16 +134,7 @@ const NewClaim = (props: NewClaimProps) => {
 
   return (
     <MainForm layout="vertical" title={renderTitle} actions={actions}>
-      <>
-        <Tabs defaultActiveKey="1" tabPosition="left" items={buildTabs()} />
-        {claimDataCompleted && responsabilityDataCompleted && damagedPartsDataCompleted && (
-          <ButtonSendContainer>
-            <Button type="primary" onClick={props.onForward}>
-              Verifica SIC
-            </Button>
-          </ButtonSendContainer>
-        )}
-      </>
+      <Tabs defaultActiveKey="1" tabPosition="left" items={buildTabs()} />
     </MainForm>
   );
 };

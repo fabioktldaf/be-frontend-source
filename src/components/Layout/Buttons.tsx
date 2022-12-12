@@ -5,6 +5,7 @@ interface ButtonProps {
   text: string;
   icon?: JSX.Element;
   style?: any;
+  disabled?: boolean;
   onClick: (val: any) => void;
 }
 
@@ -12,6 +13,7 @@ export const ButtonConfirm = (props: ButtonProps) => (
   <Button
     type="primary"
     size="middle"
+    disabled={props.disabled}
     style={Object.assign({}, props.style, { textTransform: "uppercase" })}
     onClick={props.onClick}
     icon={props.icon}

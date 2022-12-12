@@ -7,185 +7,7 @@ import {
   DamagedPartType,
   SelectPair,
 } from "../types/new-claim.types";
-import { SubjectData } from "../types/uses-data.types";
-
-export const defaultClaimPolicyData = {
-  policy_number: "AB-12345789",
-  effect_date: "01/01/2022",
-  expiration_date: "31/12/2022",
-  owner: {
-    natural_person: {
-      id: 1,
-      name: "Mario",
-      lastname: "Rossi",
-      fiscal_code: "RSSMRA73L09Z103F",
-      province_of_residence: "Milano",
-      city_of_residence: "Rho",
-    },
-  },
-  contractor: {
-    giuridical_person: {
-      id: 2,
-      business_name: "Acme Inc.",
-      iva: "01960170684",
-      registered_office_province: "Bologna",
-      registered_office_city: "Cadriano",
-    },
-  },
-  ownerVehicle: {
-    type: "A",
-    plate: {
-      number: "AB123CD",
-      format: "Targa Italiana",
-    },
-  },
-  claimNote:
-    "At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque",
-  damagedParts: [
-    {
-      pdNumber: "1669798161516",
-      subject: {
-        natural_person: {
-          id: 1,
-          name: "Mario",
-          lastname: "Rossi",
-          fiscal_code: "RSSMRA73L09Z103F",
-          province_of_residence: "Milano",
-          city_of_residence: "Rho",
-        },
-      },
-      roleType: "CP",
-      damages: [
-        {
-          damageType: "Vehicle",
-          details: {
-            plate: "AB123CD",
-            format: "Targa Italiana",
-            type: "A",
-            collisionPoints: ["11", "12", "13"],
-            note: "Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur",
-          },
-        },
-        {
-          damageType: "Person",
-          details: {
-            personWoundedPoints: ["front_trunc", "rear_trunc", "front_arm_right"],
-            note: "At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque",
-          },
-        },
-        {
-          damageType: "Thing",
-          details: {
-            note: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-          },
-        },
-      ],
-      note: "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-    } as DamagedPartType,
-    {
-      pdNumber: "1669909946930",
-      subject: {
-        natural_person: {
-          id: 1,
-          name: "Luigi",
-          lastname: "Verdi",
-          fiscal_code: "VRDMRA73L09Z103F",
-          province_of_residence: "Bologna",
-          city_of_residence: "Cadriano",
-        },
-        note: "Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur",
-      },
-      roleType: "TN",
-      damages: [
-        {
-          damageType: "Person",
-          details: {
-            personWoundedPoints: ["front_head", "rear_head", "front_arm_left"],
-            note: "Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur",
-          },
-        },
-        {
-          damageType: "Thing",
-          details: {
-            note: "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur",
-          },
-        },
-        {
-          damageType: "Thing",
-          details: {
-            note: "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum",
-          },
-        },
-      ],
-    } as DamagedPartType,
-    {
-      pdNumber: "1669909992417",
-      subject: {
-        giuridical_person: {
-          id: 10,
-          business_name: "Alice s.r.l",
-          iva: "12456789",
-          registered_office_province: "Genova",
-          registered_office_city: "Bogliasco",
-        },
-      },
-      roleType: "TD",
-      damages: [
-        {
-          damageType: "Thing",
-          details: {
-            note: "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam",
-          },
-        },
-        {
-          damageType: "Thing",
-          details: {
-            note: "Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione",
-          },
-        },
-      ],
-    } as DamagedPartType,
-  ],
-  additionalInfo: [
-    {
-      id: 1670246570138,
-      type: "subject" as AdditionaInfoTypes,
-      damagedPartNumber: "1669798161516",
-      details: {
-        role: "coachbuilder",
-        personalData: null,
-      },
-    },
-    {
-      id: 1670246577652,
-      type: "document" as AdditionaInfoTypes,
-      damagedPartNumber: "1669798161516",
-      details: {
-        type: "id-card",
-        filename: ["fronte.jpg", "retro.jpg"],
-      },
-    },
-    {
-      id: 1670246585293,
-      type: "payment" as AdditionaInfoTypes,
-      damagedPartNumber: "1669798161516",
-      details: {
-        type: "transfer",
-        iban: "123456",
-      },
-    },
-    {
-      id: 1670246667839,
-      type: "contact" as AdditionaInfoTypes,
-      damagedPartNumber: "1669798161516",
-      details: {
-        shippingAddress: "via Ledita Dalnaso 3",
-        email: "fabio@fabio.com",
-        phone: "0034 123456789",
-      },
-    },
-  ],
-};
+import { SubjectData, SubjectGiuridicalPersonData, SubjectNaturalPersonData } from "../types/uses-data.types";
 
 export const insuranceCodes: SelectPair[] = [
   { label: "ACCELERANT INSURANCE EUROPE SA N.V. *", value: "673" },
@@ -561,3 +383,185 @@ export const Subjects: SubjectData[] = [
     ],
   },
 ];
+
+const subject_1 = Subjects[0].person as SubjectNaturalPersonData;
+const subject_2 = Subjects[1].person as SubjectNaturalPersonData;
+const subject_3 = Subjects[2].person as SubjectGiuridicalPersonData;
+
+export const defaultClaimPolicyData = {
+  policy_number: "AB-12345789",
+  effect_date: "01/01/2022",
+  expiration_date: "31/12/2022",
+  owner: {
+    natural_person: {
+      id: 1,
+      name: subject_1.name,
+      lastname: subject_1.lastname,
+      fiscal_code: subject_1.fiscalCode,
+      province_of_residence: "Milano",
+      city_of_residence: "Rho",
+    },
+  },
+  contractor: {
+    giuridical_person: {
+      id: 2,
+      business_name: subject_3.business_name,
+      iva: subject_3.p_iva,
+      registered_office_province: "Bologna",
+      registered_office_city: "Cadriano",
+    },
+  },
+  ownerVehicle: {
+    type: "A",
+    plate: {
+      number: "AB123CD",
+      format: "Targa Italiana",
+    },
+  },
+  claimNote:
+    "At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque",
+  damagedParts: [
+    {
+      pdNumber: "1669798161516",
+      subject: {
+        natural_person: {
+          id: 1,
+          name: subject_1.name,
+          lastname: subject_1.lastname,
+          fiscal_code: subject_1.fiscalCode,
+          province_of_residence: "Milano",
+          city_of_residence: "Rho",
+        },
+      },
+      roleType: "CP",
+      damages: [
+        {
+          damageType: "Vehicle",
+          details: {
+            plate: "AB123CD",
+            format: "Targa Italiana",
+            type: "A",
+            collisionPoints: ["11", "12", "13"],
+            note: "Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur",
+          },
+        },
+        {
+          damageType: "Person",
+          details: {
+            personWoundedPoints: ["front_trunc", "rear_trunc", "front_arm_right"],
+            note: "At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque",
+          },
+        },
+        {
+          damageType: "Thing",
+          details: {
+            note: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+          },
+        },
+      ],
+      note: "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+    } as DamagedPartType,
+    {
+      pdNumber: "1669909946930",
+      subject: {
+        natural_person: {
+          id: 1,
+          name: subject_2.name,
+          lastname: subject_2.lastname,
+          fiscal_code: subject_2.fiscalCode,
+          province_of_residence: "Bologna",
+          city_of_residence: "Cadriano",
+        },
+        note: "Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur",
+      },
+      roleType: "TN",
+      damages: [
+        {
+          damageType: "Person",
+          details: {
+            personWoundedPoints: ["front_head", "rear_head", "front_arm_left"],
+            note: "Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur",
+          },
+        },
+        {
+          damageType: "Thing",
+          details: {
+            note: "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur",
+          },
+        },
+        {
+          damageType: "Thing",
+          details: {
+            note: "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum",
+          },
+        },
+      ],
+    } as DamagedPartType,
+    {
+      pdNumber: "1669909992417",
+      subject: {
+        giuridical_person: {
+          id: 10,
+          business_name: subject_3.business_name,
+          iva: subject_3.p_iva,
+          registered_office_province: "Genova",
+          registered_office_city: "Bogliasco",
+        },
+      },
+      roleType: "TD",
+      damages: [
+        {
+          damageType: "Thing",
+          details: {
+            note: "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam",
+          },
+        },
+        {
+          damageType: "Thing",
+          details: {
+            note: "Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione",
+          },
+        },
+      ],
+    } as DamagedPartType,
+  ],
+  additionalInfo: [
+    {
+      id: 1670246570138,
+      type: "subject" as AdditionaInfoTypes,
+      damagedPartNumber: "1669798161516",
+      details: {
+        role: "coachbuilder",
+        personalData: null,
+      },
+    },
+    {
+      id: 1670246577652,
+      type: "document" as AdditionaInfoTypes,
+      damagedPartNumber: "1669798161516",
+      details: {
+        type: "id-card",
+        filename: ["fronte.jpg", "retro.jpg"],
+      },
+    },
+    {
+      id: 1670246585293,
+      type: "payment" as AdditionaInfoTypes,
+      damagedPartNumber: "1669798161516",
+      details: {
+        type: "transfer",
+        iban: "123456",
+      },
+    },
+    {
+      id: 1670246667839,
+      type: "contact" as AdditionaInfoTypes,
+      damagedPartNumber: "1669798161516",
+      details: {
+        shippingAddress: "via Ledita Dalnaso 3",
+        email: "fabio@fabio.com",
+        phone: "0034 123456789",
+      },
+    },
+  ],
+};

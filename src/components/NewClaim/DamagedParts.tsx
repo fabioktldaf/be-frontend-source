@@ -15,10 +15,9 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import useApplication from "../../hooks/useApplication";
 import { AllPartRoles } from "../../config/const";
-
-const DamagedPartStyled = styled.div`
-  margin-bottom: 2em;
-`;
+import { TabContentStyled } from ".";
+import { ButtonConfirm, ButtonDelete } from "../Layout/Buttons";
+import { IconDelete } from "../../config/icons";
 
 const TableDamagedParts = styled.table`
   width: 100%;
@@ -71,7 +70,8 @@ export type PartModalType = {
 const DamagedParts = () => {
   const { t } = useTranslation();
   const app = useApplication();
-  const { damagedParts, responsability } = useSelector((state: RootState) => state.newClaim);
+  const { damagedParts: _damagedParts, responsability } = useSelector((state: RootState) => state.newClaim);
+  const damagedParts = _damagedParts.filter((dp) => !!dp);
 
   const [partModal, setPartModal] = useState<PartModalType>({
     isOpen: false,
@@ -84,6 +84,8 @@ const DamagedParts = () => {
   };
 
   const showPartModal = (index: number) => {
+    if (!damagedParts[index]) return;
+
     setPartModal({
       isOpen: true,
       part: Object.assign({}, damagedParts[index]),
@@ -135,9 +137,7 @@ const DamagedParts = () => {
           </DamangeIconStyled>
         </td>
         <td style={{ paddingLeft: "1em" }}>
-          {i > 0 && (
-            <Button onClick={() => app.removeDamagedPart(i)} icon={<RiDeleteBinFill />} shape="circle" type="primary" />
-          )}
+          {i > 0 && <ButtonDelete onClick={() => app.removeDamagedPart(i)} text={"elimina"} />}
         </td>
       </TableDamagedPartsRow>
     );
@@ -147,8 +147,7 @@ const DamagedParts = () => {
 
   return (
     <>
-      <DamagedPartStyled>
-        <FormSubTitle>Parite Danno</FormSubTitle>
+      <TabContentStyled>
         <TableDamagedParts>
           <thead>
             <TableDamagedHeader>
@@ -163,11 +162,9 @@ const DamagedParts = () => {
           </tbody>
         </TableDamagedParts>
         <CenteredRow>
-          <Button type="primary" size="small" onClick={() => app.addDamagedPart()}>
-            add partita danno
-          </Button>
+          <ButtonConfirm onClick={app.addDamagedPart} text={"Aggiungi P.D."} />
         </CenteredRow>
-      </DamagedPartStyled>
+      </TabContentStyled>
       <Modal
         title={`Configura Partita Danno n° ${partModal.part?.pdNumber}`}
         open={partModal.index >= 0}

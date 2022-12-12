@@ -374,7 +374,10 @@ const checkDamagedPartsDataCompleted = () => {
   let personsWithoutDamages = false;
   let damagedPartWithoutDamages = false;
 
-  damagedParts.forEach(({ damages, roleType }) => {
+  damagedParts.forEach((damagedPart) => {
+    if (!damagedPart) return;
+
+    const { damages, roleType } = damagedPart;
     if (damages.length < 1) damagedPartWithoutDamages = true;
 
     if (roleType === PartRoleEmpty.value) {

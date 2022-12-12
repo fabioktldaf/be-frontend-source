@@ -15,6 +15,7 @@ import NewClaimPage from "../../pages/new-claim";
 import "antd/dist/antd.css";
 import SubjectsData from "../../pages/subjects-data";
 import SubjectDetails from "../SubjectsData/SubjectDetails";
+import Home from "../../pages/home";
 
 const LayoutStyled = styled(Layout)`
   height: 100vh;
@@ -44,7 +45,7 @@ const AppLayout: React.FC<Props> = (props: Props) => {
           <Header />
           <ContentStyled>
             <Routes>
-              <Route path={Urls.home} element={<div>home...</div>} />
+              <Route path={Urls.home} element={<Home />} />
               <Route
                 path={Urls.policy_searchFulltext}
                 element={

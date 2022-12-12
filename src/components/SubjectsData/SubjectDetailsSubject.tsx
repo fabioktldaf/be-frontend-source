@@ -4,7 +4,14 @@ import styled from "styled-components";
 import { SubjectData, SubjectGiuridicalPersonData, SubjectNaturalPersonData } from "../../types/uses-data.types";
 import { IApplication } from "../../application";
 import { TFunction } from "i18next";
-import { DatePickerStyled, FiscalCodeStyled, InputAddress, InputTextStyled, SelectStyled } from "../../style/Input";
+import {
+  DatePickerStyled,
+  FiscalCodeStyled,
+  InputAddress,
+  InputTextStyled,
+  SegmentedStyled,
+  SelectStyled,
+} from "../../style/Input";
 import { Row, RowSpacer } from "../../style/containers";
 import { GenderTypes, GiuridicalPersonTypes, GiuridicalPersonTypeSpa } from "../../config/const";
 import { IconEdit } from "../../config/icons";
@@ -35,14 +42,22 @@ const SubjectDetailsSubject = (props: SubjectDetailsSubjectProps) => {
   const naturalPerson = subject?.person as SubjectNaturalPersonData;
   const giuridicalPerson = subject?.person as SubjectGiuridicalPersonData;
 
-  let subjectType: subectType;
-  if (naturalPerson?.name?.length > 0) subjectType = "natural";
+  let subjectType: subectType = "natural";
   if (giuridicalPerson?.business_name?.length > 0) subjectType = "business";
-  if (giuridicalPerson?.isProprietorship) subjectType = "proprietorship";
 
   const renderNaturalPerson = () => {
     return (
       <FormContentTab>
+        <FormRow>
+          <SegmentedStyled
+            label="Tipo Soggetto"
+            tooltip="Seleziona il tipo di soggetto"
+            options={["natural", "business"]}
+            value={subjectType}
+            onChange={(val) => onChange(val, "subjectType")}
+          />
+        </FormRow>
+
         <FormRow>
           <InputTextStyled
             label="Nome"
@@ -50,7 +65,7 @@ const SubjectDetailsSubject = (props: SubjectDetailsSubjectProps) => {
             rules={[{ required: true, message: "Il nome è obbligatorio" }]}
             placeholder="nome del soggetto..."
             onChange={(txt) => onChange(txt, "name")}
-            value={naturalPerson.name}
+            value={naturalPerson?.name}
           />
           <RowSpacer />
           <InputTextStyled
@@ -59,7 +74,7 @@ const SubjectDetailsSubject = (props: SubjectDetailsSubjectProps) => {
             rules={[{ required: true, message: "Il cognome è obbligatorio" }]}
             placeholder="cognome del soggetto..."
             onChange={(txt) => onChange(txt, "lastname")}
-            value={naturalPerson.lastname}
+            value={naturalPerson?.lastname}
           />
         </FormRow>
         <FormRow>
@@ -69,7 +84,7 @@ const SubjectDetailsSubject = (props: SubjectDetailsSubjectProps) => {
               tooltip="Seleziona la data di Nascita"
               placeholder="data di nascita ..."
               onChange={(txt) => onChange(txt, "birt.date")}
-              value={naturalPerson.birth.date}
+              value={naturalPerson?.birth?.date}
               format={"DD/MM/YYYY"}
             />
             <RowSpacer />
@@ -77,7 +92,7 @@ const SubjectDetailsSubject = (props: SubjectDetailsSubjectProps) => {
               label="Sesso"
               tooltip="Seleziona Sesso"
               defaultValue="---"
-              value={naturalPerson.gender}
+              value={naturalPerson?.gender}
               onChange={(txt) => onChange(txt, "gender")}
               options={GenderTypes}
             />
@@ -90,7 +105,7 @@ const SubjectDetailsSubject = (props: SubjectDetailsSubjectProps) => {
             rules={[{ required: true, message: "Il codice fiscale è obbligatorio" }]}
             placeholder="codice fiscale..."
             onChange={(txt) => onChange(txt, "fiscalCode")}
-            value={naturalPerson.fiscalCode}
+            value={naturalPerson?.fiscalCode}
           />
         </FormRow>
         <FormRow>
@@ -99,7 +114,7 @@ const SubjectDetailsSubject = (props: SubjectDetailsSubjectProps) => {
             tooltip="Luogo di nascita"
             placeholder="luogo di nascita.."
             onEdit={() => {}}
-            value={`${naturalPerson.birth.city} - ${naturalPerson.birth.province} - ${naturalPerson.birth.country}`}
+            value={`${naturalPerson?.birth?.city} - ${naturalPerson?.birth?.province} - ${naturalPerson?.birth?.country}`}
             onChange={(data) => onChange(data, "birt.place")}
           />
         </FormRow>
@@ -111,20 +126,29 @@ const SubjectDetailsSubject = (props: SubjectDetailsSubjectProps) => {
     return (
       <FormContentTab>
         <FormRow>
+          <SegmentedStyled
+            label="Tipo Soggetto"
+            tooltip="Seleziona il tipo di soggetto"
+            options={["natural", "business"]}
+            value={subjectType}
+            onChange={(val) => onChange(val, "subjectType")}
+          />
+        </FormRow>
+        <FormRow>
           <InputTextStyled
             label="Ragione Sociale"
             tooltip="Inserisci la ragione sociale"
             rules={[{ required: true, message: "La ragione sociale è obbligatoria" }]}
             placeholder="ragione sociale..."
             onChange={(txt) => onChange(txt, "business_name")}
-            value={giuridicalPerson.business_name}
+            value={giuridicalPerson?.business_name}
           />
           <RowSpacer />
           <SelectStyled
             label="Tipo"
             tooltip="Tipo di persona giuridica"
             defaultValue="---"
-            value={giuridicalPerson.type}
+            value={giuridicalPerson?.type}
             onChange={(txt) => onChange(txt, "type")}
             options={GiuridicalPersonTypes}
           />
@@ -136,13 +160,13 @@ const SubjectDetailsSubject = (props: SubjectDetailsSubjectProps) => {
             rules={[{ required: true, message: "La partita iva è obbligatoria" }]}
             placeholder="partita iva..."
             onChange={(txt) => onChange(txt, "p_iva")}
-            value={giuridicalPerson.p_iva}
+            value={giuridicalPerson?.p_iva}
           />
           <RowSpacer />
           <div style={{ flex: 1 }}></div>
         </FormRow>
 
-        {giuridicalPerson.isProprietorship && (
+        {giuridicalPerson?.isProprietorship && (
           <>
             <TitleHr text="Ditta Individuale" />
 
@@ -153,7 +177,7 @@ const SubjectDetailsSubject = (props: SubjectDetailsSubjectProps) => {
                 rules={[{ required: true, message: "Il nome è obbligatorio" }]}
                 placeholder="nome del soggetto..."
                 onChange={(txt) => onChange(txt, "name")}
-                value={giuridicalPerson.proprietorship?.name}
+                value={giuridicalPerson?.proprietorship?.name}
               />
               <RowSpacer />
               <InputTextStyled
@@ -162,7 +186,7 @@ const SubjectDetailsSubject = (props: SubjectDetailsSubjectProps) => {
                 rules={[{ required: true, message: "Il cognome è obbligatorio" }]}
                 placeholder="cognome del soggetto..."
                 onChange={(txt) => onChange(txt, "lastname")}
-                value={giuridicalPerson.proprietorship?.lastname}
+                value={giuridicalPerson?.proprietorship?.lastname}
               />
             </FormRow>
             <FormRow>
@@ -172,7 +196,7 @@ const SubjectDetailsSubject = (props: SubjectDetailsSubjectProps) => {
                   tooltip="Seleziona la data di Nascita"
                   placeholder="data di nascita ..."
                   onChange={(txt) => onChange(txt, "birt.date")}
-                  value={giuridicalPerson.proprietorship?.birth.date}
+                  value={giuridicalPerson?.proprietorship?.birth.date}
                   format={"DD/MM/YYYY"}
                 />
                 <RowSpacer />
@@ -180,7 +204,7 @@ const SubjectDetailsSubject = (props: SubjectDetailsSubjectProps) => {
                   label="Sesso"
                   tooltip="Seleziona Sesso"
                   defaultValue="---"
-                  value={giuridicalPerson.proprietorship?.gender}
+                  value={giuridicalPerson?.proprietorship?.gender}
                   onChange={(txt) => onChange(txt, "gender")}
                   options={GenderTypes}
                 />
@@ -192,7 +216,7 @@ const SubjectDetailsSubject = (props: SubjectDetailsSubjectProps) => {
                 rules={[{ required: true, message: "Il codice fiscale è obbligatorio" }]}
                 placeholder="codice fiscale..."
                 onChange={(txt) => onChange(txt, "fiscalCode")}
-                value={giuridicalPerson.proprietorship?.fiscalCode}
+                value={giuridicalPerson?.proprietorship?.fiscalCode}
               />
             </FormRow>
             <FormRow>
@@ -201,7 +225,7 @@ const SubjectDetailsSubject = (props: SubjectDetailsSubjectProps) => {
                 tooltip="Luogo di nascita"
                 placeholder="luogo di nascita.."
                 onEdit={() => {}}
-                value={`${giuridicalPerson.birth?.city} - ${giuridicalPerson.birth?.province} - ${giuridicalPerson.birth?.country}`}
+                value={`${giuridicalPerson?.birth?.city} - ${giuridicalPerson?.birth?.province} - ${giuridicalPerson?.birth?.country}`}
                 onChange={(data) => onChange(data, "birt.place")}
               />
             </FormRow>

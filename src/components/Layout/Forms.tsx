@@ -8,6 +8,8 @@ import { ButtonConfirm } from "./Buttons";
 
 export type FormActionType = {
   label: string;
+  icon?: JSX.Element;
+  disabled?: boolean;
   execute: () => void;
 };
 
@@ -16,10 +18,11 @@ interface FormProps {
   icon?: JSX.Element;
   title?: JSX.Element | string;
   actions?: FormActionType[];
+  middleArea?: JSX.Element;
   children?: JSX.Element;
 }
 
-export const MainForm = ({ layout, title, icon, actions, children }: FormProps) => {
+export const MainForm = ({ layout, title, icon, actions, middleArea, children }: FormProps) => {
   return (
     <FormContainer layout={layout}>
       <FormHeader>
@@ -29,10 +32,11 @@ export const MainForm = ({ layout, title, icon, actions, children }: FormProps) 
         </FormTitle>
         <FormActions>
           {actions?.map((action, i) => (
-            <ButtonConfirm key={i} onClick={() => action.execute()} text={action.label} />
+            <ButtonConfirm key={i} onClick={() => action.execute()} text={action.label} disabled={action.disabled} />
           ))}
         </FormActions>
       </FormHeader>
+      <>{middleArea}</>
       <FormContent>{children}</FormContent>
     </FormContainer>
   );

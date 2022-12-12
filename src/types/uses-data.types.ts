@@ -1,3 +1,5 @@
+export type SubjectType = "natural" | "business" | "proprietorship";
+
 export type NaturalPersonBirth = {
   date: string;
   city: string;
@@ -62,7 +64,7 @@ export type SubjectDocumentData = {
 };
 
 export type SubjectData = {
-  person: SubjectNaturalPersonData | SubjectGiuridicalPersonData;
+  person?: SubjectNaturalPersonData | SubjectGiuridicalPersonData;
   contacts?: SubjectContactData[];
   addresses?: SubjectAddressData[];
   documents?: SubjectDocumentData[];

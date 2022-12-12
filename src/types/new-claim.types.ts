@@ -84,6 +84,7 @@ export type PartChangeType =
   | "collision-point"
   | "person-damage"
   | "role-type"
+  | "subject"
   | "owner-vehicle-note"
   | "person-note"
   | "thing-note"

@@ -38,6 +38,7 @@ import AdditionalInfoModalContent from "./AdditionaInfoModalContent";
 import TabSubject from "../PolicyManualInsert/TabSubject";
 import { CenteredRow } from "../../style/containers";
 import { clearLocalStorage } from "../../redux/features/newClaimSlice";
+import { SubjectGiuridicalPersonData, SubjectNaturalPersonData } from "../../types/uses-data.types";
 
 const DamagedPartsTable = styled.table`
   width: 90%;
@@ -289,9 +290,18 @@ const AdditionalInfo = (props: AdditionalDataProps) => {
   };
 
   const renderResumeSubject = (subjetDetails: AdditionalInfoSubjectType) => {
+    const naturalPersonDetails = subjetDetails.personalData as SubjectNaturalPersonData;
+    const giuridicalPersonDetails = subjetDetails.personalData as SubjectGiuridicalPersonData;
+
     const role = AdditionalInfoSubjectRoles.find((r) => r.value === subjetDetails.role)?.label;
-    const nominative = '"Nome Cognome"';
-    return <div>{`${nominative} ${role}`}</div>;
+
+    let nominative = "";
+
+    if (naturalPersonDetails?.name?.length > 0) nominative = naturalPersonDetails?.name;
+    if (naturalPersonDetails?.lastname?.length > 0) nominative += " " + naturalPersonDetails?.lastname;
+    if (giuridicalPersonDetails?.business_name?.length > 0) nominative = giuridicalPersonDetails.business_name;
+
+    return <div>{`${role} - ${nominative}`}</div>;
   };
 
   const renderResumeDocument = (documentDetails: AdditionalInfoDocumentType) => {
@@ -359,7 +369,16 @@ const AdditionalInfo = (props: AdditionalDataProps) => {
   };
 
   return (
-    <MainForm layout="vertical" title={<>Informazioni Addizionali</>} actions={[]}>
+    <MainForm
+      layout="vertical"
+      title={<>Informazioni Addizionali</>}
+      actions={[
+        {
+          label: "Avanti",
+          execute: handleOnSave,
+        },
+      ]}
+    >
       <>
         <DamagedPartsTable>
           <tbody>
@@ -376,11 +395,6 @@ const AdditionalInfo = (props: AdditionalDataProps) => {
             })}
           </tbody>
         </DamagedPartsTable>
-        <CenteredRow>
-          <Button type="primary" onClick={handleOnSave}>
-            Salva
-          </Button>
-        </CenteredRow>
         <Modal
           title="Inserisci Info Addizionali per la partita di danno"
           open={modalOpen}

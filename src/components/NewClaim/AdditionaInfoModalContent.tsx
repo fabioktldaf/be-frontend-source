@@ -1,4 +1,4 @@
-import { Button } from "antd";
+import { Button, Modal } from "antd";
 import { message, Upload } from "antd";
 import type { UploadProps } from "antd";
 import { InboxOutlined } from "@ant-design/icons";
@@ -31,6 +31,12 @@ import {
 } from "../../types/new-claim.types";
 import useApplication from "../../hooks/useApplication";
 import { IconInbox } from "../../config/icons";
+import SubjectDetails from "../SubjectsData/SubjectDetails";
+import SearchSubject from "../SubjectsData/SearchSubject";
+import SearchResults from "../SubjectsData/SearchResults";
+import { SubjectData, SubjectGiuridicalPersonData, SubjectNaturalPersonData } from "../../types/uses-data.types";
+import { ButtonConfirm, ButtonDelete } from "../Layout/Buttons";
+import { Link, useNavigate } from "react-router-dom";
 
 const FormContainer = styled.div`
   margin: 3em 0em;
@@ -54,6 +60,7 @@ interface AdditionalInfoModalContentProps {
 
 const AdditionalInfoModalContent = (props: AdditionalInfoModalContentProps) => {
   const app = useApplication();
+  const navigate = useNavigate();
   const additionalInfo = useSelector((state: RootState) => state.newClaim.additionalInfo[props.index]);
   const [addInfoType, setAddInfoType] = useState(AdditionalInfoEmpty.value);
 
@@ -76,6 +83,9 @@ const AdditionalInfoModalContent = (props: AdditionalInfoModalContentProps) => {
     email: "",
     phone: "",
   });
+
+  const [isOpenSubjectModal, setIsOpenSubjectModal] = useState(false);
+  const [isOpenSearchSubjectModal, setIsOpenSearchSubjectModal] = useState(false);
 
   useEffect(() => {
     if (!additionalInfo) return;
@@ -102,6 +112,17 @@ const AdditionalInfoModalContent = (props: AdditionalInfoModalContentProps) => {
   const damagedPart = useSelector((state: RootState) =>
     props.damagedPartIndex >= 0 ? state.newClaim.damagedParts[props.damagedPartIndex] : null
   );
+
+  const handleSelectSubject = (subject: SubjectData) => {
+    handleChangeSubject("personalData", subject.person);
+    setIsOpenSearchSubjectModal(false);
+  };
+
+  const handleEditSubject = (person: SubjectNaturalPersonData | SubjectGiuridicalPersonData) => {
+    console.log("person ", person);
+    app.editSubject({ person: Object.assign({}, person) }, navigate);
+    setIsOpenSubjectModal(true);
+  };
 
   const handleSave = () => {
     const details:
@@ -162,6 +183,14 @@ const AdditionalInfoModalContent = (props: AdditionalInfoModalContentProps) => {
     setContactData(Object.assign({}, contactData, { [field]: value }));
   };
 
+  let subjectDetails = "";
+  const naturalPerson = subjectData.personalData as SubjectNaturalPersonData;
+  const giuridicalPerson = subjectData.personalData as SubjectGiuridicalPersonData;
+
+  if (naturalPerson?.name?.length > 0) subjectDetails += naturalPerson.name;
+  if (naturalPerson?.lastname?.length > 0) subjectDetails += " " + naturalPerson.lastname;
+  if (giuridicalPerson?.business_name?.length > 0) subjectDetails += giuridicalPerson.business_name;
+
   const renderSubjectForm = () => {
     return (
       <FormContainer>
@@ -175,9 +204,22 @@ const AdditionalInfoModalContent = (props: AdditionalInfoModalContentProps) => {
           />
           <RowSpacer />
           <div style={{ flex: "1", display: "flex", justifyContent: "center" }}>
-            <Button type="primary" size="small">
-              Seleziona Anagrafica
-            </Button>
+            {subjectDetails === "" && (
+              <ButtonConfirm text={"Seleziona Anagrafica"} onClick={() => setIsOpenSearchSubjectModal(true)} />
+            )}
+            {subjectDetails !== "" && (
+              <>
+                <Link to={"#"} onClick={() => handleEditSubject(subjectData.personalData)}>
+                  {subjectDetails}
+                </Link>
+
+                <ButtonDelete
+                  text={"Elimina"}
+                  onClick={() => handleChangeSubject("personalData", null)}
+                  style={{ marginLeft: "2em" }}
+                />
+              </>
+            )}
           </div>
         </Row>
       </FormContainer>
@@ -293,6 +335,22 @@ const AdditionalInfoModalContent = (props: AdditionalInfoModalContentProps) => {
             Salva
           </Button>
         </FooterActions>
+        <Modal open={isOpenSubjectModal} onCancel={() => setIsOpenSubjectModal(false)} width="1000px" footer={null}>
+          <div style={{ padding: "3em 2em 2em 2em" }}>
+            <SubjectDetails />
+          </div>
+        </Modal>
+        <Modal
+          open={isOpenSearchSubjectModal}
+          onCancel={() => setIsOpenSearchSubjectModal(false)}
+          width="1000px"
+          footer={null}
+        >
+          <div style={{ padding: "3em 2em 2em 2em" }}>
+            <SearchSubject />
+            <SearchResults onSelect={handleSelectSubject} />
+          </div>
+        </Modal>
       </Col>
     )
   );

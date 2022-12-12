@@ -1,7 +1,7 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { Switch, Collapse } from "antd";
+import { Switch, Collapse, Modal } from "antd";
 import { RowSpacer } from "../../style/containers";
 import { FormRow, FormInput, FormTextArea } from "../../style/form";
 import CardData from "./CardData";
@@ -10,15 +10,11 @@ import { RootState } from "../../redux/store";
 import { useSelector } from "react-redux";
 import useApplication from "../../hooks/useApplication";
 import { DatePickerStyled, InputTextStyled, TimePickerStyled } from "../../style/Input";
+import { TabContentStyled } from ".";
+import { SubjectData, SubjectGiuridicalPersonData, SubjectNaturalPersonData } from "../../types/uses-data.types";
+import SubjectDetails from "../SubjectsData/SubjectDetails";
 
-const ClaimDataStyled = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
-
-const CollapseStyled = styled(Collapse)`
-  margin-bottom: 3em;
-`;
+const CollapseStyled = styled(Collapse)``;
 
 const CollapsePanelContentStyled = styled.div`
   display: flex;
@@ -84,7 +80,11 @@ const DateWarningMessage = styled.div`
 `;
 
 const ClaimData = () => {
+  const [isOpenSubjectModal, setIsOpenSubjectModal] = useState(false);
+
   const app = useApplication();
+  const navigate = useNavigate();
+
   const policyData = useSelector((state: RootState) => state.newClaim.policyData);
   const { owner, contractor } = policyData || {};
   const stepperData = useSelector((state: RootState) => state.newClaim.stepperData);
@@ -118,10 +118,24 @@ const ClaimData = () => {
     return <></>;
   };
 
+  const handleEditSubject = (person: SubjectNaturalPersonData | SubjectGiuridicalPersonData) => {
+    console.log(person);
+    app.editSubject({ person: Object.assign({}, person) }, navigate);
+    setIsOpenSubjectModal(true);
+  };
+
   const renderDetailsGroupDataField = (field: any, i: number) => (
     <ReadonlyField key={i}>
       <LabelStyled>{field.label} :</LabelStyled>
-      <ReadonlyValue>{field.link ? <Link to={"#"}>{field.value}</Link> : field.value}</ReadonlyValue>
+      <ReadonlyValue>
+        {field.link ? (
+          <Link to={"#"} onClick={field.onClick}>
+            {field.value}
+          </Link>
+        ) : (
+          field.value
+        )}
+      </ReadonlyValue>
     </ReadonlyField>
   );
 
@@ -138,6 +152,7 @@ const ClaimData = () => {
         label: "Nome",
         value: person.lastname + " " + person.name,
         link: "#",
+        onClick: () => handleEditSubject(person),
       },
       {
         label: "Codice Fiscale",
@@ -159,6 +174,7 @@ const ClaimData = () => {
         label: "Ragione Sociale",
         value: person.business_name,
         link: "#",
+        onClick: () => handleEditSubject(person),
       },
       {
         label: "Partita IVA",
@@ -178,7 +194,7 @@ const ClaimData = () => {
   const contractorId = contractor?.giuridical_person?.id || contractor?.natural_person?.id;
 
   return (
-    <ClaimDataStyled>
+    <TabContentStyled>
       <CollapseStyled>
         <Collapse.Panel header={"DETTAGLIO DATI POLIZZA"} key="1">
           <CollapsePanelContentStyled>
@@ -300,7 +316,12 @@ const ClaimData = () => {
           </FormRow>
         </>
       )}
-    </ClaimDataStyled>
+      <Modal open={isOpenSubjectModal} onCancel={() => setIsOpenSubjectModal(false)} width="1000px" footer={null}>
+        <div style={{ padding: "3em 2em 2em 2em" }}>
+          <SubjectDetails />
+        </div>
+      </Modal>
+    </TabContentStyled>
   );
 };
 

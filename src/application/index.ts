@@ -5,6 +5,8 @@ import i18next from "i18next";
 import NewClaim from "./newClaim";
 import SearchSubject from "./searchSubject";
 import EditSubject from "./editSubject";
+import NewSubject, { INewSubject } from "./newSubject";
+
 import {
   AdditionalInfoDataType,
   DamagedPartType,
@@ -47,6 +49,10 @@ export interface IApplication {
   editingSubjectRemoveAddress: (index: number) => void;
   editingSubjectAddDocument: () => void;
   editingSubjectRemoveDocument: (index: number) => void;
+
+  addNewSubject: (navigate: NavigateFunction) => void;
+
+  newSubject: INewSubject;
 }
 
 export default (): IApplication => {
@@ -132,6 +138,27 @@ export default (): IApplication => {
     },
     editingSubjectRemoveDocument: (index: number) => {
       EditSubject.editingSubjectRemoveDocument(index);
+    },
+    addNewSubject: (navigate: NavigateFunction) => {
+      store.dispatch(editSubject({}));
+      navigate(Urls.subject_details);
+    },
+    newSubject: {
+      clearLocalStorage: () => {
+        NewSubject.clearLocalStorage();
+      },
+      updateSubjectData: (val: any) => {
+        NewSubject.updateSubjectData(val);
+      },
+      updateContactsData: (val: any) => {
+        NewSubject.updateContactsData(val);
+      },
+      updateAddressesData: (val: any) => {
+        NewSubject.updateAddressesData(val);
+      },
+      updateDocumentsData: (val: any) => {
+        NewSubject.updateDocumentsData(val);
+      },
     },
   };
 };
