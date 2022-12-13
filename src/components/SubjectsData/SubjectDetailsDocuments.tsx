@@ -66,7 +66,7 @@ const SubjectDetailsDocuments = (props: SubjectDetailsDocumentsProps) => {
           <TitleHr text="Documento" containerStyle={{ zIndex: "1" }} />
           <RowSpacer />
           <ButtonDelete
-            text="Elimina"
+            children="Elimina"
             onClick={() => handleRemoveDocument(index)}
             style={{ position: "absolute", right: "0", top: "1.2em", zIndex: "2" }}
           />
@@ -145,7 +145,7 @@ const SubjectDetailsDocuments = (props: SubjectDetailsDocumentsProps) => {
         <DocumentStyled key={i}>{renderDocument(document, i)}</DocumentStyled>
       ))}
       <FormRow style={{ justifyContent: "center" }}>
-        <ButtonConfirm onClick={handleAddDocument} text="Aggiungi Documento" />
+        <ButtonConfirm onClick={handleAddDocument} children="Aggiungi Documento" />
       </FormRow>
     </FormContentTab>
   );

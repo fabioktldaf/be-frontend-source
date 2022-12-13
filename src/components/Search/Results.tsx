@@ -7,7 +7,7 @@ import { RootState } from "../../redux/store";
 import useApplication from "../../hooks/useApplication";
 import { SubjectData, SubjectGiuridicalPersonData, SubjectNaturalPersonData } from "../../types/uses-data.types";
 
-const Results = styled.div`
+const ResultsContainer = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -30,14 +30,14 @@ const SubjectItemField = styled.div`
   margin-right: 1em;
 `;
 
-interface SearchResultsProps {
+interface ResultsProps {
   onSelect: (subject: SubjectData) => void;
 }
 
-const SearchResults = (props: SearchResultsProps) => {
+const Results = (props: ResultsProps) => {
   const { t } = useTranslation();
   const app = useApplication();
-  const { isSearching, results } = useSelector((state: RootState) => state.subjects.search);
+  const { isSearching, results } = useSelector((state: RootState) => state.search);
 
   const renderNaturalPerson = (person: SubjectNaturalPersonData) => {
     const { name, lastname, fiscalCode } = person;
@@ -74,7 +74,11 @@ const SearchResults = (props: SearchResultsProps) => {
     );
   };
 
-  return isSearching ? <></> : <Results>{results.map((subject, i) => renderSubject(subject, i))}</Results>;
+  return isSearching ? (
+    <></>
+  ) : (
+    <ResultsContainer>{results.map((subject, i) => renderSubject(subject, i))}</ResultsContainer>
+  );
 };
 
-export default SearchResults;
+export default Results;

@@ -32,7 +32,12 @@ export const MainForm = ({ layout, title, icon, actions, middleArea, children }:
         </FormTitle>
         <FormActions>
           {actions?.map((action, i) => (
-            <ButtonConfirm key={i} onClick={() => action.execute()} text={action.label} disabled={action.disabled} />
+            <ButtonConfirm
+              key={i}
+              onClick={() => action.execute()}
+              children={action.label}
+              disabled={action.disabled}
+            />
           ))}
         </FormActions>
       </FormHeader>

@@ -68,7 +68,7 @@ const SubjectDetailsContacts = (props: SubjectDetailsContactsProps) => {
           <TitleHr text="Contatto" containerStyle={{ zIndex: "1" }} />
           <RowSpacer />
           <ButtonDelete
-            text="Elimina"
+            children="Elimina"
             onClick={() => handleRemoveContact(index)}
             style={{ position: "absolute", right: "0", top: "1.2em", zIndex: "2" }}
           />
@@ -135,7 +135,7 @@ const SubjectDetailsContacts = (props: SubjectDetailsContactsProps) => {
         return <ContactStyled key={i}>{renderContact(contact, i)}</ContactStyled>;
       })}
       <FormRow style={{ justifyContent: "center" }}>
-        <ButtonConfirm onClick={handleAddContact} text="Aggiungi contatto" />
+        <ButtonConfirm onClick={handleAddContact} children="Aggiungi contatto" />
       </FormRow>
     </FormContentTab>
   );

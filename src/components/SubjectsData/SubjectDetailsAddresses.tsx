@@ -56,7 +56,7 @@ const SubjectDetailsAddresses = (props: SubjectDetailsAddressesProps) => {
           <TitleHr text="Indirizzo" containerStyle={{ zIndex: "1" }} />
           <RowSpacer />
           <ButtonDelete
-            text="Elimina"
+            children="Elimina"
             onClick={() => handleRemoveAddress(index)}
             style={{ position: "absolute", right: "0", top: "1.2em", zIndex: "2" }}
           />
@@ -99,7 +99,7 @@ const SubjectDetailsAddresses = (props: SubjectDetailsAddressesProps) => {
         <AddressStyled key={i}>{renderAddress(address, i)}</AddressStyled>
       ))}
       <FormRow style={{ justifyContent: "center" }}>
-        <ButtonConfirm onClick={handleAddAddress} text="Aggiungi indirizzo" />
+        <ButtonConfirm onClick={handleAddAddress} children="Aggiungi indirizzo" />
       </FormRow>
     </FormContentTab>
   );

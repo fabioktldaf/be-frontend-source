@@ -1,5 +1,5 @@
 import React from "react";
-import SearchResults from "../components/SubjectsData/SearchResults";
+import Results from "../components/Search/Results";
 import SearchSubject from "../components/SubjectsData/SearchSubject";
 import useApplication from "../hooks/useApplication";
 import { SubjectData } from "../types/uses-data.types";
@@ -29,13 +29,13 @@ const SubjectsData = () => {
       <div style={{ display: "flex", padding: "2em 0 0 0", justifyContent: "flex-end" }}>
         <ButtonConfirm
           onClick={() => app.addNewSubject(navigate)}
-          text={"Aggiungi Nuovo"}
+          children={"Aggiungi Nuovo"}
           disabled={!canAddNewSubjeject}
         />
       </div>
 
       <div style={{ width: "500px", marginTop: "3em" }}>
-        <SearchResults onSelect={handleSelect} />
+        <Results onSelect={handleSelect} />
       </div>
     </div>
   );

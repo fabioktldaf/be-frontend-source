@@ -138,7 +138,7 @@ const AddInfoIcon = styled.div`
 `;
 
 interface AdditionalDataProps {
-  onSave: () => void;
+  onSend: () => void;
 }
 
 const AdditionalInfo = (props: AdditionalDataProps) => {
@@ -181,7 +181,7 @@ const AdditionalInfo = (props: AdditionalDataProps) => {
 
   const handleOnSave = () => {
     app.clearLocalStorage();
-    props.onSave();
+    props.onSend();
   };
 
   const renderDamagedPartResume = (p: DamagedPartType, index: number) => {
@@ -374,7 +374,11 @@ const AdditionalInfo = (props: AdditionalDataProps) => {
       title={<>Informazioni Addizionali</>}
       actions={[
         {
-          label: "Avanti",
+          label: "Salva",
+          execute: () => {},
+        },
+        {
+          label: "Invia al Liquidatore",
           execute: handleOnSave,
         },
       ]}

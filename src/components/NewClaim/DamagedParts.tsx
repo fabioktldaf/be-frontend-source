@@ -67,7 +67,12 @@ export type PartModalType = {
   index: number;
 };
 
-const DamagedParts = () => {
+interface DamagedPartsProps {
+  isResume?: boolean;
+  onDataChange?: () => void;
+}
+
+const DamagedParts = (props: DamagedPartsProps) => {
   const { t } = useTranslation();
   const app = useApplication();
   const { damagedParts: _damagedParts, responsability } = useSelector((state: RootState) => state.newClaim);
@@ -81,6 +86,7 @@ const DamagedParts = () => {
 
   const handlePartModalOk = () => {
     setPartModal({ part: undefined, index: -1, isOpen: false });
+    if (props.onDataChange) props.onDataChange();
   };
 
   const showPartModal = (index: number) => {
@@ -136,9 +142,11 @@ const DamagedParts = () => {
             )}
           </DamangeIconStyled>
         </td>
-        <td style={{ paddingLeft: "1em" }}>
-          {i > 0 && <ButtonDelete onClick={() => app.removeDamagedPart(i)} text={"elimina"} />}
-        </td>
+        {!props.isResume && (
+          <td style={{ paddingLeft: "1em" }}>
+            {i > 0 && <ButtonDelete onClick={() => app.removeDamagedPart(i)} children={"elimina"} />}
+          </td>
+        )}
       </TableDamagedPartsRow>
     );
   };
@@ -161,9 +169,11 @@ const DamagedParts = () => {
             {damagedParts.map((p: DamagedPartType, i: number) => renderDamagePartRow(p, i, managementType))}
           </tbody>
         </TableDamagedParts>
-        <CenteredRow>
-          <ButtonConfirm onClick={app.addDamagedPart} text={"Aggiungi P.D."} />
-        </CenteredRow>
+        {!props.isResume && (
+          <CenteredRow>
+            <ButtonConfirm onClick={app.addDamagedPart} children={"Aggiungi P.D."} />
+          </CenteredRow>
+        )}
       </TabContentStyled>
       <Modal
         title={`Configura Partita Danno n° ${partModal.part?.pdNumber}`}

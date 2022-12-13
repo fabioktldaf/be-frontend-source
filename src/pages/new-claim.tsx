@@ -2,7 +2,7 @@ import { Col, Button, Collapse } from "antd";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { store, RootState } from "../redux/store";
-import { setStatus } from "../redux/features/newClaimSlice";
+import { clear, setStatus } from "../redux/features/newClaimSlice";
 
 import NewClaim from "../components/NewClaim";
 import AdditionalInfo from "../components/NewClaim/AdditionalInfo";
@@ -20,17 +20,23 @@ const NewClaimPage = () => {
 
   return (
     <Col>
-      <NewClaimsSteps />
+      {/* <NewClaimsSteps /> */}
 
-      {step === 0 && <NewClaim onForward={() => handleChangeStatus(NewClaimStateType.VerifingSic)} />}
+      {step === 0 && <NewClaim onForward={() => handleChangeStatus(NewClaimStateType.CheckingData)} />}
       {step === 1 && (
         <CheckSic
           onForward={() => handleChangeStatus(NewClaimStateType.AdditionalData)}
           onBackward={() => handleChangeStatus(NewClaimStateType.MandatoryData)}
         />
       )}
-      {step === 2 && <AdditionalInfo onSave={() => handleChangeStatus(NewClaimStateType.Resume)} />}
-      {step === 3 && <Resume onBackward={() => handleChangeStatus(NewClaimStateType.AdditionalData)} />}
+      {step === 2 && (
+        <AdditionalInfo
+          onSend={() => {
+            dispatch(clear());
+            handleChangeStatus(NewClaimStateType.Unknown);
+          }}
+        />
+      )}
     </Col>
   );
 };

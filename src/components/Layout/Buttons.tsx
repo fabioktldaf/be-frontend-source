@@ -2,7 +2,7 @@ import React from "react";
 import { Button } from "antd";
 
 interface ButtonProps {
-  text: string;
+  children: string | JSX.Element;
   icon?: JSX.Element;
   style?: any;
   disabled?: boolean;
@@ -18,7 +18,7 @@ export const ButtonConfirm = (props: ButtonProps) => (
     onClick={props.onClick}
     icon={props.icon}
   >
-    {props.text}
+    {props.children}
   </Button>
 );
 
@@ -31,6 +31,6 @@ export const ButtonDelete = (props: ButtonProps) => (
     onClick={props.onClick}
     icon={props.icon}
   >
-    {props.text}
+    {props.children}
   </Button>
 );

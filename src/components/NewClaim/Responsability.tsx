@@ -19,20 +19,20 @@ import { RootState } from "../../redux/store";
 import { SelectStyled } from "../../style/Input";
 import { TabContentStyled } from ".";
 
-const BaremTable = styled.table``;
+export const BaremTable = styled.table``;
 
-const BaremTdHeader = styled.td`
+export const BaremTdHeader = styled.td`
   padding: 0.5em 1em;
   font-weight: bold;
 `;
 
-const BaremCaseLabel = styled.td`
+export const BaremCaseLabel = styled.td`
   padding: 0.5em 1em;
 `;
 
-const BaremCaseTd = styled.td``;
+export const BaremCaseTd = styled.td``;
 
-const BaremCaseValue = styled.div<{ selected?: boolean }>`
+export const BaremCaseValue = styled.div<{ selected?: boolean }>`
   cursor: pointer;
   border-radius: 10em;
   display: flex;
@@ -44,12 +44,12 @@ const BaremCaseValue = styled.div<{ selected?: boolean }>`
   color: ${(props) => (props.selected ? "white" : "inherit")};
 `;
 
-const BaremContainer = styled.div`
+export const BaremContainer = styled.div`
   display: flex;
   align-items: center;
 `;
 
-const BaremOpenModal = styled.div`
+export const BaremOpenModal = styled.div`
   cursor: pointer;
   font-weight: bold;
   display: inline-block;
@@ -59,36 +59,36 @@ const BaremOpenModal = styled.div`
   margin-right: 2em;
 `;
 
-const BaremModalFooter = styled.div`
+export const BaremModalFooter = styled.div`
   display: flex;
 `;
 
-const BaremModalFooterMessage = styled.div`
+export const BaremModalFooterMessage = styled.div`
   display: flex;
 `;
 
-const BaremModalFooterMessageType = styled.div`
+export const BaremModalFooterMessageType = styled.div`
   font-weight: bold;
   margin-right: 0.5em;
 `;
 
-const BaremModalFooterMessageText = styled.div`
+export const BaremModalFooterMessageText = styled.div`
   margin-left: 0.5em;
 `;
 
-const BaremModalFooterButtons = styled.div`
+export const BaremModalFooterButtons = styled.div`
   display: flex;
   flex: 1;
   justify-content: flex-end;
 `;
 
-const baremsArray = () => Array.from(Array(18).keys()).map((i) => 17 - i);
+export const baremsArray = () => Array.from(Array(18).keys()).map((i) => 17 - i);
 
 interface ResponsabilityProps {
   isCard: boolean;
 }
 
-type BaremModalStateType = {
+export type BaremModalStateType = {
   isOpen: boolean;
   vehicleA: number | undefined;
   vehicleB: number | undefined;

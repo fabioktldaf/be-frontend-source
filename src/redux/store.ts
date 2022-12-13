@@ -2,6 +2,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import userReducer from "../redux/features/userSlice";
 import newClaimReducer from "../redux/features/newClaimSlice";
 import searchSubjetcSlice from "./features/subjectsSlice";
+import searchSlice from "./features/searchSlice";
 import { localstorageMiddleware } from "./localstorageMiddleware";
 
 export const store = configureStore({
@@ -9,6 +10,7 @@ export const store = configureStore({
     user: userReducer,
     newClaim: newClaimReducer,
     subjects: searchSubjetcSlice,
+    search: searchSlice,
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(localstorageMiddleware),
 });

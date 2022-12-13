@@ -33,7 +33,7 @@ import useApplication from "../../hooks/useApplication";
 import { IconInbox } from "../../config/icons";
 import SubjectDetails from "../SubjectsData/SubjectDetails";
 import SearchSubject from "../SubjectsData/SearchSubject";
-import SearchResults from "../SubjectsData/SearchResults";
+import Results from "../Search/Results";
 import { SubjectData, SubjectGiuridicalPersonData, SubjectNaturalPersonData } from "../../types/uses-data.types";
 import { ButtonConfirm, ButtonDelete } from "../Layout/Buttons";
 import { Link, useNavigate } from "react-router-dom";
@@ -205,7 +205,7 @@ const AdditionalInfoModalContent = (props: AdditionalInfoModalContentProps) => {
           <RowSpacer />
           <div style={{ flex: "1", display: "flex", justifyContent: "center" }}>
             {subjectDetails === "" && (
-              <ButtonConfirm text={"Seleziona Anagrafica"} onClick={() => setIsOpenSearchSubjectModal(true)} />
+              <ButtonConfirm children={"Seleziona Anagrafica"} onClick={() => setIsOpenSearchSubjectModal(true)} />
             )}
             {subjectDetails !== "" && (
               <>
@@ -214,7 +214,7 @@ const AdditionalInfoModalContent = (props: AdditionalInfoModalContentProps) => {
                 </Link>
 
                 <ButtonDelete
-                  text={"Elimina"}
+                  children={"Elimina"}
                   onClick={() => handleChangeSubject("personalData", null)}
                   style={{ marginLeft: "2em" }}
                 />
@@ -348,7 +348,7 @@ const AdditionalInfoModalContent = (props: AdditionalInfoModalContentProps) => {
         >
           <div style={{ padding: "3em 2em 2em 2em" }}>
             <SearchSubject />
-            <SearchResults onSelect={handleSelectSubject} />
+            <Results onSelect={handleSelectSubject} />
           </div>
         </Modal>
       </Col>

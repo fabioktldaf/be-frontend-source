@@ -6,12 +6,9 @@ import Search from "../components/Search";
 import styled from "styled-components";
 
 const HomeContainer = styled.div`
-  width: 900px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  border-radius: 3px;
-  box-shadow: 0 0 5px #aaa;
 `;
 
 const HomeContent = styled.div`

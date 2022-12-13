@@ -9,6 +9,10 @@ import useApplication from "../../hooks/useApplication";
 
 import { defaultClaimPolicyData } from "../../config/dummy-data";
 import LanguageSelect from "./LaguageSelect";
+import { useDispatch, useSelector } from "react-redux";
+import { SwitchStyled } from "../../style/Input";
+import { RootState } from "../../redux/store";
+import { ___setIsPolicyCard } from "../../redux/features/newClaimSlice";
 
 const SiderStyled = styled(Layout.Sider)`
   background-color: white;
@@ -16,24 +20,15 @@ const SiderStyled = styled(Layout.Sider)`
   z-index: 1;
 `;
 
-const CollapseStyled = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  margin: 0 0 1em 1.6em;
-  cursor: pointer;
-`;
-
 const Sider = () => {
-  const [collapsed, setCollapsed] = useState(false);
   const app = useApplication();
+  const ___isPolicyCard = useSelector((state: RootState) => state.newClaim.claimData?.___isPolicyCard);
+  const dispatch = useDispatch();
 
   return (
-    <SiderStyled trigger={null} collapsible collapsed={collapsed}>
+    <SiderStyled trigger={null}>
       <Logo />
-      <CollapseStyled onClick={() => setCollapsed(!collapsed)}>
-        {collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-      </CollapseStyled>
+
       <SideMenu />
 
       <Collapse>
@@ -120,6 +115,13 @@ const Sider = () => {
             Info Add
           </Button>
           <LanguageSelect />
+          <SwitchStyled
+            label="Polizza CARD"
+            checkedChildren="SI"
+            unCheckedChildren="NO"
+            checked={___isPolicyCard}
+            onChange={(val) => dispatch(___setIsPolicyCard(val))}
+          />
         </Collapse.Panel>
       </Collapse>
     </SiderStyled>

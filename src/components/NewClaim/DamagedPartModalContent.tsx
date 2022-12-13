@@ -26,7 +26,7 @@ import SubjectDetails from "../SubjectsData/SubjectDetails";
 import { SubjectData, SubjectGiuridicalPersonData, SubjectNaturalPersonData } from "../../types/uses-data.types";
 import { ButtonConfirm, ButtonDelete } from "../Layout/Buttons";
 import SearchSubject from "../SubjectsData/SearchSubject";
-import SearchResults from "../SubjectsData/SearchResults";
+import Results from "../Search/Results";
 
 const PersonDamageList = styled(Col)`
   width: 25em;
@@ -395,10 +395,10 @@ const DamagedPartModalContent = (props: DamagedPartModalContentProps) => {
                 <Link to={"#"} onClick={() => handleEditSubject(part.subject as SubjectNaturalPersonData)}>
                   {subjectDetails}
                 </Link>
-                <ButtonDelete text={"elimina"} onClick={() => handleModalPartChange("subject", null)} />
+                <ButtonDelete children={"elimina"} onClick={() => handleModalPartChange("subject", null)} />
               </>
             )}
-            {subjectDetails === "" && <ButtonConfirm text={"Seleziona"} onClick={handleSearchSubject} />}
+            {subjectDetails === "" && <ButtonConfirm children={"Seleziona"} onClick={handleSearchSubject} />}
           </FormInput>
         </FormRow>
         <FormRow>
@@ -538,7 +538,7 @@ const DamagedPartModalContent = (props: DamagedPartModalContentProps) => {
       >
         <div style={{ padding: "3em 2em 2em 2em" }}>
           <SearchSubject />
-          <SearchResults onSelect={handleSelectSubject} />
+          <Results onSelect={handleSelectSubject} />
         </div>
       </Modal>
     </>

@@ -56,6 +56,7 @@ export type ClaimDataType = {
   policeIntervention: boolean;
   witnesses: boolean;
   note: string;
+  ___isPolicyCard?: boolean;
 };
 
 export type PersonType = "Fisica" | "Giuridica";
@@ -176,6 +177,7 @@ export type StepperDataType = {
 export enum NewClaimStateType {
   Unknown,
   MandatoryData,
+  CheckingData,
   VerifingSic,
   SicCorrect,
   SicError,

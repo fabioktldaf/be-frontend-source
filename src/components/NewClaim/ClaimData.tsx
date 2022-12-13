@@ -13,6 +13,7 @@ import { DatePickerStyled, InputTextStyled, TimePickerStyled } from "../../style
 import { TabContentStyled } from ".";
 import { SubjectData, SubjectGiuridicalPersonData, SubjectNaturalPersonData } from "../../types/uses-data.types";
 import SubjectDetails from "../SubjectsData/SubjectDetails";
+import { IconCheck, IconSafe } from "../../config/icons";
 
 const CollapseStyled = styled(Collapse)``;
 
@@ -193,10 +194,25 @@ const ClaimData = () => {
   const ownerId = owner?.giuridical_person?.id || owner?.natural_person?.id;
   const contractorId = contractor?.giuridical_person?.id || contractor?.natural_person?.id;
 
+  const policyDetailsHeader = (
+    <div style={{ display: "flex" }}>
+      <span style={{ flex: 1 }}>DETTAGLIO DATI POLIZZA</span>
+      <div style={{ display: "flex", alignItems: "center", fontSize: "0.9em" }}>
+        {claimData?.___isPolicyCard ? (
+          <>
+            <IconSafe style={{ color: "green", fontSize: "1.4em", margin: "0 0.25em 2px 0" }} /> CARD
+          </>
+        ) : (
+          <div style={{ color: "red" }}>NO CARD</div>
+        )}
+      </div>
+    </div>
+  );
+
   return (
     <TabContentStyled>
       <CollapseStyled>
-        <Collapse.Panel header={"DETTAGLIO DATI POLIZZA"} key="1">
+        <Collapse.Panel header={policyDetailsHeader} key="1">
           <CollapsePanelContentStyled>
             {renderDetailsGroupData("POLIZZA", [
               {

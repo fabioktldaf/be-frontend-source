@@ -74,7 +74,7 @@ const NewClaim = (props: NewClaimProps) => {
       },
     },
     {
-      label: "Verifica SIC",
+      label: "Avanti",
       disabled: !claimDataCompleted || !responsabilityDataCompleted || !damagedPartsDataCompleted,
       execute: () => props.onForward(),
     },

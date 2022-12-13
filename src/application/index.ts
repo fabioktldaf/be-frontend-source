@@ -1,11 +1,12 @@
 import { store } from "../redux/store";
-import { NavigateFunction, useNavigate } from "react-router-dom";
+import { NavigateFunction } from "react-router-dom";
 import { setLanguage } from "../redux/features/userSlice";
 import i18next from "i18next";
 import NewClaim from "./newClaim";
 import SearchSubject from "./searchSubject";
 import EditSubject from "./editSubject";
 import NewSubject, { INewSubject } from "./newSubject";
+import Search, { ISearch } from "./search";
 
 import {
   AdditionalInfoDataType,
@@ -17,6 +18,7 @@ import {
 import { SubjectData } from "../types/uses-data.types";
 import { editingSubjectAddAddress, editSubject, showSubject } from "../redux/features/subjectsSlice";
 import { Urls } from "../config/const";
+import { SearchParams } from "../types/search.types";
 
 export interface IApplication {
   init: () => void;
@@ -52,6 +54,7 @@ export interface IApplication {
 
   addNewSubject: (navigate: NavigateFunction) => void;
 
+  search: ISearch;
   newSubject: INewSubject;
 }
 
@@ -158,6 +161,14 @@ export default (): IApplication => {
       },
       updateDocumentsData: (val: any) => {
         NewSubject.updateDocumentsData(val);
+      },
+    },
+    search: {
+      clear: () => {
+        Search.clear();
+      },
+      search: (params: SearchParams) => {
+        Search.search(params);
       },
     },
   };

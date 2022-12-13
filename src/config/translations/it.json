@@ -1,6 +1,7 @@
 {
   "search": "Cerca",
-  "search-subject-btn-placeholder": "cerca soggetto",
+  "search-generic-placeholder": "ricerca generica",
+  "search-subject-placeholder": "cerca soggetto",
 
   "sideMenu_createClaim": "Nuovo Sinistro",
   "sideMenu_subjectsData": "Anagrafica",

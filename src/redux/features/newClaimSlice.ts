@@ -68,6 +68,7 @@ const buildInitialState = () => {
       policeIntervention: false,
       witnesses: false,
       note: "",
+      ___isPolicyCard: true,
     },
     damagedParts: [],
     additionalInfo: [],
@@ -82,6 +83,9 @@ export const newClaimSlice = createSlice({
   name: "new-claim",
   initialState: buildInitialState(),
   reducers: {
+    ___setIsPolicyCard(state, action: PayloadAction<boolean>) {
+      if (state.claimData?.___isPolicyCard !== undefined) state.claimData.___isPolicyCard = action.payload;
+    },
     clearLocalStorage(state) {
       // handled in localstoareMiddleware
     },
@@ -108,6 +112,7 @@ export const newClaimSlice = createSlice({
 
       if (status === NewClaimStateType.Unknown || status === NewClaimStateType.MandatoryData) state.step = 0;
       if (
+        status === NewClaimStateType.CheckingData ||
         status === NewClaimStateType.VerifingSic ||
         status === NewClaimStateType.SicCorrect ||
         status === NewClaimStateType.SicError
@@ -175,6 +180,7 @@ export const newClaimSlice = createSlice({
 });
 
 export const {
+  ___setIsPolicyCard,
   clearLocalStorage,
   clear,
   setStatus,
