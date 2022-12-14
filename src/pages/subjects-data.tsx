@@ -13,7 +13,7 @@ const SubjectsData = () => {
   const navigate = useNavigate();
   const { isSearching, term } = useSelector((state: RootState) => state.subjects.search);
 
-  const handleSelect = (subject: SubjectData) => {
+  const handleSelect = (subject: any) => {
     console.log(subject);
     app.editSubject(Object.assign({}, subject), navigate);
   };
@@ -35,7 +35,7 @@ const SubjectsData = () => {
       </div>
 
       <div style={{ width: "500px", marginTop: "3em" }}>
-        <Results onSelect={handleSelect} />
+        <Results onSelect={(item) => handleSelect(item)} />
       </div>
     </div>
   );

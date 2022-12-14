@@ -1,6 +1,22 @@
 import { NewClaimStepItem, ResponsabilitiesType, SelectPair } from "../types/new-claim.types";
 import { insuranceCodes } from "./dummy-data";
 
+export const backend = {
+  envs: [
+    {
+      label: "localhost",
+      server: "http://127.0.0.1:5001/be-api-514bf/us-central1",
+    },
+    {
+      label: "firebase",
+      server: "https://us-central1-be-api-514bf.cloudfunctions.net",
+    },
+  ],
+  paths: {
+    search: "search",
+  },
+};
+
 export const defaultLanguage = "it";
 export const languages = ["it", "en", "empty"];
 

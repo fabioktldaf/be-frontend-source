@@ -13,23 +13,13 @@ import { FormRow } from "../../style/form";
 import { InputTextStyled, SegmentedStyled } from "../../style/Input";
 import { SearchParams } from "../../types/search.types";
 import { PersonType } from "../../types/new-claim.types";
-import { ButtonConfirm } from "../Layout/Buttons";
+import { ButtonCancel, ButtonConfirm } from "../Layout/Buttons";
 
 const SearchContainer = styled.div`
   padding: 2em 2em 0 0;
   min-height: 30em;
   display: flex;
   flex-direction: column;
-`;
-
-const SearchButton = styled.div`
-  button {
-    width: 100px;
-
-    .ant-spin {
-      margin-top: 9px;
-    }
-  }
 `;
 
 const Search = () => {
@@ -90,14 +80,26 @@ const Search = () => {
     setSearchParams(updatedParams);
   };
 
-  const renderSearchButton = () => (
+  const handleResetSearch = () => {
+    app.search.clear();
+    setSearchParams({
+      term: "",
+      type: "generic",
+    });
+  };
+
+  const renderSearchButtons = () => (
     <>
       <div style={{ flex: 1 }}></div>
       <FormRow style={{ justifyContent: "center", padding: "1em 0" }}>
         {isSearching ? (
           <Spin />
         ) : (
-          <ButtonConfirm children={t("search") || ""} onClick={() => app.search.search(searchParams)} />
+          <>
+            <ButtonConfirm children={t("search") || ""} onClick={() => app.search.search(searchParams)} />
+            <div style={{ width: "1em", height: "1em" }}></div>
+            <ButtonCancel children={"Reset"} onClick={() => handleResetSearch()} />
+          </>
         )}
       </FormRow>
     </>
@@ -118,7 +120,7 @@ const Search = () => {
             />
           </FormRow>
 
-          {renderSearchButton()}
+          {renderSearchButtons()}
         </SearchContainer>
       ),
       type: "fulltext",
@@ -137,7 +139,7 @@ const Search = () => {
             />
           </FormRow>
 
-          {renderSearchButton()}
+          {renderSearchButtons()}
         </SearchContainer>
       ),
       type: "vehicle",
@@ -227,7 +229,7 @@ const Search = () => {
               </FormRow>
             </>
           )}
-          {renderSearchButton()}
+          {renderSearchButtons()}
         </SearchContainer>
       ),
       type: "subject",
@@ -246,7 +248,7 @@ const Search = () => {
             />
           </FormRow>
 
-          {renderSearchButton()}
+          {renderSearchButtons()}
         </SearchContainer>
       ),
       type: "policy",
@@ -264,7 +266,7 @@ const Search = () => {
               onChange={(num) => handleChangeParams(num, "claim-number")}
             />
           </FormRow>
-          {renderSearchButton()}
+          {renderSearchButtons()}
         </SearchContainer>
       ),
       type: "claim",

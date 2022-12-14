@@ -22,6 +22,19 @@ export const ButtonConfirm = (props: ButtonProps) => (
   </Button>
 );
 
+export const ButtonCancel = (props: ButtonProps) => (
+  <Button
+    type="default"
+    size="middle"
+    disabled={props.disabled}
+    style={Object.assign({}, props.style, { textTransform: "uppercase" })}
+    onClick={props.onClick}
+    icon={props.icon}
+  >
+    {props.children}
+  </Button>
+);
+
 export const ButtonDelete = (props: ButtonProps) => (
   <Button
     type="primary"

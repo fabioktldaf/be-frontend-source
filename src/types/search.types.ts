@@ -30,3 +30,45 @@ export type SearchParams = {
   byPolicy?: SearchFilterPolicy;
   byClaim?: SearchFilterClaim;
 };
+
+export type SearchResultItemSubjectNaturalPerson = {
+  name: string;
+  lastname: string;
+  fiscalCode: string;
+};
+
+export type SearchResultItemSubjectGiuridicaPerson = {
+  business_name: string;
+  type?: string;
+  p_iva: string;
+  proprietorship?: SearchResultItemSubjectNaturalPerson;
+};
+
+export type SearchResultItemClaimCreated = {
+  number: string;
+  occurrenceDate: string;
+  occurrenceTime: string;
+};
+
+export type SearchResultItemClaimReceived = {
+  number: string;
+  occurrenceDate: string;
+  occurrenceTime: string;
+};
+
+export type SearchResultItemClaim = {
+  created: SearchResultItemClaimCreated;
+  received: SearchResultItemClaimReceived;
+};
+
+export type SearchResultItemPolicy = {
+  policy_number: string;
+  effect_date: string;
+  expiration_date: string;
+  claims?: SearchResultItemClaim[];
+};
+
+export type SearchResultItem = {
+  subject: SearchResultItemSubjectNaturalPerson | SearchResultItemSubjectGiuridicaPerson;
+  policies: SearchResultItemPolicy[];
+};

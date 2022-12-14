@@ -113,7 +113,7 @@ const AdditionalInfoModalContent = (props: AdditionalInfoModalContentProps) => {
     props.damagedPartIndex >= 0 ? state.newClaim.damagedParts[props.damagedPartIndex] : null
   );
 
-  const handleSelectSubject = (subject: SubjectData) => {
+  const handleSelectSubject = (subject: any) => {
     handleChangeSubject("personalData", subject.person);
     setIsOpenSearchSubjectModal(false);
   };
@@ -348,7 +348,7 @@ const AdditionalInfoModalContent = (props: AdditionalInfoModalContentProps) => {
         >
           <div style={{ padding: "3em 2em 2em 2em" }}>
             <SearchSubject />
-            <Results onSelect={handleSelectSubject} />
+            <Results onSelect={(item) => handleSelectSubject(item)} />
           </div>
         </Modal>
       </Col>

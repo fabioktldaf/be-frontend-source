@@ -103,7 +103,7 @@ const DamagedPartModalContent = (props: DamagedPartModalContentProps) => {
     setIsOpenSearchSubjectModal(true);
   };
 
-  const handleSelectSubject = (subject: SubjectData) => {
+  const handleSelectSubject = (subject: any) => {
     handleModalPartChange("subject", subject.person);
     setIsOpenSearchSubjectModal(false);
   };
@@ -538,7 +538,7 @@ const DamagedPartModalContent = (props: DamagedPartModalContentProps) => {
       >
         <div style={{ padding: "3em 2em 2em 2em" }}>
           <SearchSubject />
-          <Results onSelect={handleSelectSubject} />
+          <Results onSelect={(item) => handleSelectSubject(item)} />
         </div>
       </Modal>
     </>

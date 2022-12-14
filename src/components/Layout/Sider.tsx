@@ -3,16 +3,18 @@ import { Layout, Button, Collapse } from "antd";
 import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
 import Logo from "./Logo";
 import SideMenu from "./SideMenu";
-
 import styled from "styled-components";
 import useApplication from "../../hooks/useApplication";
 
 import { defaultClaimPolicyData } from "../../config/dummy-data";
 import LanguageSelect from "./LaguageSelect";
 import { useDispatch, useSelector } from "react-redux";
-import { SwitchStyled } from "../../style/Input";
+import { SelectStyled, SwitchStyled } from "../../style/Input";
 import { RootState } from "../../redux/store";
 import { ___setIsPolicyCard } from "../../redux/features/newClaimSlice";
+import { backend } from "../../config/const";
+import { SelectPair } from "../../types/new-claim.types";
+import { setEnvironment } from "../../redux/features/userSlice";
 
 const SiderStyled = styled(Layout.Sider)`
   background-color: white;
@@ -20,9 +22,12 @@ const SiderStyled = styled(Layout.Sider)`
   z-index: 1;
 `;
 
+const envOptions = backend.envs.map((env) => ({ label: env.label, value: env.label } as SelectPair));
+
 const Sider = () => {
   const app = useApplication();
   const ___isPolicyCard = useSelector((state: RootState) => state.newClaim.claimData?.___isPolicyCard);
+  const selectedEnv = useSelector((state: RootState) => state.user.environment);
   const dispatch = useDispatch();
 
   return (
@@ -121,6 +126,14 @@ const Sider = () => {
             unCheckedChildren="NO"
             checked={___isPolicyCard}
             onChange={(val) => dispatch(___setIsPolicyCard(val))}
+          />
+        </Collapse.Panel>
+        <Collapse.Panel header="Environment" key="2">
+          <SelectStyled
+            label="ep"
+            options={envOptions}
+            value={selectedEnv}
+            onChange={(env) => dispatch(setEnvironment(env))}
           />
         </Collapse.Panel>
       </Collapse>
