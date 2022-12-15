@@ -52,6 +52,9 @@ export interface IApplication {
   editingSubjectAddDocument: () => void;
   editingSubjectRemoveDocument: (index: number) => void;
 
+  editingSubjectAddPayment: () => void;
+  editingSubjectRemovePayment: (index: number) => void;
+
   addNewSubject: (navigate: NavigateFunction) => void;
 
   search: ISearch;
@@ -141,6 +144,12 @@ export default (): IApplication => {
     },
     editingSubjectRemoveDocument: (index: number) => {
       EditSubject.editingSubjectRemoveDocument(index);
+    },
+    editingSubjectAddPayment: () => {
+      EditSubject.editingSubjectAddPayment();
+    },
+    editingSubjectRemovePayment: (index: number) => {
+      EditSubject.editingSubjectRemovePayment(index);
     },
     addNewSubject: (navigate: NavigateFunction) => {
       store.dispatch(editSubject({}));

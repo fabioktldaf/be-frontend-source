@@ -14,6 +14,8 @@ import { InputTextStyled, SegmentedStyled } from "../../style/Input";
 import { SearchParams } from "../../types/search.types";
 import { PersonType } from "../../types/new-claim.types";
 import { ButtonCancel, ButtonConfirm } from "../Layout/Buttons";
+import { GrAddCircle } from "react-icons/gr";
+import { IoMdAddCircleOutline } from "react-icons/io";
 
 const SearchContainer = styled.div`
   padding: 2em 2em 0 0;
@@ -307,9 +309,19 @@ const Search = () => {
 
       <div style={{ borderRadius: "3px", boxShadow: "0 0 5px #aaa", margin: "2em 0 0 0", width: "100%" }}>
         <div
-          style={{ backgroundColor: "#fff", textAlign: "center", textTransform: "uppercase", padding: "2em 0px 1em 0" }}
+          style={{
+            backgroundColor: "#fff",
+            textAlign: "center",
+            textTransform: "uppercase",
+            padding: "2em 2em 1em 0",
+            display: "flex",
+          }}
         >
-          Risultati
+          <div style={{ fontSize: "1.2em", margin: "0 2em", flex: 1, textAlign: "left" }}>Risultati</div>
+
+          <ButtonConfirm onClick={() => {}}>nuova polizza</ButtonConfirm>
+          <div style={{ width: "1em" }}></div>
+          <ButtonConfirm onClick={() => {}}>nuovo soggetto</ButtonConfirm>
         </div>
         <Results onSelect={() => {}} />
       </div>

@@ -9,12 +9,19 @@ import { RiDeleteBinFill } from "react-icons/ri";
 import { SlUser } from "react-icons/sl";
 
 import { InboxOutlined } from "@ant-design/icons";
+import { IoIosBusiness } from "react-icons/io";
+import { FaCar } from "react-icons/fa";
+import { CgArrowsExchangeAlt } from "react-icons/cg";
+import { FcFlashOn } from "react-icons/fc";
 
 interface IconProps {
   style?: any;
 }
 
 export const IconAddress = (props: IconProps) => <></>;
+export const IconBetween = (props: IconProps) => <CgArrowsExchangeAlt style={props.style} />;
+export const IconBusiness = (props: IconProps) => <IoIosBusiness style={props.style} />;
+export const IconCar = (props: IconProps) => <FaCar style={props.style} />;
 export const IconClaim = (props: IconProps) => <BsLightning style={props.style} />;
 export const IconCheck = (props: IconProps) => <AiOutlineCheck style={props.style} />;
 export const IconCheckList = (props: IconProps) => <BsCardChecklist style={props.style} />;
@@ -23,6 +30,7 @@ export const IconDelete = (props: IconProps) => <RiDeleteBinFill style={props.st
 export const IconDocument = (props: IconProps) => <HiOutlineDocumentText style={props.style} />;
 export const IconDocuments = (props: IconProps) => <></>;
 export const IconEdit = (props: IconProps) => <BiEditAlt style={props.style} />;
+export const IconFlash = (props: IconProps) => <FcFlashOn style={props.style} />;
 export const IconHome = (props: IconProps) => <BiHomeAlt style={props.style} />;
 export const IconInbox = (props: IconProps) => <InboxOutlined style={props.style} />;
 export const IconSearch = (props: IconProps) => <BiSearch style={props.style} />;

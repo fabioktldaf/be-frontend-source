@@ -46,7 +46,10 @@ const DamagedPartsTable = styled.table`
 `;
 
 const DamagedPartResume = styled.tr`
-  background-color: #fff4e6;
+  background-color: #edfbdd;
+  &:hover {
+    background-color: #f5f5f5;
+  }
 `;
 
 const DamagedPartResumeTd = styled.td`
@@ -298,55 +301,19 @@ const AdditionalInfo = (props: AdditionalDataProps) => {
     if (naturalPersonDetails?.lastname?.length > 0) nominative += " " + naturalPersonDetails?.lastname;
     if (giuridicalPersonDetails?.business_name?.length > 0) nominative = giuridicalPersonDetails.business_name;
 
-    return (
-      <>
-        <SlUser
-          style={{
-            fontSize: "1.4em",
-            color: "#bbb",
-            verticalAlign: "sub",
-            marginRight: "0.5em",
-          }}
-        />
-        {`${role} - ${nominative}`}
-      </>
-    );
+    return <div>{`${role} - ${nominative}`}</div>;
   };
 
   const renderResumeDocument = (documentDetails: AdditionalInfoDocumentType) => {
     const docType = AdditionalInfoDocTypes.find((r) => r.value === documentDetails.type)?.label;
     const filename = "fronte.jpg, retro.jpg";
-    return (
-      <>
-        <HiOutlineDocumentText
-          style={{
-            fontSize: "1.4em",
-            color: "#bbb",
-            verticalAlign: "sub",
-            marginRight: "0.5em",
-          }}
-        />
-        {`${docType} : ${filename}`}
-      </>
-    );
+    return <div>{`${docType} : ${filename}`}</div>;
   };
 
   const renderResumePayment = (paymentDetails: AdditionalInfoPaymentType) => {
     const paymentType = AdditionalInfoPaymentTypes.find((r) => r.value === paymentDetails.type)?.label;
     const iban = paymentDetails.iban ? ` - IBAN ${paymentDetails.iban}` : "";
-    return (
-      <>
-        <RiMoneyEuroCircleLine
-          style={{
-            fontSize: "1.4em",
-            color: "#bbb",
-            verticalAlign: "sub",
-            marginRight: "0.5em",
-          }}
-        />
-        {`${paymentType} ${iban}`}
-      </>
-    );
+    return <div>{`${paymentType} ${iban}`}</div>;
   };
 
   const renderResumeContact = (contactDetails: AdditionalInfoContactType) => {
@@ -354,133 +321,51 @@ const AdditionalInfo = (props: AdditionalDataProps) => {
     const email = contactDetails.email ? ` - ${contactDetails.email}` : "";
     const phone = contactDetails.phone ? ` - tel. ${contactDetails.phone}` : "";
 
-    return (
-      <>
-        <AiOutlineContacts
-          style={{
-            fontSize: "1.4em",
-            color: "#bbb",
-            verticalAlign: "sub",
-            marginRight: "0.5em",
-          }}
-        />
-        {`${shippingAddress} ${email} ${phone}`}
-      </>
-    );
-  };
-
-  const renderPreferredInfo = () => {
-    const preferredAddress = {
-      type: "shipping",
-      street: "Via Giotto",
-      civic: "111",
-      cap: "37030",
-      city: "Velo Veronese",
-      province: "VR",
-      country: "Italia",
-    };
-
-    const preferredContact = {
-      type: "phone",
-      value: "0368 6001893",
-    };
-    const preferredPayment = {
-      type: "transfer",
-      iban: "NL09ABNA5766671156",
-    };
-
-    let preferredAddressLabel = "";
-    let preferredAddressValue = "";
-
-    if (preferredAddress) {
-      preferredAddressLabel = "Indirizzo di Spedizione";
-      preferredAddressValue = `${preferredAddress.street} ${preferredAddress.civic}, ${preferredAddress.cap} ${preferredAddress.city} - ${preferredAddress.province} ${preferredAddress.country}`;
-    }
-
-    let preferredContactLabel = "";
-    let preferredContactValue = "";
-
-    if (preferredContact) {
-      preferredContactLabel = "Telefono";
-      preferredContactValue = preferredContact.value;
-    }
-
-    let preferredPaymentLabel = "";
-    let preferredPaymentValue = "";
-
-    if (preferredPayment) {
-      preferredPaymentLabel = "Bonifico";
-      preferredPaymentValue = `IBAN ${preferredPayment.iban}`;
-    }
-
-    return (
-      <>
-        {preferredAddress && (
-          <TrAdditionalInfo style={{ backgroundColor: "#fafafa" }}>
-            <td style={{ textTransform: "uppercase", fontSize: "0.9em", padding: "0.5em 0 0.5em 3em" }}>
-              {preferredAddressLabel} preferito:
-            </td>
-            <td colSpan={6}>{preferredAddressValue}</td>
-          </TrAdditionalInfo>
-        )}
-        {preferredContact && (
-          <TrAdditionalInfo style={{ backgroundColor: "#fafafa" }}>
-            <td style={{ textTransform: "uppercase", fontSize: "0.9em", padding: "0.5em 0 0.5em 3em" }}>
-              {preferredContactLabel} preferito:
-            </td>
-            <td colSpan={6}>{preferredContactValue}</td>
-          </TrAdditionalInfo>
-        )}
-        {preferredPayment && (
-          <TrAdditionalInfo style={{ backgroundColor: "#fafafa" }}>
-            <td style={{ textTransform: "uppercase", fontSize: "0.9em", padding: "0.5em 0 0.5em 3em" }}>
-              Metodo di pagamento preferito:{" "}
-            </td>
-            <td colSpan={6}>
-              {preferredPaymentLabel} {preferredPaymentValue}
-            </td>
-          </TrAdditionalInfo>
-        )}
-      </>
-    );
+    return <div>{`${shippingAddress} ${email} ${phone}`}</div>;
   };
 
   const renderAdditionalInfo = (pdNumber: string, pdIndex: number) => {
     const pdAdditionalInfo = additionalInfo.filter((ai) => ai.damagedPartNumber === pdNumber);
 
-    return (
-      <>
-        {renderPreferredInfo()}
-        <tr>
-          <td
-            colSpan={7}
-            style={{
-              textAlign: "left",
-              textTransform: "uppercase",
-              fontSize: "0.9em",
-              padding: "1em 0 0 5em",
-              letterSpacing: "2px",
-            }}
-          >
-            informazioni addizionali
-          </td>
-        </tr>
-        {pdAdditionalInfo.map((ai, i) => (
-          <TrAdditionalInfo key={i}>
-            <AddInfoResume colSpan={6} style={{ paddingLeft: "6em" }}>
-              {ai.type === AdditionalInfoSubject.value && renderResumeSubject(ai.details as AdditionalInfoSubjectType)}
-              {ai.type === AdditionalInfoDoc.value && renderResumeDocument(ai.details as AdditionalInfoDocumentType)}
-              {ai.type === AdditionalInfoPayment.value && renderResumePayment(ai.details as AdditionalInfoPaymentType)}
-              {ai.type === AdditionalInfoContact.value && renderResumeContact(ai.details as AdditionalInfoContactType)}
-            </AddInfoResume>
-            <TdBorderBottom>
-              <ButtonEditAddInfo onClick={() => handleEditAdditionalInfo(pdIndex, ai.id)} />
-              <ButtonDeleteAddInfo onClick={() => handleDeleteAdditionalInfo(ai.id)} />
-            </TdBorderBottom>
-          </TrAdditionalInfo>
-        ))}
-      </>
-    );
+    return pdAdditionalInfo.map((ai, i) => (
+      <TrAdditionalInfo key={i}>
+        <TdBorderBottom style={{ textAlign: "right" }}>
+          {ai.type === AdditionalInfoSubject.value && (
+            <AddInfoIcon>
+              <SlUser style={{ fontSize: "0.9em" }} />
+            </AddInfoIcon>
+          )}
+          {ai.type === AdditionalInfoDoc.value && (
+            <AddInfoIcon>
+              <HiOutlineDocumentText />
+            </AddInfoIcon>
+          )}
+
+          {ai.type === AdditionalInfoPayment.value && (
+            <AddInfoIcon>
+              <RiMoneyEuroCircleLine />
+            </AddInfoIcon>
+          )}
+
+          {ai.type === AdditionalInfoContact.value && (
+            <AddInfoIcon>
+              <AiOutlineContacts />
+            </AddInfoIcon>
+          )}
+        </TdBorderBottom>
+
+        <AddInfoResume colSpan={5}>
+          {ai.type === AdditionalInfoSubject.value && renderResumeSubject(ai.details as AdditionalInfoSubjectType)}
+          {ai.type === AdditionalInfoDoc.value && renderResumeDocument(ai.details as AdditionalInfoDocumentType)}
+          {ai.type === AdditionalInfoPayment.value && renderResumePayment(ai.details as AdditionalInfoPaymentType)}
+          {ai.type === AdditionalInfoContact.value && renderResumeContact(ai.details as AdditionalInfoContactType)}
+        </AddInfoResume>
+        <TdBorderBottom>
+          <ButtonEditAddInfo onClick={() => handleEditAdditionalInfo(pdIndex, ai.id)} />
+          <ButtonDeleteAddInfo onClick={() => handleDeleteAdditionalInfo(ai.id)} />
+        </TdBorderBottom>
+      </TrAdditionalInfo>
+    ));
   };
 
   return (

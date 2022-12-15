@@ -6,6 +6,8 @@ import {
   editingSubjectRemoveAddress,
   editingSubjectAddDocument,
   editingSubjectRemoveDocument,
+  editingSubjectAddPayment,
+  editingSubjectRemovePayment,
 } from "../redux/features/subjectsSlice";
 
 export default {
@@ -26,5 +28,11 @@ export default {
   },
   editingSubjectRemoveDocument: (index: number) => {
     store.dispatch(editingSubjectRemoveDocument(index));
+  },
+  editingSubjectAddPayment: () => {
+    store.dispatch(editingSubjectAddPayment());
+  },
+  editingSubjectRemovePayment: (index: number) => {
+    store.dispatch(editingSubjectRemovePayment(index));
   },
 };

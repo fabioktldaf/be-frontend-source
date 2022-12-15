@@ -1,5 +1,6 @@
 import React from "react";
 import { Button } from "antd";
+import { SizeType } from "antd/lib/config-provider/SizeContext";
 
 interface ButtonProps {
   children: string | JSX.Element;
@@ -7,16 +8,17 @@ interface ButtonProps {
   style?: any;
   disabled?: boolean;
   onClick: (val: any) => void;
+  size?: SizeType;
 }
 
 export const ButtonConfirm = (props: ButtonProps) => (
   <Button
     type="primary"
-    size="middle"
     disabled={props.disabled}
     style={Object.assign({}, props.style, { textTransform: "uppercase" })}
     onClick={props.onClick}
     icon={props.icon}
+    size={props.size || "middle"}
   >
     {props.children}
   </Button>

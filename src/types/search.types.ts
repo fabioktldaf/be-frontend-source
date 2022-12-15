@@ -61,11 +61,22 @@ export type SearchResultItemClaim = {
   received: SearchResultItemClaimReceived;
 };
 
+export type SearchResultItemVehiclePlate = {
+  number: string;
+  format: string;
+};
+
+export type SearchResultItemVehicle = {
+  type: string;
+  plate: SearchResultItemVehiclePlate;
+};
+
 export type SearchResultItemPolicy = {
   policy_number: string;
   effect_date: string;
   expiration_date: string;
   claims?: SearchResultItemClaim[];
+  vehicle?: SearchResultItemVehicle;
 };
 
 export type SearchResultItem = {

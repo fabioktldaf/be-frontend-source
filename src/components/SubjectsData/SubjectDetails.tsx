@@ -13,6 +13,7 @@ import SubjectDetailsAddresses from "./SubjectDetailsAddresses";
 import SubjectDetailsContacts from "./SubjectDetailsContacts";
 import { Col } from "../../style/containers";
 import { IconUsers } from "../../config/icons";
+import SubjectDetailsPayments from "./SubjectDetailsPayments";
 
 const SubjectDetails = () => {
   const { t } = useTranslation();
@@ -26,7 +27,7 @@ const SubjectDetails = () => {
   const naturalPerson = subject?.person as SubjectNaturalPersonData;
   const giuridicalPerson = subject?.person as SubjectGiuridicalPersonData;
 
-  let title = "Anagrafica - ";
+  let title = "Anagrafica - [nome - cognome / ragione sociale]";
   if (naturalPerson?.name?.length > 0) title += "persona fisica";
   if (giuridicalPerson?.business_name?.length > 0) title += "persona giuridica";
   if (giuridicalPerson?.isProprietorship) title += " (ditta individuale)";
@@ -86,6 +87,19 @@ const SubjectDetails = () => {
               key: "4",
               children: (
                 <SubjectDetailsDocuments
+                  subject={subject}
+                  app={app}
+                  readOnly={readOnly}
+                  t={t}
+                  onChange={handleOnChange}
+                />
+              ),
+            },
+            {
+              label: <>Pagamenti</>,
+              key: "5",
+              children: (
+                <SubjectDetailsPayments
                   subject={subject}
                   app={app}
                   readOnly={readOnly}

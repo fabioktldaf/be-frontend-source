@@ -63,9 +63,16 @@ export type SubjectDocumentData = {
   issuingInstitution: string;
 };
 
+export type SubjectPaymentDataType = "" | "transfer" | "check";
+export type SubjectPaymentData = {
+  type: SubjectPaymentDataType;
+  iban?: string;
+};
+
 export type SubjectData = {
   person?: SubjectNaturalPersonData | SubjectGiuridicalPersonData;
   contacts?: SubjectContactData[];
   addresses?: SubjectAddressData[];
   documents?: SubjectDocumentData[];
+  payments?: SubjectPaymentData[];
 };

@@ -1,3 +1,7 @@
+const contacts = require("./contacts"); // --- 4 email / 4 phone
+const addresses = require("./addresses"); // --- 5 residence / 3 shipping
+const documents = require("./documents"); // - 2 cardId / 2 passport / 2 drivingLicense
+
 module.exports = {
   naturalPerson: [
     {
@@ -11,6 +15,9 @@ module.exports = {
         province: "Catania",
         country: "Italia",
       },
+      contacts: [contacts.email[0], contacts.phone[0]],
+      addresses: [addresses.residence[0], addresses.shipping[0]],
+      documents: [documents.cardId[0], documents.passport[0]],
     },
     {
       name: "Nadia",
@@ -23,6 +30,9 @@ module.exports = {
         province: "Cesena",
         country: "Italia",
       },
+      contacts: [contacts.email[1], contacts.phone[1]],
+      addresses: [addresses.residence[1], addresses.shipping[1]],
+      documents: [documents.cardId[1], documents.passport[1]],
     },
 
     {
@@ -36,6 +46,9 @@ module.exports = {
         province: "Verona",
         country: "Italia",
       },
+      contacts: [contacts.email[2], contacts.phone[2]],
+      addresses: [addresses.residence[2], addresses.shipping[2]],
+      documents: [documents.drivingLicense[0]],
     },
     {
       name: "Angela",
@@ -48,6 +61,9 @@ module.exports = {
         province: "Bari",
         country: "Italia",
       },
+      contacts: [contacts.email[3], contacts.phone[3]],
+      addresses: [addresses.residence[3]],
+      documents: [documents.drivingLicense[1]],
     },
     {
       name: "Marcelo",
@@ -60,6 +76,9 @@ module.exports = {
         province: "Reggio Calabria",
         country: "Italia",
       },
+      contacts: [contacts.email[0], contacts.phone[0]],
+      addresses: [addresses.shipping[0]],
+      documents: [documents.passport[0]],
     },
   ],
   giuridicalPerson: [
@@ -67,16 +86,25 @@ module.exports = {
       business_name: "Hickle-Hettinger",
       type: "srl",
       p_iva: "5397936790165",
+      contacts: [contacts.email[1]],
+      addresses: [addresses.shipping[1]],
+      documents: [documents.passport[1]],
     },
     {
       business_name: "Upton-Rolfson",
       type: "spa",
       p_iva: "9976861",
+      contacts: [],
+      addresses: [],
+      documents: [],
     },
     {
       business_name: "Elga Trevisani",
       type: "proprietorship",
       p_iva: "123456789",
+      contacts: [],
+      addresses: [],
+      documents: [],
       proprietorship: {
         name: "Elga",
         lastname: " Trevisani",

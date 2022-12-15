@@ -477,3 +477,9 @@ export const DocumentTypes = [
   DocumentTypePassport,
   DocumentTypeFiscalCode,
 ];
+
+export const PaymentTypeEmpty: SelectPair = { value: "", label: "---" };
+export const PaymentTypeTransfer: SelectPair = { value: "transfer", label: "Bonifico" };
+export const PaymentTypeCheck: SelectPair = { value: "check", label: "Assegno" };
+
+export const PaymentsTypes = [PaymentTypeEmpty, PaymentTypeTransfer, PaymentTypeCheck];

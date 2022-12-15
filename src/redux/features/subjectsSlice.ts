@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import moment from "moment";
 import { type } from "os";
-import { SubjectData, SubjectDocumentData } from "../../types/uses-data.types";
+import { SubjectData, SubjectDocumentData, SubjectPaymentData } from "../../types/uses-data.types";
 
 export interface SubjectsState {
   search: {
@@ -90,6 +90,18 @@ export const subjectsSlice = createSlice({
       if (action.payload >= state.editing.subject!.documents!.length) return;
       state.editing.subject!.documents = state.editing.subject?.documents?.filter((d, i) => i !== action.payload);
     },
+
+    editingSubjectAddPayment(state) {
+      const updatedPayments = state.editing.subject!.payments || [];
+      updatedPayments.push({
+        type: "",
+      } as SubjectPaymentData);
+      state.editing.subject!.payments = updatedPayments;
+    },
+    editingSubjectRemovePayment(state, action: PayloadAction<number>) {
+      if (action.payload >= state.editing.subject!.payments!.length) return;
+      state.editing.subject!.payments = state.editing.subject?.payments?.filter((d, i) => i !== action.payload);
+    },
   },
 });
 
@@ -105,5 +117,7 @@ export const {
   editingSubjectRemoveAddress,
   editingSubjectAddDocument,
   editingSubjectRemoveDocument,
+  editingSubjectAddPayment,
+  editingSubjectRemovePayment,
 } = subjectsSlice.actions;
 export default subjectsSlice.reducer;
