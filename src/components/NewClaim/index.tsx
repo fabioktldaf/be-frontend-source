@@ -11,6 +11,8 @@ import styled from "styled-components";
 import { RootState } from "../../redux/store";
 import { useSelector } from "react-redux";
 import CounterpartData from "./CounterpartData";
+import useApplication from "../../hooks/useApplication";
+import { defaultClaimPolicyData } from "../../config/dummy-data";
 
 export const TabContentStyled = styled.div`
   display: flex;
@@ -39,6 +41,7 @@ interface NewClaimProps {
 }
 
 const NewClaim = (props: NewClaimProps) => {
+  const app = useApplication();
   const {
     policyData,
     stepperData,
@@ -67,6 +70,35 @@ const NewClaim = (props: NewClaimProps) => {
   );
 
   const actions: FormActionType[] = [
+    {
+      label: "Fill Dati",
+      execute: () => {
+        app.updatedStepperData(2, "vehicles_number");
+        app.updatedStepperData("A", "vehicle_a_type");
+        app.updatedStepperData("A", "vehicle_b_type");
+        app.updatedStepperData(true, "collision");
+        app.updatedStepperData(true, "inItaly");
+
+        app.updateCounterpartData(true, "isOwnerNaturalPerson");
+        app.updateCounterpartData("Mario2", "ownerName");
+        app.updateCounterpartData("Rossi2", "ownerLastname");
+        app.updateCounterpartData("AB789ZY", "plate");
+        app.updateCounterpartData("667", "insuranceCode");
+
+        app.updateResponsabilityData(
+          {
+            vehicleA: 16,
+            vehicleB: 14,
+            result: "3",
+          },
+          "barems"
+        );
+        app.updateResponsabilityData("1", "signature-type");
+
+        defaultClaimPolicyData.damagedParts.forEach((dp, i) => app.updateDamagedPart(dp, i));
+        defaultClaimPolicyData.additionalInfo.forEach((ai, i) => app.setAdditionalInfo(ai, i));
+      },
+    },
     {
       label: "Salva",
       execute: () => {

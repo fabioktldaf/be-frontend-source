@@ -314,7 +314,7 @@ export const Subjects: SubjectData[] = [
       isProprietorship: true,
       business_name: "Ornella Pirozzi",
       type: "proprietorship",
-      p_iva: "123456789",
+      pIva: "123456789",
       proprietorship: {
         name: "Ornella",
         lastname: " Pirozzi",
@@ -406,7 +406,7 @@ export const defaultClaimPolicyData = {
     giuridical_person: {
       id: 2,
       business_name: subject_3.business_name,
-      iva: subject_3.p_iva,
+      pIva: subject_3.pIva,
       registered_office_province: "Bologna",
       registered_office_city: "Cadriano",
     },
@@ -424,13 +424,15 @@ export const defaultClaimPolicyData = {
     {
       pdNumber: "1669798161516",
       subject: {
-        natural_person: {
-          id: 1,
-          name: subject_1.name,
-          lastname: subject_1.lastname,
-          fiscal_code: subject_1.fiscalCode,
-          province_of_residence: "Milano",
-          city_of_residence: "Rho",
+        name: "Tranquillino",
+        lastname: " Pirozzi",
+        gender: "male",
+        fiscalCode: "BK35710027",
+        birth: {
+          date: "25/11/1939",
+          city: "San Giuseppe Alla Rena",
+          province: "Catania",
+          country: "Italia",
         },
       },
       roleType: "CP",
@@ -464,15 +466,16 @@ export const defaultClaimPolicyData = {
     {
       pdNumber: "1669909946930",
       subject: {
-        natural_person: {
-          id: 1,
-          name: subject_2.name,
-          lastname: subject_2.lastname,
-          fiscal_code: subject_2.fiscalCode,
-          province_of_residence: "Bologna",
-          city_of_residence: "Cadriano",
+        name: "Nadia",
+        lastname: " Marcelo",
+        gender: "female",
+        fiscalCode: "FM45872015",
+        birth: {
+          date: "30/08/1971",
+          city: "Lauro Di Sessa Aurunca",
+          province: "Cesena",
+          country: "Italia",
         },
-        note: "Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur",
       },
       roleType: "TN",
       damages: [
@@ -500,12 +503,15 @@ export const defaultClaimPolicyData = {
     {
       pdNumber: "1669909992417",
       subject: {
-        giuridical_person: {
-          id: 10,
-          business_name: subject_3.business_name,
-          iva: subject_3.p_iva,
-          registered_office_province: "Genova",
-          registered_office_city: "Bogliasco",
+        name: "Marianna",
+        lastname: " Palerma",
+        gender: "female",
+        fiscalCode: "RR61475525",
+        birth: {
+          date: "21/01/1981",
+          city: "San Giovanni Ilarione",
+          province: "Verona",
+          country: "Italia",
         },
       },
       roleType: "TD",

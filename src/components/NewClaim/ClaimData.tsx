@@ -11,9 +11,15 @@ import { useSelector } from "react-redux";
 import useApplication from "../../hooks/useApplication";
 import { DatePickerStyled, InputTextStyled, TimePickerStyled } from "../../style/Input";
 import { TabContentStyled } from ".";
-import { SubjectData, SubjectGiuridicalPersonData, SubjectNaturalPersonData } from "../../types/uses-data.types";
+import {
+  EditingSubjectState,
+  SubjectData,
+  SubjectGiuridicalPersonData,
+  SubjectNaturalPersonData,
+} from "../../types/uses-data.types";
 import SubjectDetails from "../SubjectsData/SubjectDetails";
-import { IconCheck, IconSafe } from "../../config/icons";
+import { IconCheck, IconNoSafe, IconSafe } from "../../config/icons";
+import SubjectEditModal from "../SubjectsData/SubjectEditModal";
 
 const CollapseStyled = styled(Collapse)``;
 
@@ -81,7 +87,7 @@ const DateWarningMessage = styled.div`
 `;
 
 const ClaimData = () => {
-  const [isOpenSubjectModal, setIsOpenSubjectModal] = useState(false);
+  const [editingSubject, setEditingSubject] = useState<EditingSubjectState | undefined>();
 
   const app = useApplication();
   const navigate = useNavigate();
@@ -98,6 +104,10 @@ const ClaimData = () => {
     const endDate = moment(policyData?.expiration_date, "DD/MM/YYYY");
     const occurrenceDate = moment(claimData.occurrenceDate);
     const receiptDate = moment(claimData.receiptDate);
+
+    console.log("occurrenceDate ", occurrenceDate.format("DD/MM/YYYY"));
+    console.log("startDate ", startDate.format("DD/MM/YYYY"));
+    console.log("endDate ", endDate.format("DD/MM/YYYY"));
 
     if (!occurrenceDate.isBetween(startDate, endDate))
       return (
@@ -119,10 +129,18 @@ const ClaimData = () => {
     return <></>;
   };
 
-  const handleEditSubject = (person: SubjectNaturalPersonData | SubjectGiuridicalPersonData) => {
-    console.log(person);
-    app.editSubject({ person: Object.assign({}, person) }, navigate);
-    setIsOpenSubjectModal(true);
+  const handleEditSubject = (subjectId: string, type: string) => {
+    const updatedEditingSubject = Object.assign({}, editingSubject);
+    updatedEditingSubject.subjectId = subjectId;
+    updatedEditingSubject.type = type;
+    updatedEditingSubject.modalOpen = true;
+    setEditingSubject(updatedEditingSubject);
+  };
+
+  const handleCloseEditingSubject = () => {
+    const updatedEditingSubject = Object.assign({}, editingSubject);
+    updatedEditingSubject.modalOpen = false;
+    setEditingSubject(updatedEditingSubject);
   };
 
   const renderDetailsGroupDataField = (field: any, i: number) => (
@@ -147,47 +165,31 @@ const ClaimData = () => {
     </DetailsGroupData>
   );
 
-  const renderNaturalPerson = (title: string, person: any) =>
+  const renderNaturalPerson = (title: string, person: SubjectNaturalPersonData) =>
     renderDetailsGroupData(title, [
       {
         label: "Nome",
         value: person.lastname + " " + person.name,
         link: "#",
-        onClick: () => handleEditSubject(person),
+        onClick: () => handleEditSubject(person.fiscalCode, "natural-person"),
       },
       {
         label: "Codice Fiscale",
-        value: person.fiscal_code,
-      },
-      {
-        label: "Provincia di residenza",
-        value: person.province_of_residence,
-      },
-      {
-        label: "Comune di residenza",
-        value: person.city_of_residence,
+        value: person.fiscalCode,
       },
     ]);
 
-  const renderGiuridicalPerson = (title: string, person: any) =>
+  const renderGiuridicalPerson = (title: string, person: SubjectGiuridicalPersonData) =>
     renderDetailsGroupData(title, [
       {
         label: "Ragione Sociale",
         value: person.business_name,
         link: "#",
-        onClick: () => handleEditSubject(person),
+        onClick: () => handleEditSubject(person.pIva, "giuridical-person"),
       },
       {
         label: "Partita IVA",
-        value: person.iva,
-      },
-      {
-        label: "Provincia di sede",
-        value: person.registered_office_province,
-      },
-      {
-        label: "Comune di sede",
-        value: person.registered_office_city,
+        value: person.pIva,
       },
     ]);
 
@@ -199,15 +201,23 @@ const ClaimData = () => {
       <span style={{ flex: 1 }}>DETTAGLIO DATI POLIZZA</span>
       <div style={{ display: "flex", alignItems: "center", fontSize: "0.9em" }}>
         {claimData?.___isPolicyCard ? (
-          <>
-            <IconSafe style={{ color: "green", fontSize: "1.4em", margin: "0 0.25em 2px 0" }} /> CARD
-          </>
+          <IconSafe style={{ color: "green", fontSize: "1.4em", margin: "0 0.25em 2px 0" }} />
         ) : (
-          <div style={{ color: "red" }}>NO CARD</div>
+          <IconNoSafe style={{ color: "red", fontSize: "1.4em", margin: "0 0.25em 2px 0" }} />
         )}
       </div>
     </div>
   );
+
+  const ownerNaturalPerson = owner as SubjectNaturalPersonData;
+  const ownerGiuridicalPerson = owner as SubjectGiuridicalPersonData;
+  const isOwnerNaturalPerson = !!ownerNaturalPerson?.fiscalCode;
+  const isOwnerGiuridicalPerosn = !!ownerGiuridicalPerson?.pIva;
+
+  const contractorNaturalPerson = contractor as SubjectNaturalPersonData;
+  const contractorGiuridicalPerson = contractor as SubjectGiuridicalPersonData;
+  const isContractorNaturalPerson = !!contractorNaturalPerson?.fiscalCode;
+  const isContractorGiuridicalPerosn = !!contractorGiuridicalPerson?.pIva;
 
   return (
     <TabContentStyled>
@@ -230,13 +240,13 @@ const ClaimData = () => {
               },
             ])}
 
-            {owner?.natural_person && renderNaturalPerson("PROPRIETARIO", owner.natural_person)}
-            {owner?.giuridical_person && renderGiuridicalPerson("PROPRIETARIO", owner.giuridical_person)}
+            {isOwnerNaturalPerson && renderNaturalPerson("PROPRIETARIO", ownerNaturalPerson)}
+            {isOwnerGiuridicalPerosn && renderGiuridicalPerson("PROPRIETARIO", ownerGiuridicalPerson)}
 
             {contractor && contractorId !== ownerId && (
               <>
-                {contractor.natural_person && renderNaturalPerson("CONTRAENTE", contractor.natural_person)}
-                {contractor.giuridical_person && renderGiuridicalPerson("CONTRAENTE", contractor.giuridical_person)}
+                {isContractorNaturalPerson && renderNaturalPerson("CONTRAENTE", contractorNaturalPerson)}
+                {isContractorGiuridicalPerosn && renderGiuridicalPerson("CONTRAENTE", contractorGiuridicalPerson)}
               </>
             )}
           </CollapsePanelContentStyled>
@@ -252,12 +262,33 @@ const ClaimData = () => {
         <RowSpacer />
 
         <DatePickerStyled
-          label="Data Pervenimento Denuncia"
-          tooltip="Seleziona la data di pervenimento della denuncia"
-          rules={[{ required: true, message: "La data di pervenimento della denuncia è obbligatoria" }]}
-          placeholder="data pervenimento denuncia ..."
+          label="Data Denuncia"
+          tooltip="Seleziona la data di denuncia"
+          rules={[{ required: true, message: "La data della denuncia è obbligatoria" }]}
+          placeholder="data  denuncia ..."
           onChange={(val) => app.updateClaimData(val, "receiptDate")}
           value={claimData?.receiptDate}
+          format={"DD/MM/YYYY"}
+        />
+      </FormRow>
+      <FormRow>
+        <DatePickerStyled
+          label="Data Pervenimento in Compagnia"
+          tooltip="Seleziona la data di pervenimento in compagnia"
+          rules={[{ required: true, message: "La data di pervenimento in compagnia è obbligatoria" }]}
+          placeholder="data di accadimento ..."
+          onChange={(val) => app.updateClaimData(val, "dateOfReceiptCompany")}
+          value={claimData?.dateOfReceiptCompany}
+          format={"DD/MM/YYYY"}
+        />
+        <RowSpacer />
+        <DatePickerStyled
+          label="Data Pervenimento in Dekra"
+          tooltip="Seleziona la data di pervenimento in Dekra"
+          rules={[{ required: true, message: "La data di pervenimento in Dekra è obbligatoria" }]}
+          placeholder="data di accadimento ..."
+          onChange={(val) => app.updateClaimData(val, "dateOfReceiptDekra")}
+          value={claimData?.dateOfReceiptDekra}
           format={"DD/MM/YYYY"}
         />
       </FormRow>
@@ -332,11 +363,18 @@ const ClaimData = () => {
           </FormRow>
         </>
       )}
-      <Modal open={isOpenSubjectModal} onCancel={() => setIsOpenSubjectModal(false)} width="1000px" footer={null}>
+      {/* <Modal open={isOpenSubjectModal} onCancel={() => setIsOpenSubjectModal(false)} width="1000px" footer={null}>
         <div style={{ padding: "3em 2em 2em 2em" }}>
           <SubjectDetails />
         </div>
-      </Modal>
+      </Modal> */}
+      <SubjectEditModal
+        isOpen={editingSubject?.modalOpen}
+        subjectId={editingSubject?.subjectId}
+        type={editingSubject?.type}
+        onOk={() => {}}
+        onCancel={() => handleCloseEditingSubject()}
+      />
     </TabContentStyled>
   );
 };

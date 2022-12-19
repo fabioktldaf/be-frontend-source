@@ -14,6 +14,7 @@ import {
   setAdditionalInfo,
   removeAdditionalInfo,
   clearLocalStorage,
+  setLoadingPolicyStatus,
 } from "../redux/features/newClaimSlice";
 import { defaultClaimPolicyData } from "../config/dummy-data";
 import {
@@ -51,14 +52,17 @@ import {
   LocalStorageKeys,
 } from "../config/const";
 import { appendFile } from "fs";
+import Policy from "./backend/policy";
 
 const isCardVehicle = (type: ClaimType) => CardVehicleTypes.indexOf(type) >= 0;
 
 export default {
-  startNewClaim: () => {
+  startNewClaim: async (policyNumber?: string) => {
     store.dispatch(clear());
+
+    if (!policyNumber || policyNumber.length < 1) return;
+    Policy.retrieve(policyNumber);
     store.dispatch(setStatus(NewClaimStateType.MandatoryData));
-    store.dispatch(setPolicyData(defaultClaimPolicyData));
   },
   clearLocalStorage: () => {
     store.dispatch(clearLocalStorage());

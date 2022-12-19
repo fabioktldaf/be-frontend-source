@@ -40,6 +40,7 @@ import {
   BaremTdHeader,
 } from "./Responsability";
 import { useTranslation } from "react-i18next";
+import { Form } from "react-router-dom";
 
 const ResumeContent = styled.div`
   display: flex;
@@ -145,7 +146,7 @@ const CheckSic = (props: CheckSicProps) => {
       execute: () => {},
     },
     {
-      label: "Invia ad ANIA",
+      label: "Avanti",
       disabled: isDataModified || status !== NewClaimStateType.SicCorrect,
       execute: () => {
         props.onForward();
@@ -177,10 +178,10 @@ const CheckSic = (props: CheckSicProps) => {
     <ResumeContent>
       <FormRow>
         <DatePickerStyled
-          label="Data Pervenimento"
-          tooltip="Seleziona la data di pervenimento della denuncia"
-          rules={[{ required: true, message: "La data di pervenimento della denuncia è obbligatoria" }]}
-          placeholder="data pervenimento denuncia ..."
+          label="Data Denuncia"
+          tooltip="Seleziona la data di  denuncia"
+          rules={[{ required: true, message: "La data di  denuncia è obbligatoria" }]}
+          placeholder="data denuncia ..."
           onChange={(val) => {
             setIsDataModified(true);
             app.updateClaimData(val, "receiptDate");
@@ -189,6 +190,30 @@ const CheckSic = (props: CheckSicProps) => {
           format={"DD/MM/YYYY"}
         />
         <RowSpacer />
+      </FormRow>
+
+      <FormRow>
+        <DatePickerStyled
+          label="Data Pervenimento in Compagnia"
+          tooltip="Seleziona la data di pervenimento in compagnia"
+          rules={[{ required: true, message: "La data di pervenimento in compagnia è obbligatoria" }]}
+          placeholder="data di accadimento ..."
+          onChange={(val) => app.updateClaimData(val, "dateOfReceiptCompany")}
+          value={claimData?.dateOfReceiptCompany}
+          format={"DD/MM/YYYY"}
+        />
+        <RowSpacer />
+        <DatePickerStyled
+          label="Data Pervenimento in Dekra"
+          tooltip="Seleziona la data di pervenimento in Dekra"
+          rules={[{ required: true, message: "La data di pervenimento in Dekra è obbligatoria" }]}
+          placeholder="data di accadimento ..."
+          onChange={(val) => app.updateClaimData(val, "dateOfReceiptDekra")}
+          value={claimData?.dateOfReceiptDekra}
+          format={"DD/MM/YYYY"}
+        />
+      </FormRow>
+      <FormRow>
         <DatePickerStyled
           label="Data Accadimento"
           tooltip="Seleziona la data di Accadimento"

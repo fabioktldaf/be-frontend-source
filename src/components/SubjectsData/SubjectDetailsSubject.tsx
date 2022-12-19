@@ -39,8 +39,8 @@ interface SubjectDetailsSubjectProps {
 const SubjectDetailsSubject = (props: SubjectDetailsSubjectProps) => {
   const { subject, readOnly, app, t, onChange } = props;
 
-  const naturalPerson = subject?.person as SubjectNaturalPersonData;
-  const giuridicalPerson = subject?.person as SubjectGiuridicalPersonData;
+  const naturalPerson = subject as SubjectNaturalPersonData;
+  const giuridicalPerson = subject as SubjectGiuridicalPersonData;
 
   let subjectType: subectType = "natural";
   if (giuridicalPerson?.business_name?.length > 0) subjectType = "business";
@@ -159,8 +159,8 @@ const SubjectDetailsSubject = (props: SubjectDetailsSubjectProps) => {
             tooltip="Inserisci la partita iva"
             rules={[{ required: true, message: "La partita iva è obbligatoria" }]}
             placeholder="partita iva..."
-            onChange={(txt) => onChange(txt, "p_iva")}
-            value={giuridicalPerson?.p_iva}
+            onChange={(txt) => onChange(txt, "pIva")}
+            value={giuridicalPerson?.pIva}
           />
           <RowSpacer />
           <div style={{ flex: 1 }}></div>

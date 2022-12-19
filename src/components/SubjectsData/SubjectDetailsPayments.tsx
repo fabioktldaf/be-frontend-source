@@ -85,8 +85,8 @@ const SubjectDetailsPayments = (props: SubjectDetailsPaymentsProps) => {
   };
   return (
     <FormContentTab>
-      {payments.map((document, i) => (
-        <PaymentStyled key={i}>{renderPayment(document, i)}</PaymentStyled>
+      {payments.map((payment, i) => (
+        <PaymentStyled key={i}>{renderPayment(payment, i)}</PaymentStyled>
       ))}
       <FormRow style={{ justifyContent: "center" }}>
         <ButtonConfirm onClick={handleAddPayment} children="Aggiungi Pagamento" />

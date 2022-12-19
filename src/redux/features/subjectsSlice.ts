@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import moment from "moment";
 import { type } from "os";
-import { SubjectData, SubjectDocumentData, SubjectPaymentData } from "../../types/uses-data.types";
+import { EditingSubjectState, SubjectData, SubjectDocumentData, SubjectPaymentData } from "../../types/uses-data.types";
 
 export interface SubjectsState {
   search: {
@@ -12,6 +12,7 @@ export interface SubjectsState {
   editing: {
     subject: SubjectData | undefined;
     readOnly: boolean;
+    loading: boolean;
   };
 }
 
@@ -25,6 +26,7 @@ const buildInitialState = () => {
     editing: {
       subject: undefined,
       readOnly: false,
+      loading: false,
     },
   } as SubjectsState;
 };
@@ -52,6 +54,9 @@ export const subjectsSlice = createSlice({
     editSubject(state, action: PayloadAction<SubjectData>) {
       state.editing.subject = action.payload;
       state.editing.readOnly = false;
+    },
+    setRetrievingSubject(state, action: PayloadAction<boolean>) {
+      state.editing.loading = action.payload;
     },
     showSubject(state, action: PayloadAction<SubjectData>) {
       state.editing.subject = action.payload;
@@ -119,5 +124,6 @@ export const {
   editingSubjectRemoveDocument,
   editingSubjectAddPayment,
   editingSubjectRemovePayment,
+  setRetrievingSubject,
 } = subjectsSlice.actions;
 export default subjectsSlice.reducer;

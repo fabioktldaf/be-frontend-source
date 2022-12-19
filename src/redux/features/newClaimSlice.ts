@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import moment from "moment";
 import {
   AdditionalInfoDataType,
   ClaimDataCounterpartDataType,
@@ -28,18 +29,12 @@ export interface NewClaimState {
   responsabilityDataCompleted: boolean;
   damagedPartsDataCompleted: boolean;
   counterpartDataCompleted: boolean;
+
+  loadingPolicyData: boolean;
 }
 
 const today = (() => {
-  const _now = new Date();
-  const day = _now.getUTCDate();
-  const month = _now.getUTCMonth() + 1;
-  const year = _now.getUTCFullYear();
-
-  const strDay = (day < 10 ? "0" : "") + day;
-  const strMonth = (month < 10 ? "0" : "") + month;
-
-  return `${strDay}/${strMonth}/${year}`;
+  return moment().format("DD/MM/YYYY");
 })();
 
 const buildInitialState = () => {
@@ -61,6 +56,8 @@ const buildInitialState = () => {
     claimData: {
       number: Date.now().toString(),
       receiptDate: today,
+      dateOfReceiptCompany: today,
+      dateOfReceiptDekra: today,
       registrationDate: today,
       occurrenceDate: today,
       occurrenceTime: "00:00",
@@ -76,6 +73,7 @@ const buildInitialState = () => {
     responsabilityDataCompleted: false,
     damagedPartsDataCompleted: false,
     counterpartDataCompleted: false,
+    loadingPolicyData: false,
   } as NewClaimState;
 };
 
@@ -105,6 +103,8 @@ export const newClaimSlice = createSlice({
       state.responsabilityDataCompleted = false;
 
       state.damagedPartsDataCompleted = false;
+
+      state.loadingPolicyData = false;
     },
     setStatus(state, action: PayloadAction<NewClaimStateType>) {
       const status = action.payload;
@@ -120,6 +120,9 @@ export const newClaimSlice = createSlice({
         state.step = 1;
       if (status === NewClaimStateType.AdditionalData) state.step = 2;
       if (status === NewClaimStateType.Resume) state.step = 3;
+    },
+    setLoadingPolicyStatus(state, action: PayloadAction<boolean>) {
+      state.loadingPolicyData = action.payload;
     },
     setPolicyData(state, action: PayloadAction<ClaimDataPolicyDataType>) {
       state.policyData = action.payload;
@@ -143,7 +146,7 @@ export const newClaimSlice = createSlice({
         ...state.damagedParts,
         {
           pdNumber: Date.now().toString(),
-          subject: {},
+          subject: undefined,
           roleType: "",
           damages: [],
         },
@@ -183,6 +186,7 @@ export const {
   ___setIsPolicyCard,
   clearLocalStorage,
   clear,
+  setLoadingPolicyStatus,
   setStatus,
   setPolicyData,
   updateStepperData,

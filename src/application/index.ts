@@ -6,7 +6,7 @@ import NewClaim from "./newClaim";
 import SearchSubject from "./searchSubject";
 import EditSubject from "./editSubject";
 import NewSubject, { INewSubject } from "./newSubject";
-import Search, { ISearch } from "./search";
+import Search, { ISearch } from "./backend/search";
 
 import {
   AdditionalInfoDataType,
@@ -16,16 +16,23 @@ import {
   UpdateNewClaimResponsabilityDataFieldsType,
 } from "../types/new-claim.types";
 import { SubjectData } from "../types/uses-data.types";
-import { editingSubjectAddAddress, editSubject, showSubject } from "../redux/features/subjectsSlice";
+import {
+  editingSubjectAddAddress,
+  editSubject,
+  setRetrievingSubject,
+  showSubject,
+} from "../redux/features/subjectsSlice";
 import { Urls } from "../config/const";
 import { SearchParams } from "../types/search.types";
+import Subject from "./backend/subject";
+import Policy, { IPolicy } from "./backend/policy";
 
 export interface IApplication {
   init: () => void;
   changeLanguage: (lang: string) => void;
 
   // NEW CLAIM
-  startNewClaim: () => void;
+  startNewClaim: (policyNumber?: string) => void;
   clearLocalStorage: () => void;
   updatedStepperData: (val: any, field: SteppedChangeDataType) => void;
   updateClaimData: (val: any, field: UpdateNewClaimDataFieldsType) => void;
@@ -44,6 +51,7 @@ export interface IApplication {
   clearSearchSubject: () => void;
   searchSubject: (term: string) => void;
   editSubject: (subject: SubjectData, navigate: NavigateFunction) => void;
+  _editSubject: (subjectId: string, type: string) => void;
   showSubject: (subject: SubjectData, navigate: NavigateFunction) => void;
   editingSubjectAddContact: () => void;
   editingSubjectRemoveContact: (index: number) => void;
@@ -56,6 +64,7 @@ export interface IApplication {
   editingSubjectRemovePayment: (index: number) => void;
 
   addNewSubject: (navigate: NavigateFunction) => void;
+  _addNewSubject: () => void;
 
   search: ISearch;
   newSubject: INewSubject;
@@ -71,8 +80,8 @@ export default (): IApplication => {
       i18next.changeLanguage(lang);
       store.dispatch(setLanguage(lang));
     },
-    startNewClaim: () => {
-      NewClaim.startNewClaim();
+    startNewClaim: (policyNumber?: string) => {
+      NewClaim.startNewClaim(policyNumber);
     },
     clearLocalStorage: () => {
       NewClaim.clearLocalStorage();
@@ -122,6 +131,14 @@ export default (): IApplication => {
     editSubject: (subject: SubjectData, navigate: NavigateFunction) => {
       store.dispatch(editSubject(subject));
       navigate(Urls.subject_details);
+    },
+    _editSubject: async (subjectId: string, type: string) => {
+      store.dispatch(setRetrievingSubject(true));
+      await Subject.retrieve(subjectId, type);
+      store.dispatch(setRetrievingSubject(false));
+    },
+    _addNewSubject: () => {
+      store.dispatch(editSubject({}));
     },
     showSubject: (subject: SubjectData, navigate: NavigateFunction) => {
       store.dispatch(showSubject(subject));

@@ -1,6 +1,7 @@
 const contacts = require("./contacts"); // --- 4 email / 4 phone
 const addresses = require("./addresses"); // --- 5 residence / 3 shipping
 const documents = require("./documents"); // - 2 cardId / 2 passport / 2 drivingLicense
+const payments = require("./payments"); //---- 4 transfer / 0 check
 
 module.exports = {
   naturalPerson: [
@@ -18,6 +19,7 @@ module.exports = {
       contacts: [contacts.email[0], contacts.phone[0]],
       addresses: [addresses.residence[0], addresses.shipping[0]],
       documents: [documents.cardId[0], documents.passport[0]],
+      payments: [payments.transfer[0], payments.transfer[1]],
     },
     {
       name: "Nadia",
@@ -33,6 +35,7 @@ module.exports = {
       contacts: [contacts.email[1], contacts.phone[1]],
       addresses: [addresses.residence[1], addresses.shipping[1]],
       documents: [documents.cardId[1], documents.passport[1]],
+      payments: [payments.transfer[2], payments.transfer[3]],
     },
 
     {
@@ -49,6 +52,7 @@ module.exports = {
       contacts: [contacts.email[2], contacts.phone[2]],
       addresses: [addresses.residence[2], addresses.shipping[2]],
       documents: [documents.drivingLicense[0]],
+      payments: [payments.transfer[0]],
     },
     {
       name: "Angela",
@@ -64,6 +68,7 @@ module.exports = {
       contacts: [contacts.email[3], contacts.phone[3]],
       addresses: [addresses.residence[3]],
       documents: [documents.drivingLicense[1]],
+      payments: [],
     },
     {
       name: "Marcelo",
@@ -79,29 +84,32 @@ module.exports = {
       contacts: [contacts.email[0], contacts.phone[0]],
       addresses: [addresses.shipping[0]],
       documents: [documents.passport[0]],
+      payments: [payments.transfer[1]],
     },
   ],
   giuridicalPerson: [
     {
       business_name: "Hickle-Hettinger",
       type: "srl",
-      p_iva: "5397936790165",
+      pIva: "5397936790165",
       contacts: [contacts.email[1]],
       addresses: [addresses.shipping[1]],
       documents: [documents.passport[1]],
+      payments: [payments.transfer[2]],
     },
     {
       business_name: "Upton-Rolfson",
       type: "spa",
-      p_iva: "9976861",
+      pIva: "9976861",
       contacts: [],
       addresses: [],
       documents: [],
+      payments: [],
     },
     {
       business_name: "Elga Trevisani",
       type: "proprietorship",
-      p_iva: "123456789",
+      pIva: "123456789",
       contacts: [],
       addresses: [],
       documents: [],

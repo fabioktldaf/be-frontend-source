@@ -35,9 +35,9 @@ const Sider = () => {
       <Logo />
 
       <SideMenu />
-
+      <br />
       <Collapse>
-        <Collapse.Panel header="Miscellaneous" key="1">
+        {/* <Collapse.Panel header="Miscellaneous" key="1">
           <Button type="primary" size="small" onClick={() => app.startNewClaim()} style={{ marginBottom: "1em" }}>
             Dati Polizza
           </Button>
@@ -53,6 +53,10 @@ const Sider = () => {
               app.updatedStepperData(true, "collision");
               app.updatedStepperData(true, "inItaly");
               app.updateClaimData("01/10/2022", "receiptDate");
+
+              app.updateClaimData("01/10/2022", "dateOfReceiptCompany");
+              app.updateClaimData("01/10/2022", "dateOfReceiptDekra");
+
               app.updateClaimData("01/9/2022", "occurrenceDate");
               app.updateClaimData("10:00", "occurrenceTime");
               app.updateClaimData("corso Italia 4", "occurrencePlace");
@@ -127,13 +131,18 @@ const Sider = () => {
             checked={___isPolicyCard}
             onChange={(val) => dispatch(___setIsPolicyCard(val))}
           />
-        </Collapse.Panel>
-        <Collapse.Panel header="Environment" key="2">
-          <SelectStyled
-            label="ep"
-            options={envOptions}
-            value={selectedEnv}
-            onChange={(env) => dispatch(setEnvironment(env))}
+        </Collapse.Panel> */}
+        <Collapse.Panel header="Setting..." key="2">
+          <LanguageSelect />
+          <br />
+          <SelectStyled options={envOptions} value={selectedEnv} onChange={(env) => dispatch(setEnvironment(env))} />
+          <br />
+          <SwitchStyled
+            label="Polizza CARD"
+            checkedChildren="SI"
+            unCheckedChildren="NO"
+            checked={___isPolicyCard}
+            onChange={(val) => dispatch(___setIsPolicyCard(val))}
           />
         </Collapse.Panel>
       </Collapse>

@@ -18,6 +18,7 @@ import { AllPartRoles } from "../../config/const";
 import { TabContentStyled } from ".";
 import { ButtonConfirm, ButtonDelete } from "../Layout/Buttons";
 import { IconDelete } from "../../config/icons";
+import { SubjectGiuridicalPersonData, SubjectNaturalPersonData } from "../../types/uses-data.types";
 
 const TableDamagedParts = styled.table`
   width: 100%;
@@ -106,11 +107,16 @@ const DamagedParts = (props: DamagedPartsProps) => {
   const renderDamagePartRow = (p: DamagedPartType, i: number, managementType?: string) => {
     let subjectDetails = "---";
     const roleLabel = AllPartRoles.find((r) => r.value === p.roleType)?.label || "";
-    if (p.subject.natural_person) {
-      const { name, lastname } = p.subject.natural_person;
+    const subjectNaturalPerson = p.subject as SubjectNaturalPersonData;
+    const subjectGiuridicalPerson = p.subject as SubjectGiuridicalPersonData;
+    const isSubjectNaturalPerson = !!subjectNaturalPerson?.fiscalCode;
+    const isSubjectGiuridicalPerson = !!subjectGiuridicalPerson?.pIva;
+
+    if (isSubjectNaturalPerson) {
+      const { name, lastname } = subjectNaturalPerson;
       subjectDetails = `${name} ${lastname}`;
-    } else if (p.subject.giuridical_person) {
-      subjectDetails = `${p.subject.giuridical_person.business_name}`;
+    } else if (isSubjectGiuridicalPerson) {
+      subjectDetails = `${subjectGiuridicalPerson.business_name}`;
     }
 
     const hasVehicleDamage =
@@ -125,7 +131,7 @@ const DamagedParts = (props: DamagedPartsProps) => {
         <td onClick={() => showPartModal(i)} style={{ fontSize: "0.9em" }}>
           {roleLabel}
         </td>
-        <td onClick={() => showPartModal(i)}>{t(`management_type_${managementType}`)}</td>
+        <td onClick={() => showPartModal(i)}>{t(`management_type_${managementType}`)} - C.G.</td>
         <td>
           <DamangeIconStyled>{hasVehicleDamage && <BiCar />}</DamangeIconStyled>
         </td>

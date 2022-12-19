@@ -78,16 +78,24 @@ exports.search = functions.https.onRequest(async (req, res) => {
 
 exports.subject = functions.https.onRequest(async (req, res) => {
   res.set("Access-Control-Allow-Origin", "*");
+  res.set("Access-Control-Allow-Headers", "*");
 
   const subject =
     subjects.naturalPerson.find((s) => s.fiscalCode === req.body.subjectId) ||
-    subjects.giuridicalPerson.find((s) => s.p_iva === req.body.subjectId);
+    subjects.giuridicalPerson.find((s) => s.pIva === req.body.subjectId);
 
   res.json({ result: subject });
 });
 
+exports.policy = functions.https.onRequest(async (req, res) => {
+  res.set("Access-Control-Allow-Origin", "*");
+  res.set("Access-Control-Allow-Headers", "*");
+
+  const policy = policies.find((p) => p.policy_number === req.body.policyNumber);
+  res.json({ result: policy });
+});
+
 /*
-    firebase emulators:start
-    
+    firebase emulators:start    
     firebase deploy --only functions
 */

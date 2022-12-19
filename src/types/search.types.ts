@@ -40,7 +40,7 @@ export type SearchResultItemSubjectNaturalPerson = {
 export type SearchResultItemSubjectGiuridicaPerson = {
   business_name: string;
   type?: string;
-  p_iva: string;
+  pIva: string;
   proprietorship?: SearchResultItemSubjectNaturalPerson;
 };
 

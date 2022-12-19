@@ -12,7 +12,7 @@ import { InboxOutlined } from "@ant-design/icons";
 import { IoIosBusiness } from "react-icons/io";
 import { FaCar } from "react-icons/fa";
 import { CgArrowsExchangeAlt } from "react-icons/cg";
-import { FcFlashOn } from "react-icons/fc";
+import { FcCancel, FcFlashOn } from "react-icons/fc";
 
 interface IconProps {
   style?: any;
@@ -33,6 +33,7 @@ export const IconEdit = (props: IconProps) => <BiEditAlt style={props.style} />;
 export const IconFlash = (props: IconProps) => <FcFlashOn style={props.style} />;
 export const IconHome = (props: IconProps) => <BiHomeAlt style={props.style} />;
 export const IconInbox = (props: IconProps) => <InboxOutlined style={props.style} />;
+export const IconNoSafe = (props: IconProps) => <FcCancel style={props.style} />;
 export const IconSearch = (props: IconProps) => <BiSearch style={props.style} />;
 export const IconSafe = (props: IconProps) => <AiOutlineSafetyCertificate style={props.style} />;
 export const IconSubject = (props: IconProps) => <SlUser style={props.style} />;

@@ -186,11 +186,16 @@ const AdditionalInfo = (props: AdditionalDataProps) => {
     const roleLabel = AllPartRoles.find((r) => r.value === p.roleType)?.label || "";
     let nominative = '"Nome Cognome"';
 
-    if (p.subject.natural_person) {
-      const { name, lastname } = p.subject.natural_person;
+    const subjectNaturalPerson = p.subject as SubjectNaturalPersonData;
+    const subjectGiuridicalPerson = p.subject as SubjectGiuridicalPersonData;
+    const isSubjectNaturalPerson = !!subjectNaturalPerson.fiscalCode;
+    const isSubjectGiuridicalPerson = !!subjectGiuridicalPerson.pIva;
+
+    if (isSubjectNaturalPerson) {
+      const { name, lastname } = subjectNaturalPerson;
       nominative = `${name} ${lastname}`;
-    } else if (p.subject.giuridical_person) {
-      nominative = p.subject.giuridical_person.business_name;
+    } else if (isSubjectGiuridicalPerson) {
+      nominative = subjectGiuridicalPerson.business_name;
     }
 
     const vehicleDamages = p.damages.find((d) => d.damageType === "Vehicle");
@@ -275,13 +280,7 @@ const AdditionalInfo = (props: AdditionalDataProps) => {
             </Tooltip>
           )}
         </td>
-        <td>
-          <Tooltip title="Aggiungi Informazioni">
-            <ButtonAddInfo type="primary" shape="circle" onClick={() => handleAddAdditionalInfo(index)}>
-              +
-            </ButtonAddInfo>
-          </Tooltip>
-        </td>
+        <td></td>
       </DamagedPartResume>
     );
   };
@@ -463,6 +462,19 @@ const AdditionalInfo = (props: AdditionalDataProps) => {
             }}
           >
             informazioni addizionali
+            <Tooltip title="Aggiungi Informazioni">
+              <ButtonAddInfo
+                style={{
+                  float: "right",
+                  marginRight: "2.2em",
+                }}
+                type="primary"
+                shape="circle"
+                onClick={() => handleAddAdditionalInfo(pdIndex)}
+              >
+                +
+              </ButtonAddInfo>
+            </Tooltip>
           </td>
         </tr>
         {pdAdditionalInfo.map((ai, i) => (

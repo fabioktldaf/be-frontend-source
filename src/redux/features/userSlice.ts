@@ -9,7 +9,7 @@ export interface UserState {
 const buildInitialState = () => {
   return {
     language: defaultLanguage,
-    environment: "localhost",
+    environment: "firebase",
   } as UserState;
 };
 

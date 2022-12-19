@@ -23,10 +23,16 @@ import useApplication from "../../hooks/useApplication";
 import { PartRoleCP, PartRoleNP, Responsabilities } from "../../config/const";
 import { InputTextStyled, SelectStyled } from "../../style/Input";
 import SubjectDetails from "../SubjectsData/SubjectDetails";
-import { SubjectData, SubjectGiuridicalPersonData, SubjectNaturalPersonData } from "../../types/uses-data.types";
+import {
+  EditingSubjectState,
+  SubjectData,
+  SubjectGiuridicalPersonData,
+  SubjectNaturalPersonData,
+} from "../../types/uses-data.types";
 import { ButtonConfirm, ButtonDelete } from "../Layout/Buttons";
 import SearchSubject from "../SubjectsData/SearchSubject";
 import Results from "../Search/Results";
+import SubjectEditModal from "../SubjectsData/SubjectEditModal";
 
 const PersonDamageList = styled(Col)`
   width: 25em;
@@ -64,7 +70,7 @@ interface DamagedPartModalContentProps {
 }
 
 const DamagedPartModalContent = (props: DamagedPartModalContentProps) => {
-  const [isOpenSubjectModal, setIsOpenSubjectModal] = useState(false);
+  const [editingSubject, setEditingSubject] = useState<EditingSubjectState | undefined>();
   const [isOpenSearchSubjectModal, setIsOpenSearchSubjectModal] = useState(false);
 
   const app = useApplication();
@@ -87,16 +93,30 @@ const DamagedPartModalContent = (props: DamagedPartModalContentProps) => {
   const responsabiityType = Responsabilities.card.find((r) => r.value === props.managementType);
   const managementTypeText = `${props.managementType} - ${responsabiityType?.label}`;
 
+  const handleEditSubject = (subjectId: string, type: string) => {
+    const updatedEditingSubject = Object.assign({}, editingSubject);
+    updatedEditingSubject.subjectId = subjectId;
+    updatedEditingSubject.type = type;
+    updatedEditingSubject.modalOpen = true;
+    setEditingSubject(updatedEditingSubject);
+  };
+
+  const handleCloseEditingSubject = () => {
+    const updatedEditingSubject = Object.assign({}, editingSubject);
+    updatedEditingSubject.modalOpen = false;
+    setEditingSubject(updatedEditingSubject);
+  };
+
   const handleOnOk = () => {
     app.updateDamagedPart(Object.assign({}, part), props.partIndex);
     props.onOk();
   };
 
-  const handleEditSubject = (person: SubjectNaturalPersonData | SubjectGiuridicalPersonData) => {
-    console.log("person ", person);
-    app.editSubject({ person: Object.assign({}, person) }, navigate);
-    setIsOpenSubjectModal(true);
-  };
+  // const handleEditSubject = (person: SubjectNaturalPersonData | SubjectGiuridicalPersonData) => {
+  //   console.log("person ", person);
+  //   app.editSubject({ person: Object.assign({}, person) }, navigate);
+  //   setIsOpenSubjectModal(true);
+  // };
 
   const handleSearchSubject = () => {
     app.clearSearchSubject();
@@ -147,12 +167,12 @@ const DamagedPartModalContent = (props: DamagedPartModalContentProps) => {
 
       case "subject":
         if (!val) {
-          updatedPart.subject = {};
+          updatedPart.subject = undefined;
         } else {
           const naturalPerson = val as SubjectNaturalPersonData;
           const giuridicalPerson = val as SubjectGiuridicalPersonData;
-          if (naturalPerson.fiscalCode?.length > 0) updatedPart.subject.natural_person = val;
-          else if (giuridicalPerson.p_iva?.length > 0) updatedPart.subject.giuridical_person = val;
+          if (naturalPerson.fiscalCode?.length > 0) updatedPart.subject = val;
+          else if (giuridicalPerson.pIva?.length > 0) updatedPart.subject = val;
         }
         break;
     }
@@ -182,12 +202,17 @@ const DamagedPartModalContent = (props: DamagedPartModalContentProps) => {
   const renderDamageOwner = () => {
     const availableDamageTypes = app.getAvailableDamageTypes(0, part);
 
+    const subjectNaturalPerson = part.subject as SubjectNaturalPersonData;
+    const subjectGiuridicalPerson = part.subject as SubjectGiuridicalPersonData;
+    const isSubjectNaturalPerson = !!subjectNaturalPerson.fiscalCode;
+    const isSubjectGiuridicalPerson = !!subjectGiuridicalPerson.pIva;
+
     let ownerDetails = "";
-    if (part.subject?.natural_person) {
-      const { name, lastname } = part.subject.natural_person;
+    if (isSubjectNaturalPerson) {
+      const { name, lastname } = subjectNaturalPerson;
       ownerDetails = `${name} ${lastname}`;
-    } else if (part.subject?.giuridical_person) {
-      ownerDetails = part.subject.giuridical_person.business_name;
+    } else if (isSubjectGiuridicalPerson) {
+      ownerDetails = subjectGiuridicalPerson.business_name;
     }
 
     return (
@@ -206,7 +231,15 @@ const DamagedPartModalContent = (props: DamagedPartModalContentProps) => {
           <RowSpacer />
 
           <FormInput label="Proprietario" tooltip="Seleziona l'anagrafica">
-            <Link to={"#"} onClick={() => handleEditSubject(part.subject as SubjectNaturalPersonData)}>
+            <Link
+              to={"#"}
+              onClick={() =>
+                handleEditSubject(
+                  isSubjectNaturalPerson ? subjectNaturalPerson.fiscalCode : subjectGiuridicalPerson.pIva,
+                  isSubjectNaturalPerson ? "natural-person" : "giuridical-person"
+                )
+              }
+            >
               {ownerDetails}
             </Link>
           </FormInput>
@@ -366,11 +399,16 @@ const DamagedPartModalContent = (props: DamagedPartModalContentProps) => {
 
     let subjectDetails = "";
 
-    if (part.subject.natural_person) {
-      const { name, lastname } = part.subject.natural_person;
+    const subjectNaturalPerson = part.subject as SubjectNaturalPersonData;
+    const subjectGiuridicalPerson = part.subject as SubjectGiuridicalPersonData;
+    const isSubjectNaturalPerson = !!subjectNaturalPerson?.fiscalCode;
+    const isSubjectGiuridicalPerson = !!subjectGiuridicalPerson?.pIva;
+
+    if (isSubjectNaturalPerson) {
+      const { name, lastname } = subjectNaturalPerson;
       subjectDetails = `${name} ${lastname}`;
-    } else if (part.subject.giuridical_person) {
-      subjectDetails = part.subject.giuridical_person.business_name;
+    } else if (isSubjectGiuridicalPerson) {
+      subjectDetails = subjectGiuridicalPerson.business_name;
     }
 
     console.log("part ", part);
@@ -392,7 +430,15 @@ const DamagedPartModalContent = (props: DamagedPartModalContentProps) => {
           <FormInput label="Anagrafica" name={`anagrafica_other_${part.pdNumber}`} tooltip="Seleziona l'anagrafica">
             {subjectDetails !== "" && (
               <>
-                <Link to={"#"} onClick={() => handleEditSubject(part.subject as SubjectNaturalPersonData)}>
+                <Link
+                  to={"#"}
+                  onClick={() =>
+                    handleEditSubject(
+                      isSubjectNaturalPerson ? subjectNaturalPerson.fiscalCode : subjectGiuridicalPerson.pIva,
+                      isSubjectNaturalPerson ? "natural-person" : "giuridical-person"
+                    )
+                  }
+                >
                   {subjectDetails}
                 </Link>
                 <ButtonDelete children={"elimina"} onClick={() => handleModalPartChange("subject", null)} />
@@ -522,14 +568,24 @@ const DamagedPartModalContent = (props: DamagedPartModalContentProps) => {
     );
   };
 
+  console.log("editingSubject ", editingSubject);
   return (
     <>
       {isOwner() ? renderDamageOwner() : renderDamageOther()}
-      <Modal open={isOpenSubjectModal} onCancel={() => setIsOpenSubjectModal(false)} width="1000px" footer={null}>
+
+      {/* <Modal open={isOpenSubjectModal} onCancel={() => setIsOpenSubjectModal(false)} width="1000px" footer={null}>
         <div style={{ padding: "3em 2em 2em 2em" }}>
           <SubjectDetails />
         </div>
-      </Modal>
+      </Modal> */}
+      <SubjectEditModal
+        isOpen={editingSubject?.modalOpen}
+        subjectId={editingSubject?.subjectId}
+        type={editingSubject?.type}
+        onOk={() => {}}
+        onCancel={() => handleCloseEditingSubject()}
+      />
+
       <Modal
         open={isOpenSearchSubjectModal}
         onCancel={() => setIsOpenSearchSubjectModal(false)}

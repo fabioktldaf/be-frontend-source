@@ -14,6 +14,8 @@ export const backend = {
   ],
   paths: {
     search: "search",
+    subject: "subject",
+    policy: "policy",
   },
 };
 

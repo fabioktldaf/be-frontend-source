@@ -23,33 +23,33 @@ export const MenuConfig = {
       url: Urls.home,
       icon: <IconHome style={iconsStyle} />,
     },
-    {
-      label: "sideMenu_policy",
-      icon: <IconDocument style={iconsStyle} />,
-      children: [
-        {
-          label: "sideMenu_searchFulltext",
-          url: Urls.policy_searchFulltext,
-        },
-        {
-          label: "sideMenu_searchByFields",
-          url: Urls.policy_searchByfields,
-        },
-        {
-          label: "sideMenu_policy_manualInsert",
-          url: Urls.policy_manualInsert,
-        },
-      ],
-    },
-    {
-      label: "sideMenu_createClaim",
-      url: Urls.new_claim,
-      icon: <IconClaim style={iconsStyle} />,
-    },
-    {
-      label: "sideMenu_subjectsData",
-      url: Urls.subjects_data,
-      icon: <IconUsers style={iconsStyle} />,
-    },
+    // {
+    //   label: "sideMenu_policy",
+    //   icon: <IconDocument style={iconsStyle} />,
+    //   children: [
+    //     {
+    //       label: "sideMenu_searchFulltext",
+    //       url: Urls.policy_searchFulltext,
+    //     },
+    //     {
+    //       label: "sideMenu_searchByFields",
+    //       url: Urls.policy_searchByfields,
+    //     },
+    //     {
+    //       label: "sideMenu_policy_manualInsert",
+    //       url: Urls.policy_manualInsert,
+    //     },
+    //   ],
+    // },
+    // {
+    //   label: "sideMenu_createClaim",
+    //   url: Urls.new_claim,
+    //   icon: <IconClaim style={iconsStyle} />,
+    // },
+    // {
+    //   label: "sideMenu_subjectsData",
+    //   url: Urls.subjects_data,
+    //   icon: <IconUsers style={iconsStyle} />,
+    // },
   ],
 };

@@ -1,11 +1,8 @@
-import React from "react";
-import { Button, Input, Spin } from "antd";
+import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
-import useApplication from "../../hooks/useApplication";
-import { SubjectData, SubjectGiuridicalPersonData, SubjectNaturalPersonData } from "../../types/uses-data.types";
 import {
   SearchResultItem,
   SearchResultItemClaim,
@@ -15,8 +12,10 @@ import {
 } from "../../types/search.types";
 import { IconBetween, IconBusiness, IconCar, IconDocument, IconFlash, IconUser } from "../../config/icons";
 import { ButtonConfirm } from "../Layout/Buttons";
-import { GrAddCircle } from "react-icons/gr";
 import { IoMdAddCircleOutline } from "react-icons/io";
+import SubjectEditModal from "../SubjectsData/SubjectEditModal";
+import { EditingSubjectState } from "../../types/uses-data.types";
+import useApplication from "../../hooks/useApplication";
 
 const ResultsContainer = styled.div`
   display: flex;
@@ -49,8 +48,6 @@ const ResultItemPolicies = styled.div`
   padding-left: 5em;
   border-left: 5px solid #eee;
   margin-left: 7px;
-  border-bottom: 5px solid #eee;
-  border-bottom-left-radius: 1em;
 `;
 
 const ResultItemPolicy = styled.div`
@@ -75,13 +72,22 @@ const ResultItemClaimItem = styled.div`
 `;
 
 interface ResultsProps {
-  onSelect: (item: SearchResultItem) => void;
+  onSelect: (item: any, type: string) => void;
 }
 
 const Results = (props: ResultsProps) => {
+  //const app = useApplication();
   const { t } = useTranslation();
-  const app = useApplication();
   const { isSearching, results } = useSelector((state: RootState) => state.search);
+
+  // const handleEditSubject = (subjectId: string, type: string) => {
+  //   console.log("editing ", subjectId);
+  //   const updatedEditingSubject = Object.assign({}, editingSubject);
+  //   updatedEditingSubject.modalOpen = true;
+  //   updatedEditingSubject.subjectId = subjectId;
+  //   updatedEditingSubject.type = type;
+  //   setEditingSubject(updatedEditingSubject);
+  // };
 
   const renderClaims = (claims: SearchResultItemClaim[]) => {
     return claims.map(({ created, received }, i) => (
@@ -89,19 +95,15 @@ const Results = (props: ResultsProps) => {
         {created && (
           <ResultItemClaimItem>
             <IconFlash style={{ fontSize: "1.4em" }} />
-            <span>sinistro n° {created.number}</span>
+            sinistro n°
+            <span style={{ margin: "0 0 0 0.25em", cursor: "pointer", textDecoration: "underline" }}>
+              {created.number}
+            </span>
             <span style={{ marginLeft: "2em" }}>
               accaduto il {created.occurrenceDate} - {created.occurrenceTime}
             </span>
           </ResultItemClaimItem>
         )}
-        {/* {received && (
-          <ResultItemClaimItem>
-            <span>{received.number}</span>
-            <span>{received.occurrenceDate}</span>
-            <span>{received.occurrenceTime}</span>
-          </ResultItemClaimItem>
-        )} */}
       </ResultItemClaim>
     ));
   };
@@ -111,9 +113,11 @@ const Results = (props: ResultsProps) => {
       return (
         <ResultItemPolicy key={i}>
           <div style={{ display: "flex", alignItems: "center" }}>
-            <IconDocument style={{ color: "#aaa", fontSize: "1.4em", margin: "-5px 0.5em 0 0 " }} />
-
-            <span style={{ marginRight: "2em", width: "12em" }}>N° {policy.policy_number}</span>
+            <IconDocument style={{ color: "#aaa", fontSize: "1.4em", margin: "-5px 0.25em 0 0 " }} />
+            n°
+            <span style={{ margin: "0 2em 0 0.5em", width: "12em", cursor: "pointer", textDecoration: "underline" }}>
+              {policy.policy_number}
+            </span>
             <span>{policy.effect_date}</span>
             <IconBetween style={{ color: "#aaa", fontSize: "1.4em", margin: "0 0.25em" }} />
             <span>{policy.expiration_date}</span>
@@ -134,7 +138,13 @@ const Results = (props: ResultsProps) => {
               )}
             </div>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end" }}>
-              <ButtonConfirm size="small" onClick={() => {}} style={{ fontSize: "0.8em" }}>
+              <ButtonConfirm
+                size="small"
+                onClick={() => {
+                  props.onSelect(policy.policy_number, "new-claim");
+                }}
+                style={{ fontSize: "0.8em" }}
+              >
                 <div style={{ display: "flex", width: "7em", justifyContent: "center" }}>
                   <IoMdAddCircleOutline style={{ fontSize: "1.4em", marginRight: "0.25em" }} /> Sinistro
                 </div>
@@ -173,10 +183,13 @@ const Results = (props: ResultsProps) => {
             }}
           />
         </div>
-        <span>
+        <span
+          style={{ fontSize: "1.2em", fontWeight: "400", cursor: "pointer", textDecoration: "underline" }}
+          onClick={() => props.onSelect(person.fiscalCode, "natural-person")}
+        >
           {name} {lastname}
         </span>
-        <span style={{ marginLeft: "2em" }}>{fiscalCode}</span>
+        <span style={{ marginLeft: "2em", fontSize: "1.2em", fontWeight: "400" }}>{fiscalCode}</span>
         <div style={{ display: "flex", flex: 1, alignItems: "center", justifyContent: "flex-end" }}>
           <ButtonConfirm size="small" onClick={() => {}} style={{ fontSize: "0.8em" }}>
             <div style={{ display: "flex", width: "7em", justifyContent: "center" }}>
@@ -189,7 +202,7 @@ const Results = (props: ResultsProps) => {
   };
 
   const renderGiuridicalPerson = (person: SearchResultItemSubjectGiuridicaPerson) => {
-    const { business_name, type, p_iva } = person;
+    const { business_name, type, pIva } = person;
     return (
       <>
         <div
@@ -214,10 +227,13 @@ const Results = (props: ResultsProps) => {
             }}
           />
         </div>
-        <span>
+        <span
+          style={{ fontSize: "1.2em", fontWeight: "400", cursor: "pointer", textDecoration: "underline" }}
+          onClick={() => props.onSelect(person.pIva, "giuridical-person")}
+        >
           {business_name} {type}
         </span>
-        <span style={{ marginLeft: "2em" }}>{p_iva}</span>
+        <span style={{ marginLeft: "2em", fontSize: "1.2em", fontWeight: "400" }}>{pIva}</span>
         <div style={{ display: "flex", flex: 1, alignItems: "center", justifyContent: "flex-end" }}>
           <ButtonConfirm size="small" onClick={() => {}} style={{ fontSize: "0.8em" }}>
             <div style={{ display: "flex", width: "7em", justifyContent: "center" }}>
@@ -236,7 +252,7 @@ const Results = (props: ResultsProps) => {
     const isNaturalPerson = naturalPerson?.name?.length > 0 || naturalPerson?.lastname?.length > 0;
 
     return (
-      <ResultItem key={key} onClick={() => props.onSelect(item)}>
+      <ResultItem key={key}>
         <ResultItemSubject>
           {isNaturalPerson ? renderNaturalPerson(naturalPerson) : renderGiuridicalPerson(giuridicalPerson)}
         </ResultItemSubject>
@@ -245,7 +261,18 @@ const Results = (props: ResultsProps) => {
     );
   };
 
-  return isSearching ? <></> : <ResultsContainer>{results.map((item, i) => renderItem(item, i))}</ResultsContainer>;
+  return (
+    <>
+      {/* <SubjectEditModal
+        isOpen={editingSubject?.modalOpen}
+        subjectId={editingSubject?.subjectId}
+        type={editingSubject?.type}
+        onOk={() => {}}
+        onCancel={() => handleCloseEditingSubject()}
+      /> */}
+      {isSearching ? <></> : <ResultsContainer>{results.map((item, i) => renderItem(item, i))}</ResultsContainer>}
+    </>
+  );
 };
 
 export default Results;

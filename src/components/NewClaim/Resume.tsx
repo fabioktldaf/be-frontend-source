@@ -47,6 +47,7 @@ import { Col, Row } from "../../style/containers";
 import { DatePickerStyled, InputTextStyled, SelectStyled, TimePickerStyled } from "../../style/Input";
 import useApplication from "../../hooks/useApplication";
 import { MainForm } from "../Layout/Forms";
+import { SubjectGiuridicalPersonData, SubjectNaturalPersonData } from "../../types/uses-data.types";
 
 const LoaderContainer = styled.div`
   display: flex;
@@ -191,7 +192,7 @@ const Resume = (props: ResumeProps) => {
       <>
         <SpanSmall>{owner.business_name}</SpanSmall>
         <SpanSmall>Partiva IVA</SpanSmall>
-        <SpanSmall>{owner.iva}</SpanSmall>
+        <SpanSmall>{owner.pIva}</SpanSmall>
         <br />
         <SpanSmall>Sede Legale a </SpanSmall>
         <SpanSmall>{owner.registered_office_city}</SpanSmall>
@@ -550,14 +551,17 @@ const Resume = (props: ResumeProps) => {
               damagedParts.map((dp, i) => {
                 let dpNominative = "";
                 let dpAddress = "";
-                if (dp.subject.natural_person) {
-                  const subject = dp.subject.natural_person;
-                  dpNominative = `${subject.name} ${subject.lastname}, cod. fiscale ${subject.fiscal_code}`;
-                  dpAddress = `Residente a ${subject.city_of_residence} provincia di ${subject.province_of_residence}`;
-                } else if (dp.subject.giuridical_person) {
-                  const subject = dp.subject.giuridical_person;
-                  dpNominative = `${subject.business_name}, partita iva ${subject.iva}`;
-                  dpAddress = `Sede legale ${subject.registered_office_city} provincia di ${subject.registered_office_province}`;
+                const subjectNaturalPerson = dp.subject as SubjectNaturalPersonData;
+                const subjectGiuridicalPerson = dp.subject as SubjectGiuridicalPersonData;
+                const isSubjectNaturalPerson = !!subjectNaturalPerson.fiscalCode;
+                const isSubjectGiuridicalPerson = !!subjectGiuridicalPerson.pIva;
+
+                if (isSubjectNaturalPerson) {
+                  dpNominative = `${subjectNaturalPerson.name} ${subjectNaturalPerson.lastname}, cod. fiscale ${subjectNaturalPerson.fiscalCode}`;
+                  dpAddress = `Residente a ${subjectNaturalPerson.birth.city} provincia di ${subjectNaturalPerson.birth.province} - ${subjectNaturalPerson.birth.country}`;
+                } else if (isSubjectGiuridicalPerson) {
+                  dpNominative = `${subjectGiuridicalPerson.business_name}, partita iva ${subjectGiuridicalPerson.pIva}`;
+                  dpAddress = `Sede legale ${subjectGiuridicalPerson.registeredOffice?.street} ${subjectGiuridicalPerson.registeredOffice?.civic} ${subjectGiuridicalPerson.registeredOffice?.city}}`;
                 }
 
                 const vehicleDamage = dp.damages.find((damage) => damage.damageType === "Vehicle")

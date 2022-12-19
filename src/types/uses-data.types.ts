@@ -22,7 +22,8 @@ export type SubjectGiuridicalPersonData = {
   isProprietorship: boolean;
   business_name: string;
   type: GiuridicalPersonType;
-  p_iva: string;
+  registeredOffice?: SubjectAddressData;
+  pIva: string;
   proprietorship?: SubjectNaturalPersonData;
   birth?: NaturalPersonBirth;
 };
@@ -75,4 +76,15 @@ export type SubjectData = {
   addresses?: SubjectAddressData[];
   documents?: SubjectDocumentData[];
   payments?: SubjectPaymentData[];
+};
+
+export type EditingSubjectState = {
+  modalOpen: boolean;
+  subjectId?: string;
+  type?: string;
+};
+
+export type AddNewClaimState = {
+  modalOpen: boolean;
+  policyNumber: string;
 };

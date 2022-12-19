@@ -11,11 +11,15 @@ import { RootState } from "../../redux/store";
 import Results from "./Results";
 import { FormRow } from "../../style/form";
 import { InputTextStyled, SegmentedStyled } from "../../style/Input";
-import { SearchParams } from "../../types/search.types";
+import { SearchParams, SearchResultItem } from "../../types/search.types";
 import { PersonType } from "../../types/new-claim.types";
 import { ButtonCancel, ButtonConfirm } from "../Layout/Buttons";
 import { GrAddCircle } from "react-icons/gr";
 import { IoMdAddCircleOutline } from "react-icons/io";
+import SubjectEditModal from "../SubjectsData/SubjectEditModal";
+import { AddNewClaimState, EditingSubjectState } from "../../types/uses-data.types";
+import NewClaimModal from "../NewClaim/NewClaimModal";
+import { GiConsoleController } from "react-icons/gi";
 
 const SearchContainer = styled.div`
   padding: 2em 2em 0 0;
@@ -34,6 +38,8 @@ const Search = () => {
     type: "generic",
   });
   const [subjectType, setSubjectType] = useState<PersonType>("Fisica");
+  const [editingSubject, setEditingSubject] = useState<EditingSubjectState | undefined>();
+  const [addNewClaim, setAddNewClaim] = useState<AddNewClaimState>({ modalOpen: false, policyNumber: "" });
 
   const handleChangeParams = (val: any, field: string) => {
     const updatedParams = JSON.parse(JSON.stringify(searchParams)) as SearchParams;
@@ -293,6 +299,38 @@ const Search = () => {
     setSearchTitle(newSearchingFor);
   };
 
+  const handleEditSubject = (item: any, type: string) => {
+    console.log("editing ", item);
+
+    if (type === "new-subject") {
+      const updatedEditingSubject = Object.assign({}, editingSubject);
+      app._addNewSubject();
+      updatedEditingSubject.subjectId = undefined;
+      updatedEditingSubject.type = "new-subject";
+      updatedEditingSubject.modalOpen = true;
+      setEditingSubject(updatedEditingSubject);
+    } else if (type === "giuridical-person" || type === "natural-person") {
+      const updatedEditingSubject = Object.assign({}, editingSubject);
+      updatedEditingSubject.subjectId = item;
+      updatedEditingSubject.type = type;
+      updatedEditingSubject.modalOpen = true;
+      setEditingSubject(updatedEditingSubject);
+    } else if (type === "new-claim") {
+      const updatedAddNewClaim = Object.assign({}, addNewClaim);
+      updatedAddNewClaim.modalOpen = true;
+      updatedAddNewClaim.policyNumber = item;
+      console.log("add new claim");
+      setAddNewClaim(updatedAddNewClaim);
+    }
+  };
+
+  const handleCloseEditingSubject = () => {
+    const updatedEditingSubject = Object.assign({}, editingSubject);
+    updatedEditingSubject.modalOpen = false;
+    setEditingSubject(updatedEditingSubject);
+  };
+
+  console.log("editingSubject ", editingSubject);
   return (
     <>
       <MainForm
@@ -321,10 +359,29 @@ const Search = () => {
 
           <ButtonConfirm onClick={() => {}}>nuova polizza</ButtonConfirm>
           <div style={{ width: "1em" }}></div>
-          <ButtonConfirm onClick={() => {}}>nuovo soggetto</ButtonConfirm>
+          <ButtonConfirm onClick={() => handleEditSubject(undefined, "new-subject")}>nuovo soggetto</ButtonConfirm>
         </div>
-        <Results onSelect={() => {}} />
+        <Results onSelect={handleEditSubject} />
       </div>
+      <SubjectEditModal
+        isOpen={editingSubject?.modalOpen}
+        subjectId={editingSubject?.subjectId}
+        type={editingSubject?.type}
+        onOk={() => {}}
+        onCancel={() => handleCloseEditingSubject()}
+      />
+      {console.log("addNewClaim ", addNewClaim)}
+      <NewClaimModal
+        isOpen={addNewClaim.modalOpen}
+        policyNumber={addNewClaim.policyNumber}
+        onCancel={() => {
+          setAddNewClaim({ modalOpen: false, policyNumber: "" });
+        }}
+        onSent={() => {
+          setAddNewClaim({ modalOpen: false, policyNumber: "" });
+          handleResetSearch();
+        }}
+      />
     </>
   );
 };

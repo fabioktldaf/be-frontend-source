@@ -1,15 +1,14 @@
-import { store } from "../redux/store";
-import { clear, search, setResults } from "../redux/features/searchSlice";
-import { SearchParams } from "../types/search.types";
-import { Subjects } from "../config/dummy-data";
-import { backend } from "../config/const";
+import { store } from "../../redux/store";
+import { clear, search, setResults } from "../../redux/features/searchSlice";
+import { SearchParams } from "../../types/search.types";
+import { backend } from "../../config/const";
 
 export interface ISearch {
   clear: () => void;
   search: (params: SearchParams) => void;
 }
 
-export default {
+const Search: ISearch = {
   clear: () => {
     store.dispatch(clear());
   },
@@ -34,3 +33,5 @@ export default {
     }
   },
 };
+
+export default Search;

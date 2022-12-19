@@ -1,3 +1,5 @@
+import { SubjectGiuridicalPersonData, SubjectNaturalPersonData } from "./uses-data.types";
+
 export type ClaimDataOwnerVehiclePlateType = {
   number: string;
   format: string;
@@ -28,7 +30,7 @@ export type SubjetcPersonType = {
 export type SubjetcCompanyType = {
   id: number;
   business_name: string;
-  iva: string;
+  pIva: string;
   registered_office_province: string;
   registered_office_city: string;
 };
@@ -50,6 +52,8 @@ export type ClaimDataType = {
   number: string;
   registrationDate: string;
   receiptDate: string;
+  dateOfReceiptCompany: string;
+  dateOfReceiptDekra: string;
   occurrenceDate: string;
   occurrenceTime: string;
   occurrencePlace: string;
@@ -63,6 +67,8 @@ export type PersonType = "Fisica" | "Giuridica";
 
 export type UpdateNewClaimDataFieldsType =
   | "receiptDate"
+  | "dateOfReceiptCompany"
+  | "dateOfReceiptDekra"
   | "occurrenceDate"
   | "occurrenceTime"
   | "occurrencePlace"
@@ -120,14 +126,9 @@ export type DamagedType = {
   details: PartDamagedDetailsPerson | PartDamagedDetailsVehicle | PartDamagedDetailsThing;
 };
 
-export type PolicySubjetcType = {
-  natural_person?: SubjetcPersonType;
-  giuridical_person?: SubjetcCompanyType;
-};
-
 export type DamagedPartType = {
   pdNumber: string;
-  subject: PolicySubjetcType;
+  subject?: SubjectNaturalPersonData | SubjectGiuridicalPersonData;
   roleType: string;
   damages: DamagedType[];
 };
