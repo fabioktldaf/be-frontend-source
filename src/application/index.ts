@@ -51,7 +51,7 @@ export interface IApplication {
   clearSearchSubject: () => void;
   searchSubject: (term: string) => void;
   editSubject: (subject: SubjectData, navigate: NavigateFunction) => void;
-  _editSubject: (subjectId: string, type: string) => void;
+  _editSubject: (subjectId: string) => void;
   showSubject: (subject: SubjectData, navigate: NavigateFunction) => void;
   editingSubjectAddContact: () => void;
   editingSubjectRemoveContact: (index: number) => void;
@@ -62,6 +62,8 @@ export interface IApplication {
 
   editingSubjectAddPayment: () => void;
   editingSubjectRemovePayment: (index: number) => void;
+
+  retrieveSubject: (id: string) => Promise<SubjectData | undefined>;
 
   addNewSubject: (navigate: NavigateFunction) => void;
   _addNewSubject: () => void;
@@ -132,9 +134,9 @@ export default (): IApplication => {
       store.dispatch(editSubject(subject));
       navigate(Urls.subject_details);
     },
-    _editSubject: async (subjectId: string, type: string) => {
+    _editSubject: async (subjectId: string) => {
       store.dispatch(setRetrievingSubject(true));
-      await Subject.retrieve(subjectId, type);
+      await Subject.retrieve(subjectId);
       store.dispatch(setRetrievingSubject(false));
     },
     _addNewSubject: () => {
@@ -171,6 +173,10 @@ export default (): IApplication => {
     addNewSubject: (navigate: NavigateFunction) => {
       store.dispatch(editSubject({}));
       navigate(Urls.subject_details);
+    },
+    retrieveSubject: async (id: string) => {
+      const subject = await Subject.retrieve(id);
+      return subject;
     },
     newSubject: {
       clearLocalStorage: () => {

@@ -24,7 +24,7 @@ const Home = () => {
   return (
     <HomeContainer>
       <HomeContent>
-        <Search />
+        <Search type="generic" />
       </HomeContent>
     </HomeContainer>
   );

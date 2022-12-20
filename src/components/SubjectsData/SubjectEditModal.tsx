@@ -7,7 +7,7 @@ import SubjectDetails from "./SubjectDetails";
 
 interface SubjectEditModalProps {
   isOpen?: boolean;
-  subjectId?: string;
+  id?: string;
   type?: string;
   onOk: () => void;
   onCancel: () => void;
@@ -17,13 +17,13 @@ const SubjectEditModal = (props: SubjectEditModalProps) => {
   const app = useApplication();
   const isLoading = useSelector((state: RootState) => state.subjects.editing.loading);
 
-  const { subjectId, type, isOpen, onOk, onCancel } = props;
+  const { id, type, isOpen, onOk, onCancel } = props;
 
   useEffect(() => {
-    if (subjectId && subjectId.length > 0 && type && type.length > 0) {
-      app._editSubject(subjectId, type);
+    if (id && id.length > 0 && type && type.length > 0) {
+      app._editSubject(id);
     }
-  }, [subjectId]);
+  }, [id]);
 
   return (
     <Modal open={isOpen} footer={null} onCancel={onCancel} width="1000px">

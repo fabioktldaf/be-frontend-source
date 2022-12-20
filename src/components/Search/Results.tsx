@@ -9,6 +9,7 @@ import {
   SearchResultItemPolicy,
   SearchResultItemSubjectGiuridicaPerson,
   SearchResultItemSubjectNaturalPerson,
+  SearchTypes,
 } from "../../types/search.types";
 import { IconBetween, IconBusiness, IconCar, IconDocument, IconFlash, IconUser } from "../../config/icons";
 import { ButtonConfirm } from "../Layout/Buttons";
@@ -72,13 +73,14 @@ const ResultItemClaimItem = styled.div`
 `;
 
 interface ResultsProps {
-  onSelect: (item: any, type: string) => void;
+  onSelect: (value: any, type: string) => void;
+  type: SearchTypes;
 }
 
 const Results = (props: ResultsProps) => {
   //const app = useApplication();
   const { t } = useTranslation();
-  const { isSearching, results } = useSelector((state: RootState) => state.search);
+  const { isSearching, resultsGeneric: results } = useSelector((state: RootState) => state.search);
 
   // const handleEditSubject = (subjectId: string, type: string) => {
   //   console.log("editing ", subjectId);
@@ -157,106 +159,171 @@ const Results = (props: ResultsProps) => {
     });
   };
 
-  const renderNaturalPerson = (person: SearchResultItemSubjectNaturalPerson) => {
-    const { name, lastname, fiscalCode } = person;
-    return (
-      <>
-        <div
-          style={{
-            backgroundColor: "#ddd",
-            borderRadius: "10em",
-            width: "36px",
-            height: "36px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            marginLeft: "-8px",
-            paddingLeft: "8px",
-            marginRight: "1em",
-          }}
-        >
-          <IconUser
-            style={{
-              color: "#fff",
-              fontSize: "1.4em",
-              marginRight: "0.5em",
-            }}
-          />
-        </div>
-        <span
-          style={{ fontSize: "1.2em", fontWeight: "400", cursor: "pointer", textDecoration: "underline" }}
-          onClick={() => props.onSelect(person.fiscalCode, "natural-person")}
-        >
-          {name} {lastname}
-        </span>
-        <span style={{ marginLeft: "2em", fontSize: "1.2em", fontWeight: "400" }}>{fiscalCode}</span>
-        <div style={{ display: "flex", flex: 1, alignItems: "center", justifyContent: "flex-end" }}>
-          <ButtonConfirm size="small" onClick={() => {}} style={{ fontSize: "0.8em" }}>
-            <div style={{ display: "flex", width: "7em", justifyContent: "center" }}>
-              <IoMdAddCircleOutline style={{ fontSize: "1.4em", marginRight: "0.25em" }} /> Polizza
-            </div>
-          </ButtonConfirm>
-        </div>
-      </>
-    );
-  };
-
-  const renderGiuridicalPerson = (person: SearchResultItemSubjectGiuridicaPerson) => {
-    const { business_name, type, pIva } = person;
-    return (
-      <>
-        <div
-          style={{
-            backgroundColor: "#ddd",
-            borderRadius: "10em",
-            width: "36px",
-            height: "36px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            marginLeft: "-8px",
-            paddingLeft: "8px",
-            marginRight: "1em",
-          }}
-        >
-          <IconBusiness
-            style={{
-              color: "#fff",
-              fontSize: "1.4em",
-              marginRight: "0.5em",
-            }}
-          />
-        </div>
-        <span
-          style={{ fontSize: "1.2em", fontWeight: "400", cursor: "pointer", textDecoration: "underline" }}
-          onClick={() => props.onSelect(person.pIva, "giuridical-person")}
-        >
-          {business_name} {type}
-        </span>
-        <span style={{ marginLeft: "2em", fontSize: "1.2em", fontWeight: "400" }}>{pIva}</span>
-        <div style={{ display: "flex", flex: 1, alignItems: "center", justifyContent: "flex-end" }}>
-          <ButtonConfirm size="small" onClick={() => {}} style={{ fontSize: "0.8em" }}>
-            <div style={{ display: "flex", width: "7em", justifyContent: "center" }}>
-              <IoMdAddCircleOutline style={{ fontSize: "1.4em", marginRight: "0.25em" }} /> Polizza
-            </div>
-          </ButtonConfirm>
-        </div>
-      </>
-    );
-  };
-
-  const renderItem = (item: SearchResultItem, key: any) => {
+  const renderItemGeneric = (item: SearchResultItem, key: any) => {
     const naturalPerson = item.subject as SearchResultItemSubjectNaturalPerson;
     const giuridicalPerson = item.subject as SearchResultItemSubjectGiuridicaPerson;
 
-    const isNaturalPerson = naturalPerson?.name?.length > 0 || naturalPerson?.lastname?.length > 0;
+    const isNaturalPerson = naturalPerson?.fiscalCode;
+    const isGiuridicalPerson = giuridicalPerson?.pIva;
+
+    const { name, lastname, fiscalCode } = naturalPerson;
+    const { business_name, type, pIva } = giuridicalPerson;
 
     return (
       <ResultItem key={key}>
         <ResultItemSubject>
-          {isNaturalPerson ? renderNaturalPerson(naturalPerson) : renderGiuridicalPerson(giuridicalPerson)}
+          {isNaturalPerson && (
+            <>
+              <div
+                style={{
+                  backgroundColor: "#ddd",
+                  borderRadius: "10em",
+                  width: "36px",
+                  height: "36px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  marginLeft: "-8px",
+                  paddingLeft: "8px",
+                  marginRight: "1em",
+                }}
+              >
+                <IconUser
+                  style={{
+                    color: "#fff",
+                    fontSize: "1.4em",
+                    marginRight: "0.5em",
+                  }}
+                />
+              </div>
+              <span
+                style={{ fontSize: "1.2em", fontWeight: "400", cursor: "pointer", textDecoration: "underline" }}
+                onClick={() => props.onSelect(item.subject, "natural-person")}
+              >
+                {name} {lastname}
+              </span>
+              <span style={{ marginLeft: "2em", fontSize: "1.2em", fontWeight: "400" }}>{fiscalCode}</span>
+            </>
+          )}
+
+          {isGiuridicalPerson && (
+            <>
+              <div
+                style={{
+                  backgroundColor: "#ddd",
+                  borderRadius: "10em",
+                  width: "36px",
+                  height: "36px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  marginLeft: "-8px",
+                  paddingLeft: "8px",
+                  marginRight: "1em",
+                }}
+              >
+                <IconBusiness
+                  style={{
+                    color: "#fff",
+                    fontSize: "1.4em",
+                    marginRight: "0.5em",
+                  }}
+                />
+              </div>
+              <span
+                style={{ fontSize: "1.2em", fontWeight: "400", cursor: "pointer", textDecoration: "underline" }}
+                onClick={() => props.onSelect(item.subject, "giuridical-person")}
+              >
+                {business_name} {type}
+              </span>
+              <span style={{ marginLeft: "2em", fontSize: "1.2em", fontWeight: "400" }}>{pIva}</span>
+            </>
+          )}
         </ResultItemSubject>
         <ResultItemPolicies>{item.policies?.length > 0 && renderPolicies(item.policies)}</ResultItemPolicies>
+      </ResultItem>
+    );
+  };
+
+  const renderItemSubject = (item: SearchResultItem, key: any) => {
+    const naturalPerson = item.subject as SearchResultItemSubjectNaturalPerson;
+    const giuridicalPerson = item.subject as SearchResultItemSubjectGiuridicaPerson;
+
+    const isNaturalPerson = naturalPerson?.fiscalCode;
+    const isGiuridicalPerson = giuridicalPerson?.pIva;
+
+    const { name, lastname, fiscalCode } = naturalPerson;
+    const { business_name, type, pIva } = giuridicalPerson;
+
+    return (
+      <ResultItem
+        key={key}
+        style={{ cursor: "pointer" }}
+        onClick={() => props.onSelect(item.subject.id, "subject-seleted")}
+      >
+        <ResultItemSubject>
+          {isNaturalPerson && (
+            <>
+              <div
+                style={{
+                  backgroundColor: "#ddd",
+                  borderRadius: "10em",
+                  width: "36px",
+                  height: "36px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  marginLeft: "-8px",
+                  paddingLeft: "8px",
+                  marginRight: "1em",
+                }}
+              >
+                <IconUser
+                  style={{
+                    color: "#fff",
+                    fontSize: "1.4em",
+                    marginRight: "0.5em",
+                  }}
+                />
+              </div>
+              <span style={{ fontSize: "1.2em", fontWeight: "400" }}>
+                {name} {lastname}
+              </span>
+              <span style={{ marginLeft: "2em", fontSize: "1.2em", fontWeight: "400" }}>{fiscalCode}</span>
+            </>
+          )}
+
+          {isGiuridicalPerson && (
+            <>
+              <div
+                style={{
+                  backgroundColor: "#ddd",
+                  borderRadius: "10em",
+                  width: "36px",
+                  height: "36px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  marginLeft: "-8px",
+                  paddingLeft: "8px",
+                  marginRight: "1em",
+                }}
+              >
+                <IconBusiness
+                  style={{
+                    color: "#fff",
+                    fontSize: "1.4em",
+                    marginRight: "0.5em",
+                  }}
+                />
+              </div>
+              <span style={{ fontSize: "1.2em", fontWeight: "400" }}>
+                {business_name} {type}
+              </span>
+              <span style={{ marginLeft: "2em", fontSize: "1.2em", fontWeight: "400" }}>{pIva}</span>
+            </>
+          )}
+        </ResultItemSubject>
       </ResultItem>
     );
   };
@@ -270,7 +337,21 @@ const Results = (props: ResultsProps) => {
         onOk={() => {}}
         onCancel={() => handleCloseEditingSubject()}
       /> */}
-      {isSearching ? <></> : <ResultsContainer>{results.map((item, i) => renderItem(item, i))}</ResultsContainer>}
+      {isSearching ? (
+        <></>
+      ) : (
+        <ResultsContainer>
+          {results?.map((item, i) => {
+            return props.type === "generic" ? (
+              renderItemGeneric(item, i)
+            ) : props.type === "subject" ? (
+              renderItemSubject(item, i)
+            ) : (
+              <></>
+            );
+          })}
+        </ResultsContainer>
+      )}
     </>
   );
 };

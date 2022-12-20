@@ -6,6 +6,7 @@ const payments = require("./payments"); //---- 4 transfer / 0 check
 module.exports = {
   naturalPerson: [
     {
+      id: "1",
       name: "Tranquillino",
       lastname: " Pirozzi",
       gender: "male",
@@ -22,6 +23,7 @@ module.exports = {
       payments: [payments.transfer[0], payments.transfer[1]],
     },
     {
+      id: "2",
       name: "Nadia",
       lastname: " Marcelo",
       gender: "female",
@@ -39,6 +41,7 @@ module.exports = {
     },
 
     {
+      id: "3",
       name: "Marianna",
       lastname: " Palerma",
       gender: "female",
@@ -55,6 +58,7 @@ module.exports = {
       payments: [payments.transfer[0]],
     },
     {
+      id: "4",
       name: "Angela",
       lastname: " Mazzanti",
       gender: "female",
@@ -71,6 +75,7 @@ module.exports = {
       payments: [],
     },
     {
+      id: "5",
       name: "Marcelo",
       lastname: " Alfredo",
       gender: "male",
@@ -89,6 +94,7 @@ module.exports = {
   ],
   giuridicalPerson: [
     {
+      id: "6",
       business_name: "Hickle-Hettinger",
       type: "srl",
       pIva: "5397936790165",
@@ -98,6 +104,7 @@ module.exports = {
       payments: [payments.transfer[2]],
     },
     {
+      id: "7",
       business_name: "Upton-Rolfson",
       type: "spa",
       pIva: "9976861",
@@ -107,6 +114,7 @@ module.exports = {
       payments: [],
     },
     {
+      id: "8",
       business_name: "Elga Trevisani",
       type: "proprietorship",
       pIva: "123456789",

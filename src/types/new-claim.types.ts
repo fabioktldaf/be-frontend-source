@@ -229,7 +229,7 @@ export type AdditionalInfoDocumentTypes = "---" | "id-card" | "passport" | "expe
 
 export type AdditionalInfoDocumentType = {
   type: AdditionalInfoDocumentTypes;
-  filename: string[];
+  filename?: string[];
 };
 
 export type AdditionalInfoPaymentTypes = "---" | "transfer" | "check";

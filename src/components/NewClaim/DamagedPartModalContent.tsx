@@ -33,6 +33,7 @@ import { ButtonConfirm, ButtonDelete } from "../Layout/Buttons";
 import SearchSubject from "../SubjectsData/SearchSubject";
 import Results from "../Search/Results";
 import SubjectEditModal from "../SubjectsData/SubjectEditModal";
+import Search from "../Search";
 
 const PersonDamageList = styled(Col)`
   width: 25em;
@@ -93,10 +94,10 @@ const DamagedPartModalContent = (props: DamagedPartModalContentProps) => {
   const responsabiityType = Responsabilities.card.find((r) => r.value === props.managementType);
   const managementTypeText = `${props.managementType} - ${responsabiityType?.label}`;
 
-  const handleEditSubject = (subjectId: string, type: string) => {
+  const handleEditSubject = (id: string | undefined) => {
     const updatedEditingSubject = Object.assign({}, editingSubject);
-    updatedEditingSubject.subjectId = subjectId;
-    updatedEditingSubject.type = type;
+    updatedEditingSubject.id = id;
+    updatedEditingSubject.type = "edit-subject";
     updatedEditingSubject.modalOpen = true;
     setEditingSubject(updatedEditingSubject);
   };
@@ -123,8 +124,11 @@ const DamagedPartModalContent = (props: DamagedPartModalContentProps) => {
     setIsOpenSearchSubjectModal(true);
   };
 
-  const handleSelectSubject = (subject: any) => {
-    handleModalPartChange("subject", subject.person);
+  const handleSelectSubject = async (data: any) => {
+    if (!data || !data.id || data.length < 1) return;
+
+    const subject = await app.retrieveSubject(data.id);
+    handleModalPartChange("subject", subject);
     setIsOpenSearchSubjectModal(false);
   };
 
@@ -166,14 +170,15 @@ const DamagedPartModalContent = (props: DamagedPartModalContentProps) => {
         break;
 
       case "subject":
-        if (!val) {
-          updatedPart.subject = undefined;
-        } else {
-          const naturalPerson = val as SubjectNaturalPersonData;
-          const giuridicalPerson = val as SubjectGiuridicalPersonData;
-          if (naturalPerson.fiscalCode?.length > 0) updatedPart.subject = val;
-          else if (giuridicalPerson.pIva?.length > 0) updatedPart.subject = val;
-        }
+        updatedPart.subject = val;
+        // if (!val) {
+        //   updatedPart.subject = undefined;
+        // } else {
+        //   const naturalPerson = val as SubjectNaturalPersonData;
+        //   const giuridicalPerson = val as SubjectGiuridicalPersonData;
+        //   if (naturalPerson.fiscalCode?.length > 0) updatedPart.subject = val;
+        //   else if (giuridicalPerson.pIva?.length > 0) updatedPart.subject = val;
+        // }
         break;
     }
 
@@ -231,15 +236,7 @@ const DamagedPartModalContent = (props: DamagedPartModalContentProps) => {
           <RowSpacer />
 
           <FormInput label="Proprietario" tooltip="Seleziona l'anagrafica">
-            <Link
-              to={"#"}
-              onClick={() =>
-                handleEditSubject(
-                  isSubjectNaturalPerson ? subjectNaturalPerson.fiscalCode : subjectGiuridicalPerson.pIva,
-                  isSubjectNaturalPerson ? "natural-person" : "giuridical-person"
-                )
-              }
-            >
+            <Link to={"#"} onClick={() => handleEditSubject(part.subject?.id)}>
               {ownerDetails}
             </Link>
           </FormInput>
@@ -430,15 +427,7 @@ const DamagedPartModalContent = (props: DamagedPartModalContentProps) => {
           <FormInput label="Anagrafica" name={`anagrafica_other_${part.pdNumber}`} tooltip="Seleziona l'anagrafica">
             {subjectDetails !== "" && (
               <>
-                <Link
-                  to={"#"}
-                  onClick={() =>
-                    handleEditSubject(
-                      isSubjectNaturalPerson ? subjectNaturalPerson.fiscalCode : subjectGiuridicalPerson.pIva,
-                      isSubjectNaturalPerson ? "natural-person" : "giuridical-person"
-                    )
-                  }
-                >
+                <Link to={"#"} onClick={() => handleEditSubject(part.subject?.id)}>
                   {subjectDetails}
                 </Link>
                 <ButtonDelete children={"elimina"} onClick={() => handleModalPartChange("subject", null)} />
@@ -580,7 +569,7 @@ const DamagedPartModalContent = (props: DamagedPartModalContentProps) => {
       </Modal> */}
       <SubjectEditModal
         isOpen={editingSubject?.modalOpen}
-        subjectId={editingSubject?.subjectId}
+        id={editingSubject?.id}
         type={editingSubject?.type}
         onOk={() => {}}
         onCancel={() => handleCloseEditingSubject()}
@@ -593,8 +582,9 @@ const DamagedPartModalContent = (props: DamagedPartModalContentProps) => {
         footer={null}
       >
         <div style={{ padding: "3em 2em 2em 2em" }}>
-          <SearchSubject />
-          <Results onSelect={(item) => handleSelectSubject(item)} />
+          {/* <SearchSubject /> */}
+          <Search type="subject" onSelect={(data) => handleSelectSubject(data)} />
+          {/* <Results onSelect={(item) => handleSelectSubject(item)} /> */}
         </div>
       </Modal>
     </>

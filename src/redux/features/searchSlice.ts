@@ -14,7 +14,8 @@ export interface SearchState {
   bySubject?: SearchFilterSubject;
   byPolicy?: SearchFilterPolicy;
   byClaim?: SearchFilterClaim;
-  results: any[];
+  resultsGeneric: any[];
+  resultsSubject: any[];
 }
 
 const buildInitialState = () => {
@@ -25,7 +26,8 @@ const buildInitialState = () => {
     bySubject: undefined,
     byPolicy: undefined,
     byClaim: undefined,
-    results: [],
+    resultsGeneric: [],
+    resultsSubject: [],
   } as SearchState;
 };
 
@@ -34,14 +36,16 @@ export const searchSlice = createSlice({
   initialState: buildInitialState(),
   reducers: {
     clear(state) {
-      const { term, type, bySubject, byPolicy, byClaim, isSearching, results } = buildInitialState();
+      const { term, type, bySubject, byPolicy, byClaim, isSearching, resultsGeneric, resultsSubject } =
+        buildInitialState();
       state.term = term;
       state.type = type;
       state.bySubject = bySubject;
       state.byPolicy = byPolicy;
       state.byClaim = byClaim;
       state.isSearching = isSearching;
-      state.results = results;
+      state.resultsGeneric = resultsGeneric;
+      state.resultsSubject = resultsSubject;
     },
     search(state, action: PayloadAction<SearchParams>) {
       const { term, type, bySubject, byPolicy, byClaim } = action.payload;
@@ -51,11 +55,15 @@ export const searchSlice = createSlice({
       state.byPolicy = byPolicy;
       state.byClaim = byClaim;
       state.isSearching = true;
-      state.results = [];
+
+      if (type === "generic") state.resultsGeneric = [];
+      if (type === "subject") state.resultsSubject = [];
     },
     setResults(state, action: PayloadAction<any[]>) {
       state.isSearching = false;
-      state.results = action.payload;
+
+      if (state.type === "generic") state.resultsGeneric = action.payload;
+      if (state.type === "subject") state.resultsSubject = action.payload;
     },
   },
 });

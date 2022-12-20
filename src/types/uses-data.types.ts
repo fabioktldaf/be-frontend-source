@@ -10,6 +10,7 @@ export type NaturalPersonBirth = {
 export type GenderType = "" | "male" | "female";
 
 export type SubjectNaturalPersonData = {
+  id: string;
   name: string;
   lastname: string;
   gender: GenderType;
@@ -19,6 +20,7 @@ export type SubjectNaturalPersonData = {
 
 export type GiuridicalPersonType = "srl" | "spa" | "proprietorship";
 export type SubjectGiuridicalPersonData = {
+  id: string;
   isProprietorship: boolean;
   business_name: string;
   type: GiuridicalPersonType;
@@ -80,8 +82,8 @@ export type SubjectData = {
 
 export type EditingSubjectState = {
   modalOpen: boolean;
-  subjectId?: string;
-  type?: string;
+  id?: string;
+  type: string;
 };
 
 export type AddNewClaimState = {

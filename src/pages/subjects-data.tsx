@@ -35,7 +35,7 @@ const SubjectsData = () => {
       </div>
 
       <div style={{ width: "500px", marginTop: "3em" }}>
-        <Results onSelect={(item) => handleSelect(item)} />
+        <Results onSelect={(item) => handleSelect(item)} type="subject" />
       </div>
     </div>
   );

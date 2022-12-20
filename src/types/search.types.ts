@@ -1,4 +1,4 @@
-export type SearchTypes = "generic" | "vehicle" | "subject" | "policy" | "claim";
+export type SearchTypes = "generic" | "vehicle" | "subject" | "policy" | "claim" | "insurance";
 
 export type SearchFilterSubject = {
   nominative?: string;
@@ -7,7 +7,6 @@ export type SearchFilterSubject = {
   pIva?: string;
   phone?: string;
   email?: string;
-  documentNumber?: string;
 };
 
 export type SearchFilterVehicle = {
@@ -32,12 +31,14 @@ export type SearchParams = {
 };
 
 export type SearchResultItemSubjectNaturalPerson = {
+  id: string;
   name: string;
   lastname: string;
   fiscalCode: string;
 };
 
 export type SearchResultItemSubjectGiuridicaPerson = {
+  id: string;
   business_name: string;
   type?: string;
   pIva: string;

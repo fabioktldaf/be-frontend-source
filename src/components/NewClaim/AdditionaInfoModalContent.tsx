@@ -34,9 +34,16 @@ import { IconInbox } from "../../config/icons";
 import SubjectDetails from "../SubjectsData/SubjectDetails";
 import SearchSubject from "../SubjectsData/SearchSubject";
 import Results from "../Search/Results";
-import { SubjectData, SubjectGiuridicalPersonData, SubjectNaturalPersonData } from "../../types/uses-data.types";
+import {
+  EditingSubjectState,
+  SubjectData,
+  SubjectGiuridicalPersonData,
+  SubjectNaturalPersonData,
+} from "../../types/uses-data.types";
 import { ButtonConfirm, ButtonDelete } from "../Layout/Buttons";
 import { Link, useNavigate } from "react-router-dom";
+import SubjectEditModal from "../SubjectsData/SubjectEditModal";
+import Search from "../Search";
 
 const FormContainer = styled.div`
   margin: 3em 0em;
@@ -63,7 +70,7 @@ const AdditionalInfoModalContent = (props: AdditionalInfoModalContentProps) => {
   const navigate = useNavigate();
   const additionalInfo = useSelector((state: RootState) => state.newClaim.additionalInfo[props.index]);
   const [addInfoType, setAddInfoType] = useState(AdditionalInfoEmpty.value);
-
+  const [editingSubject, setEditingSubject] = useState<EditingSubjectState | undefined>();
   const [subjectData, setSubjectData] = useState<AdditionalInfoSubjectType>({
     role: "---",
     personalData: null,
@@ -113,16 +120,41 @@ const AdditionalInfoModalContent = (props: AdditionalInfoModalContentProps) => {
     props.damagedPartIndex >= 0 ? state.newClaim.damagedParts[props.damagedPartIndex] : null
   );
 
-  const handleSelectSubject = (subject: any) => {
-    handleChangeSubject("personalData", subject.person);
+  const handleEditSubject = (id: string | undefined) => {
+    const updatedEditingSubject = Object.assign({}, editingSubject);
+    updatedEditingSubject.id = id;
+    updatedEditingSubject.type = "edit-subject";
+    updatedEditingSubject.modalOpen = true;
+    setEditingSubject(updatedEditingSubject);
+  };
+
+  const handleCloseEditingSubject = () => {
+    const updatedEditingSubject = Object.assign({}, editingSubject);
+    updatedEditingSubject.modalOpen = false;
+    setEditingSubject(updatedEditingSubject);
+  };
+
+  const handleSelectSubject = async (data: any) => {
+    if (!data || !data.id || data.length < 1) return;
+
+    const subject = await app.retrieveSubject(data.id);
+
+    // SET subject into additional info
+    console.log("subject to set: ", subject);
+
     setIsOpenSearchSubjectModal(false);
   };
 
-  const handleEditSubject = (person: SubjectNaturalPersonData | SubjectGiuridicalPersonData) => {
-    console.log("person ", person);
-    app.editSubject({ person: Object.assign({}, person) }, navigate);
-    setIsOpenSubjectModal(true);
-  };
+  // const handleSelectSubject = (subject: any) => {
+  //   handleChangeSubject("personalData", subject.person);
+  //   setIsOpenSearchSubjectModal(false);
+  // };
+
+  // const handleEditSubject = (person: SubjectNaturalPersonData | SubjectGiuridicalPersonData) => {
+  //   console.log("person ", person);
+  //   app.editSubject({ person: Object.assign({}, person) }, navigate);
+  //   setIsOpenSubjectModal(true);
+  // };
 
   const handleSave = () => {
     const details:
@@ -347,10 +379,29 @@ const AdditionalInfoModalContent = (props: AdditionalInfoModalContentProps) => {
           footer={null}
         >
           <div style={{ padding: "3em 2em 2em 2em" }}>
-            <SearchSubject />
-            <Results onSelect={(item) => handleSelectSubject(item)} />
+            {/* <SearchSubject /> */}
+            <Search type="subject" onSelect={(data) => handleSelectSubject(data)} />
+            {/* <Results onSelect={(item) => handleSelectSubject(item)} /> */}
           </div>
         </Modal>
+        <SubjectEditModal
+          isOpen={editingSubject?.modalOpen}
+          id={editingSubject?.id}
+          type={editingSubject?.type}
+          onOk={() => {}}
+          onCancel={() => handleCloseEditingSubject()}
+        />
+        {/* <Modal
+          open={isOpenSearchSubjectModal}
+          onCancel={() => setIsOpenSearchSubjectModal(false)}
+          width="1000px"
+          footer={null}
+        >
+          <div style={{ padding: "3em 2em 2em 2em" }}>
+            <SearchSubject />
+            <Results onSelect={(item) => handleSelectSubject(item)} type="subject" />
+          </div>
+        </Modal> */}
       </Col>
     )
   );

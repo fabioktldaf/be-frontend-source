@@ -1,5 +1,6 @@
 import {
   AdditionaInfoTypes,
+  AdditionalInfoDocumentType,
   AdditionalInfoDocumentTypes,
   AdditionalInfoPaymentTypes,
   AdditionalInfoSubjectRoleTypes,
@@ -217,6 +218,7 @@ export const insuranceCodes: SelectPair[] = [
 export const Subjects: SubjectData[] = [
   {
     person: {
+      id: "1",
       name: "Tranquillino",
       lastname: " Pirozzi",
       gender: "male",
@@ -267,6 +269,7 @@ export const Subjects: SubjectData[] = [
   },
   {
     person: {
+      id: "2",
       name: "Nadia",
       lastname: " Marcelo",
       gender: "female",
@@ -311,11 +314,13 @@ export const Subjects: SubjectData[] = [
   },
   {
     person: {
+      id: "3",
       isProprietorship: true,
       business_name: "Ornella Pirozzi",
       type: "proprietorship",
       pIva: "123456789",
       proprietorship: {
+        id: "4",
         name: "Ornella",
         lastname: " Pirozzi",
         gender: "female",
@@ -424,6 +429,7 @@ export const defaultClaimPolicyData = {
     {
       pdNumber: "1669798161516",
       subject: {
+        id: "1",
         name: "Tranquillino",
         lastname: " Pirozzi",
         gender: "male",
@@ -466,6 +472,7 @@ export const defaultClaimPolicyData = {
     {
       pdNumber: "1669909946930",
       subject: {
+        id: "2",
         name: "Nadia",
         lastname: " Marcelo",
         gender: "female",
@@ -503,6 +510,7 @@ export const defaultClaimPolicyData = {
     {
       pdNumber: "1669909992417",
       subject: {
+        id: "3",
         name: "Marianna",
         lastname: " Palerma",
         gender: "female",
@@ -539,35 +547,16 @@ export const defaultClaimPolicyData = {
       details: {
         role: "coachbuilder",
         personalData: null,
-      },
+      } as AdditionalInfoSubjectType,
     },
     {
       id: 1670246577652,
       type: "document" as AdditionaInfoTypes,
       damagedPartNumber: "1669798161516",
       details: {
-        type: "id-card",
+        type: "expertise",
         filename: ["fronte.jpg", "retro.jpg"],
-      },
-    },
-    {
-      id: 1670246585293,
-      type: "payment" as AdditionaInfoTypes,
-      damagedPartNumber: "1669798161516",
-      details: {
-        type: "transfer",
-        iban: "123456",
-      },
-    },
-    {
-      id: 1670246667839,
-      type: "contact" as AdditionaInfoTypes,
-      damagedPartNumber: "1669798161516",
-      details: {
-        shippingAddress: "via Ledita Dalnaso 3",
-        email: "fabio@fabio.com",
-        phone: "0034 123456789",
-      },
+      } as AdditionalInfoDocumentType,
     },
   ],
 };

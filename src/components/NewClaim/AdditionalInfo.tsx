@@ -38,7 +38,12 @@ import AdditionalInfoModalContent from "./AdditionaInfoModalContent";
 import TabSubject from "../PolicyManualInsert/TabSubject";
 import { CenteredRow } from "../../style/containers";
 import { clearLocalStorage } from "../../redux/features/newClaimSlice";
-import { SubjectGiuridicalPersonData, SubjectNaturalPersonData } from "../../types/uses-data.types";
+import {
+  EditingSubjectState,
+  SubjectGiuridicalPersonData,
+  SubjectNaturalPersonData,
+} from "../../types/uses-data.types";
+import SubjectEditModal from "../SubjectsData/SubjectEditModal";
 
 const DamagedPartsTable = styled.table`
   width: 90%;
@@ -46,7 +51,7 @@ const DamagedPartsTable = styled.table`
 `;
 
 const DamagedPartResume = styled.tr`
-  background-color: #fff4e6;
+  background-color: #a4f7d8;
 `;
 
 const DamagedPartResumeTd = styled.td`
@@ -146,6 +151,7 @@ const AdditionalInfo = (props: AdditionalDataProps) => {
   const [activeAdditionalInfoIndex, setActiveAdditionalInfoIndex] = useState(-1);
   const claimData = useSelector((state: RootState) => state.newClaim);
   const { damagedParts, additionalInfo } = claimData;
+  const [editingSubject, setEditingSubject] = useState<EditingSubjectState | undefined>();
 
   const handleAddAdditionalInfo = (index: number) => {
     setActiveDamagedPartIndex(index);
@@ -179,6 +185,19 @@ const AdditionalInfo = (props: AdditionalDataProps) => {
   const handleOnSave = () => {
     app.clearLocalStorage();
     props.onSend();
+  };
+  const handleEditSubject = (id: string | undefined) => {
+    const updatedEditingSubject = Object.assign({}, editingSubject);
+    updatedEditingSubject.id = id;
+    updatedEditingSubject.type = "edit-subject";
+    updatedEditingSubject.modalOpen = true;
+    setEditingSubject(updatedEditingSubject);
+  };
+
+  const handleCloseEditingSubject = () => {
+    const updatedEditingSubject = Object.assign({}, editingSubject);
+    updatedEditingSubject.modalOpen = false;
+    setEditingSubject(updatedEditingSubject);
   };
 
   const renderDamagedPartResume = (p: DamagedPartType, index: number) => {
@@ -248,7 +267,12 @@ const AdditionalInfo = (props: AdditionalDataProps) => {
 
     return (
       <DamagedPartResume>
-        <DamagedPartResumeTd>{nominative}</DamagedPartResumeTd>
+        <DamagedPartResumeTd
+          style={{ cursor: "pointer", textDecoration: "underline" }}
+          onClick={() => handleEditSubject(p?.subject?.id)}
+        >
+          {nominative}
+        </DamagedPartResumeTd>
         <DamagedPartResumeTd>{roleLabel}</DamagedPartResumeTd>
         <DamagedPartResumeTd>{managementType}</DamagedPartResumeTd>
 
@@ -454,27 +478,37 @@ const AdditionalInfo = (props: AdditionalDataProps) => {
           <td
             colSpan={7}
             style={{
-              textAlign: "left",
               textTransform: "uppercase",
               fontSize: "0.9em",
-              padding: "1em 0 0 5em",
               letterSpacing: "2px",
             }}
           >
-            informazioni addizionali
-            <Tooltip title="Aggiungi Informazioni">
-              <ButtonAddInfo
-                style={{
-                  float: "right",
-                  marginRight: "2.2em",
-                }}
-                type="primary"
-                shape="circle"
-                onClick={() => handleAddAdditionalInfo(pdIndex)}
-              >
-                +
-              </ButtonAddInfo>
-            </Tooltip>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "baseline",
+                backgroundColor: "#fff4e6",
+                padding: "0.5em 0 0.5em 5em",
+                marginTop: "0.25em",
+              }}
+            >
+              <div style={{ flex: 1 }}>informazioni addizionali</div>
+
+              <Tooltip title="Aggiungi Informazioni">
+                <ButtonAddInfo
+                  style={{
+                    float: "right",
+                    marginRight: "2.2em",
+                  }}
+                  type="primary"
+                  shape="circle"
+                  size="small"
+                  onClick={() => handleAddAdditionalInfo(pdIndex)}
+                >
+                  +
+                </ButtonAddInfo>
+              </Tooltip>
+            </div>
           </td>
         </tr>
         {pdAdditionalInfo.map((ai, i) => (
@@ -539,6 +573,13 @@ const AdditionalInfo = (props: AdditionalDataProps) => {
             index={activeAdditionalInfoIndex}
           />
         </Modal>
+        <SubjectEditModal
+          isOpen={editingSubject?.modalOpen}
+          id={editingSubject?.id}
+          type={editingSubject?.type}
+          onOk={() => {}}
+          onCancel={() => handleCloseEditingSubject()}
+        />
       </>
     </MainForm>
   );

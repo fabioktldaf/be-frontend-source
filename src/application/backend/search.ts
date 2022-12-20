@@ -2,6 +2,7 @@ import { store } from "../../redux/store";
 import { clear, search, setResults } from "../../redux/features/searchSlice";
 import { SearchParams } from "../../types/search.types";
 import { backend } from "../../config/const";
+import axios from "axios";
 
 export interface ISearch {
   clear: () => void;
@@ -19,13 +20,12 @@ const Search: ISearch = {
 
     try {
       const url = `${server}/${backend.paths.search}`;
-      const response = await fetch(url);
-      const result = await response.json();
+      const { data } = await axios.post(url, params);
 
-      if (result.error) {
-        store.dispatch(setResults([]));
-      } else if (result.result) {
-        store.dispatch(setResults(result.result));
+      if (!data || data.error) {
+        // to do
+      } else if (data.result) {
+        store.dispatch(setResults(data.result));
       }
     } catch (err) {
       console.log(err);

@@ -79,6 +79,16 @@ const NewClaim = (props: NewClaimProps) => {
         app.updatedStepperData(true, "collision");
         app.updatedStepperData(true, "inItaly");
 
+        app.updateClaimData("01/10/2022", "dateOfReceiptCompany");
+        app.updateClaimData("01/10/2022", "dateOfReceiptDekra");
+
+        app.updateClaimData("01/9/2022", "occurrenceDate");
+        app.updateClaimData("10:00", "occurrenceTime");
+        app.updateClaimData("corso Italia 4", "occurrencePlace");
+        app.updateClaimData(true, "policeIntervention");
+        app.updateClaimData(true, "witnesses");
+        app.updateClaimData(defaultClaimPolicyData.claimNote, "note");
+
         app.updateCounterpartData(true, "isOwnerNaturalPerson");
         app.updateCounterpartData("Mario2", "ownerName");
         app.updateCounterpartData("Rossi2", "ownerLastname");

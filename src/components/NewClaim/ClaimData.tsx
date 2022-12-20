@@ -131,7 +131,7 @@ const ClaimData = () => {
 
   const handleEditSubject = (subjectId: string, type: string) => {
     const updatedEditingSubject = Object.assign({}, editingSubject);
-    updatedEditingSubject.subjectId = subjectId;
+    updatedEditingSubject.id = subjectId;
     updatedEditingSubject.type = type;
     updatedEditingSubject.modalOpen = true;
     setEditingSubject(updatedEditingSubject);
@@ -193,9 +193,6 @@ const ClaimData = () => {
       },
     ]);
 
-  const ownerId = owner?.giuridical_person?.id || owner?.natural_person?.id;
-  const contractorId = contractor?.giuridical_person?.id || contractor?.natural_person?.id;
-
   const policyDetailsHeader = (
     <div style={{ display: "flex" }}>
       <span style={{ flex: 1 }}>DETTAGLIO DATI POLIZZA</span>
@@ -218,6 +215,11 @@ const ClaimData = () => {
   const contractorGiuridicalPerson = contractor as SubjectGiuridicalPersonData;
   const isContractorNaturalPerson = !!contractorNaturalPerson?.fiscalCode;
   const isContractorGiuridicalPerosn = !!contractorGiuridicalPerson?.pIva;
+
+  const ownerId = isOwnerNaturalPerson ? ownerNaturalPerson?.fiscalCode : ownerGiuridicalPerson?.pIva;
+  const contractorId = isContractorNaturalPerson
+    ? contractorNaturalPerson?.fiscalCode
+    : contractorGiuridicalPerson?.pIva;
 
   return (
     <TabContentStyled>
@@ -243,7 +245,7 @@ const ClaimData = () => {
             {isOwnerNaturalPerson && renderNaturalPerson("PROPRIETARIO", ownerNaturalPerson)}
             {isOwnerGiuridicalPerosn && renderGiuridicalPerson("PROPRIETARIO", ownerGiuridicalPerson)}
 
-            {contractor && contractorId !== ownerId && (
+            {!!contractorId && contractorId !== ownerId && (
               <>
                 {isContractorNaturalPerson && renderNaturalPerson("CONTRAENTE", contractorNaturalPerson)}
                 {isContractorGiuridicalPerosn && renderGiuridicalPerson("CONTRAENTE", contractorGiuridicalPerson)}
@@ -370,7 +372,7 @@ const ClaimData = () => {
       </Modal> */}
       <SubjectEditModal
         isOpen={editingSubject?.modalOpen}
-        subjectId={editingSubject?.subjectId}
+        id={editingSubject?.id}
         type={editingSubject?.type}
         onOk={() => {}}
         onCancel={() => handleCloseEditingSubject()}

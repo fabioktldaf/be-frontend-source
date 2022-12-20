@@ -20,27 +20,30 @@ interface FormProps {
   actions?: FormActionType[];
   middleArea?: JSX.Element;
   children?: JSX.Element;
+  hideHeader?: boolean;
 }
 
-export const MainForm = ({ layout, title, icon, actions, middleArea, children }: FormProps) => {
+export const MainForm = ({ layout, title, icon, actions, middleArea, children, hideHeader }: FormProps) => {
   return (
     <FormContainer layout={layout}>
-      <FormHeader>
-        <FormTitle>
-          {icon}
-          {title}
-        </FormTitle>
-        <FormActions>
-          {actions?.map((action, i) => (
-            <ButtonConfirm
-              key={i}
-              onClick={() => action.execute()}
-              children={action.label}
-              disabled={action.disabled}
-            />
-          ))}
-        </FormActions>
-      </FormHeader>
+      {!hideHeader && (
+        <FormHeader>
+          <FormTitle>
+            {icon}
+            {title}
+          </FormTitle>
+          <FormActions>
+            {actions?.map((action, i) => (
+              <ButtonConfirm
+                key={i}
+                onClick={() => action.execute()}
+                children={action.label}
+                disabled={action.disabled}
+              />
+            ))}
+          </FormActions>
+        </FormHeader>
+      )}
       <>{middleArea}</>
       <FormContent>{children}</FormContent>
     </FormContainer>
