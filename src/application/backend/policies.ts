@@ -2,16 +2,17 @@ import { store } from "../../redux/store";
 import { backend } from "../../config/const";
 
 import axios from "axios";
-import { setLoadingPolicyStatus, setPolicyData } from "../../redux/features/newClaimSlice";
+import { setRetrievingPolicy, editPolicy } from "../../redux/features/policySlice";
 import { ClaimDataPolicyDataType } from "../../types/new-claim.types";
+import { PolicyDataType } from "../../types/policy.types";
 
 export interface IPolicy {
-  retrieve: (policyNumber: string) => void;
+  retrieve: (policyId: string) => Promise<PolicyDataType | undefined>;
 }
 
 const Subject: IPolicy = {
-  retrieve: async (policyNumber: string) => {
-    store.dispatch(setLoadingPolicyStatus(true));
+  retrieve: async (policyId: string) => {
+    store.dispatch(setRetrievingPolicy(true));
 
     const environment = store.getState().user.environment;
     const server = backend.envs.find((env) => env.label === environment)?.server;
@@ -19,20 +20,19 @@ const Subject: IPolicy = {
     try {
       const url = `${server}/${backend.paths.policy}`;
       const { data } = await axios.post(url, {
-        policyNumber,
+        id: policyId,
       });
 
       if (!data || data?.error) {
         // to do
       } else if (data.result) {
-        const policyData = data.result as ClaimDataPolicyDataType;
-        store.dispatch(setPolicyData(policyData));
+        return data.result as PolicyDataType;
       }
     } catch (err) {
       console.log(err);
     }
 
-    store.dispatch(setLoadingPolicyStatus(false));
+    store.dispatch(setRetrievingPolicy(false));
   },
 };
 

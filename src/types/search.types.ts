@@ -1,4 +1,11 @@
 export type SearchTypes = "generic" | "vehicle" | "subject" | "policy" | "claim" | "insurance";
+export type SearchResultOnSelectTypes =
+  | ""
+  | "subject-selected"
+  | "policy-selected"
+  | "new-subject"
+  | "new-policy"
+  | "new-claim";
 
 export type SearchFilterSubject = {
   nominative?: string;
@@ -73,6 +80,7 @@ export type SearchResultItemVehicle = {
 };
 
 export type SearchResultItemPolicy = {
+  id: string;
   policy_number: string;
   effect_date: string;
   expiration_date: string;

@@ -171,7 +171,7 @@ const ClaimData = () => {
         label: "Nome",
         value: person.lastname + " " + person.name,
         link: "#",
-        onClick: () => handleEditSubject(person.fiscalCode, "natural-person"),
+        onClick: () => handleEditSubject(person.id, "natural-person"),
       },
       {
         label: "Codice Fiscale",
@@ -185,7 +185,7 @@ const ClaimData = () => {
         label: "Ragione Sociale",
         value: person.business_name,
         link: "#",
-        onClick: () => handleEditSubject(person.pIva, "giuridical-person"),
+        onClick: () => handleEditSubject(person.id, "giuridical-person"),
       },
       {
         label: "Partita IVA",
@@ -216,10 +216,8 @@ const ClaimData = () => {
   const isContractorNaturalPerson = !!contractorNaturalPerson?.fiscalCode;
   const isContractorGiuridicalPerosn = !!contractorGiuridicalPerson?.pIva;
 
-  const ownerId = isOwnerNaturalPerson ? ownerNaturalPerson?.fiscalCode : ownerGiuridicalPerson?.pIva;
-  const contractorId = isContractorNaturalPerson
-    ? contractorNaturalPerson?.fiscalCode
-    : contractorGiuridicalPerson?.pIva;
+  const ownerId = isOwnerNaturalPerson ? ownerNaturalPerson?.id : ownerGiuridicalPerson?.id;
+  const contractorId = isContractorNaturalPerson ? contractorNaturalPerson?.id : contractorGiuridicalPerson?.id;
 
   return (
     <TabContentStyled>
@@ -373,7 +371,6 @@ const ClaimData = () => {
       <SubjectEditModal
         isOpen={editingSubject?.modalOpen}
         id={editingSubject?.id}
-        type={editingSubject?.type}
         onOk={() => {}}
         onCancel={() => handleCloseEditingSubject()}
       />

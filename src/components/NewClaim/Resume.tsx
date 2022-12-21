@@ -172,22 +172,25 @@ const Resume = (props: ResumeProps) => {
   });
 
   let ownerDetails = <></>;
-  if (policyData?.owner.natural_person) {
-    const owner = policyData?.owner.natural_person;
+  const ownerNaturalPerson = policyData?.owner as SubjectNaturalPersonData;
+  const ownerGiuridicalPerson = policyData?.owner as SubjectGiuridicalPersonData;
+
+  if (!!ownerNaturalPerson.fiscalCode) {
+    const owner = ownerNaturalPerson;
     ownerDetails = (
       <>
         <SpanSmall>{`${owner.name} ${owner.lastname},`}</SpanSmall>
         <SpanSmall>cod. fiscale</SpanSmall>
-        <SpanSmall>{owner.fiscal_code} </SpanSmall>
+        <SpanSmall>{owner.fiscalCode} </SpanSmall>
         <br />
         <SpanSmall>Residente a</SpanSmall>
-        <SpanSmall>{owner.city_of_residence}</SpanSmall>
+        <SpanSmall> </SpanSmall>
         <SpanSmall>provincia di</SpanSmall>
-        <SpanSmall>{owner.province_of_residence}</SpanSmall>
+        <SpanSmall> </SpanSmall>
       </>
     );
-  } else if (policyData?.owner.giuridical_person) {
-    const owner = policyData?.owner.giuridical_person;
+  } else if (!!ownerGiuridicalPerson.pIva) {
+    const owner = ownerGiuridicalPerson;
     ownerDetails = (
       <>
         <SpanSmall>{owner.business_name}</SpanSmall>
@@ -195,9 +198,9 @@ const Resume = (props: ResumeProps) => {
         <SpanSmall>{owner.pIva}</SpanSmall>
         <br />
         <SpanSmall>Sede Legale a </SpanSmall>
-        <SpanSmall>{owner.registered_office_city}</SpanSmall>
+        <SpanSmall> </SpanSmall>
         <SpanSmall>Provincia di</SpanSmall>
-        <SpanSmall>{owner.registered_office_province}</SpanSmall>
+        <SpanSmall> </SpanSmall>
       </>
     );
   }
@@ -267,7 +270,7 @@ const Resume = (props: ResumeProps) => {
             </AddInfoIcon>
             <AddInfoRow>
               <div>{AdditionalInfoSubjectRoles.find((r) => r.value === subjectDetails.role)?.label}</div>
-              <AddInfoValue>{subjectDetails.personalData || " [nome cognome]"}</AddInfoValue>
+              <AddInfoValue>id: {subjectDetails.subject?.id}</AddInfoValue>
             </AddInfoRow>
           </div>
         );

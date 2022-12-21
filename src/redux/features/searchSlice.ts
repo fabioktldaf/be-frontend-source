@@ -1,10 +1,12 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import moment from "moment";
 import {
   SearchFilterClaim,
   SearchFilterPolicy,
   SearchFilterSubject,
   SearchParams,
   SearchTypes,
+  SearchResultItemPolicy,
 } from "../../types/search.types";
 
 export interface SearchState {
@@ -65,8 +67,25 @@ export const searchSlice = createSlice({
       if (state.type === "generic") state.resultsGeneric = action.payload;
       if (state.type === "subject") state.resultsSubject = action.payload;
     },
+    addNewPolicy(state, action: PayloadAction<string>) {
+      state.resultsGeneric = state.resultsGeneric.map((r) => {
+        if (r.subject.id === action.payload) {
+          const today = moment().format("DD/MM/YYYY");
+
+          r.policies.push({
+            id: "",
+            policy_number: "---",
+            effect_date: today,
+            expiration_date: today,
+            claims: [],
+          } as SearchResultItemPolicy);
+        }
+
+        return r;
+      });
+    },
   },
 });
 
-export const { clear, search, setResults } = searchSlice.actions;
+export const { clear, search, setResults, addNewPolicy } = searchSlice.actions;
 export default searchSlice.reducer;

@@ -7,6 +7,7 @@ import SearchSubject from "./searchSubject";
 import EditSubject from "./editSubject";
 import NewSubject, { INewSubject } from "./newSubject";
 import Search, { ISearch } from "./backend/search";
+import Policies, { IPolicy } from "./backend/policies";
 
 import {
   AdditionalInfoDataType,
@@ -15,7 +16,7 @@ import {
   UpdateNewClaimDataFieldsType,
   UpdateNewClaimResponsabilityDataFieldsType,
 } from "../types/new-claim.types";
-import { SubjectData } from "../types/uses-data.types";
+import { SubjectData, SubjectGiuridicalPersonData, SubjectNaturalPersonData } from "../types/uses-data.types";
 import {
   editingSubjectAddAddress,
   editSubject,
@@ -25,7 +26,11 @@ import {
 import { Urls } from "../config/const";
 import { SearchParams } from "../types/search.types";
 import Subject from "./backend/subject";
-import Policy, { IPolicy } from "./backend/policy";
+
+import PolicyManualInsert from "../components/PolicyManualInsert";
+import { editPolicy, setRetrievingPolicy, updatePolicySubject } from "../redux/features/policySlice";
+import { addNewPolicy, clear as clearSearch } from "../redux/features/searchSlice";
+import { PolicySubjectTypes } from "../types/policy.types";
 
 export interface IApplication {
   init: () => void;
@@ -51,7 +56,7 @@ export interface IApplication {
   clearSearchSubject: () => void;
   searchSubject: (term: string) => void;
   editSubject: (subject: SubjectData, navigate: NavigateFunction) => void;
-  _editSubject: (subjectId: string) => void;
+  _editSubject: (subjectId: string | undefined) => void;
   showSubject: (subject: SubjectData, navigate: NavigateFunction) => void;
   editingSubjectAddContact: () => void;
   editingSubjectRemoveContact: (index: number) => void;
@@ -68,8 +73,19 @@ export interface IApplication {
   addNewSubject: (navigate: NavigateFunction) => void;
   _addNewSubject: () => void;
 
+  clearSearch: () => void;
+
+  editPolicy: (id: string) => void;
+  addNewPolicy: (ubjectIdd: string) => void;
+
+  updatePolicySubject: (
+    subject: undefined | SubjectNaturalPersonData | SubjectGiuridicalPersonData,
+    type: PolicySubjectTypes
+  ) => void;
+
   search: ISearch;
   newSubject: INewSubject;
+  policies: IPolicy;
 }
 
 export default (): IApplication => {
@@ -87,6 +103,9 @@ export default (): IApplication => {
     },
     clearLocalStorage: () => {
       NewClaim.clearLocalStorage();
+    },
+    clearSearch: () => {
+      store.dispatch(clearSearch());
     },
     updatedStepperData: (val: any, field: SteppedChangeDataType) => {
       NewClaim.updateStepperData(val, field);
@@ -134,7 +153,7 @@ export default (): IApplication => {
       store.dispatch(editSubject(subject));
       navigate(Urls.subject_details);
     },
-    _editSubject: async (subjectId: string) => {
+    _editSubject: async (subjectId: string | undefined) => {
       store.dispatch(setRetrievingSubject(true));
       await Subject.retrieve(subjectId);
       store.dispatch(setRetrievingSubject(false));
@@ -178,6 +197,16 @@ export default (): IApplication => {
       const subject = await Subject.retrieve(id);
       return subject;
     },
+    editPolicy: async (id: string) => {
+      store.dispatch(setRetrievingPolicy(true));
+      const policy = await Policies.retrieve(id);
+      if (policy) store.dispatch(editPolicy(policy));
+      store.dispatch(setRetrievingPolicy(false));
+    },
+    addNewPolicy: (subjectId: string) => {
+      store.dispatch(addNewPolicy(subjectId));
+    },
+
     newSubject: {
       clearLocalStorage: () => {
         NewSubject.clearLocalStorage();
@@ -196,12 +225,24 @@ export default (): IApplication => {
       },
     },
     search: {
-      clear: () => {
-        Search.clear();
-      },
       search: (params: SearchParams) => {
         Search.search(params);
       },
+    },
+    policies: {
+      retrieve: async (policyId: string) => {
+        debugger;
+        store.dispatch(setRetrievingPolicy(true));
+        const policy = await Policies.retrieve(policyId);
+        store.dispatch(setRetrievingPolicy(false));
+        return policy;
+      },
+    },
+    updatePolicySubject: (
+      subject: undefined | SubjectNaturalPersonData | SubjectGiuridicalPersonData,
+      type: PolicySubjectTypes
+    ) => {
+      store.dispatch(updatePolicySubject({ subject, type }));
     },
   };
 };

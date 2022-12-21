@@ -570,7 +570,6 @@ const DamagedPartModalContent = (props: DamagedPartModalContentProps) => {
       <SubjectEditModal
         isOpen={editingSubject?.modalOpen}
         id={editingSubject?.id}
-        type={editingSubject?.type}
         onOk={() => {}}
         onCancel={() => handleCloseEditingSubject()}
       />

@@ -6,7 +6,7 @@ import { FormSubTitle, FormInput } from "../../style/form";
 import { RiDeleteBinFill } from "react-icons/ri";
 
 import { useTranslation } from "react-i18next";
-import { plateFormats, vehicleCollisionPoints, VehicleTypeOptions } from "../../config/const";
+import { PlateFormats, vehicleCollisionPoints, VehicleTypeOptions } from "../../config/const";
 import { PartDamagedDetailsVehicle } from "../../types/new-claim.types";
 
 const DamagedPartVehicleStyled = styled.div``;
@@ -29,7 +29,7 @@ const DamagedPartVehicle = (props: DamagedPartVehicleProps) => {
         {props.readOnly ? <div>{props.details.plate}</div> : <Input maxLength={10} />}
       </FormInput>
       <FormInput label="Formato della targa" name={`fomato_targa`} tooltip="Formato della targa">
-        {props.readOnly ? <div>{props.details.format}</div> : <Select defaultValue="---" options={plateFormats} />}
+        {props.readOnly ? <div>{props.details.format}</div> : <Select defaultValue="---" options={PlateFormats} />}
       </FormInput>
       <FormInput label="Tipo veicolo" name={`tipo_veicolo`} tooltip="Tipo del veicolo">
         {props.readOnly ? <div>{props.details.type}</div> : <Select defaultValue="---" options={VehicleTypeOptions} />}

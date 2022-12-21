@@ -14,30 +14,9 @@ export type ClaimDataPolicyDataType = {
   policy_number: string;
   effect_date: string;
   expiration_date: string;
-  owner: ClaimDataSubjetcType;
-  contractor: ClaimDataSubjetcType;
+  owner: SubjectNaturalPersonData | SubjectGiuridicalPersonData | undefined;
+  contractor: SubjectNaturalPersonData | SubjectGiuridicalPersonData | undefined;
   ownerVehicle: ClaimDataOwnerVehicleType;
-};
-
-export type SubjetcPersonType = {
-  id: number;
-  name: string;
-  lastname: string;
-  fiscal_code: string;
-  province_of_residence: string;
-  city_of_residence: string;
-};
-export type SubjetcCompanyType = {
-  id: number;
-  business_name: string;
-  pIva: string;
-  registered_office_province: string;
-  registered_office_city: string;
-};
-
-export type ClaimDataSubjetcType = {
-  natural_person?: SubjetcPersonType;
-  giuridical_person?: SubjetcCompanyType;
 };
 
 export type NewClaimCardQuestion = {
@@ -222,7 +201,7 @@ export type AdditionalInfoSubjectRoleTypes = "---" | "coachbuilder" | "expert" |
 
 export type AdditionalInfoSubjectType = {
   role: AdditionalInfoSubjectRoleTypes;
-  personalData: any;
+  subject?: SubjectNaturalPersonData | SubjectGiuridicalPersonData;
 };
 
 export type AdditionalInfoDocumentTypes = "---" | "id-card" | "passport" | "expertise" | "police-report";

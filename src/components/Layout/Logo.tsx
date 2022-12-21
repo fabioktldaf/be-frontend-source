@@ -18,7 +18,7 @@ const Logo: React.FC<Props> = (props: Props) => {
   return (
     <LogoStyled>
       Frontend
-      <span style={{ fontSize: "12px", margin: "0.8em 1em 0 1em", fontWeight: "100" }}>0.1.5</span>
+      <span style={{ fontSize: "12px", margin: "0.8em 1em 0 1em", fontWeight: "100" }}>0.1.6</span>
     </LogoStyled>
   );
 };

@@ -73,7 +73,7 @@ const AdditionalInfoModalContent = (props: AdditionalInfoModalContentProps) => {
   const [editingSubject, setEditingSubject] = useState<EditingSubjectState | undefined>();
   const [subjectData, setSubjectData] = useState<AdditionalInfoSubjectType>({
     role: "---",
-    personalData: null,
+    subject: undefined,
   });
   const [documentData, setDocumentData] = useState<AdditionalInfoDocumentType>({
     type: "---",
@@ -141,7 +141,7 @@ const AdditionalInfoModalContent = (props: AdditionalInfoModalContentProps) => {
 
     // SET subject into additional info
     console.log("subject to set: ", subject);
-
+    handleChangeSubject("subject", subject);
     setIsOpenSearchSubjectModal(false);
   };
 
@@ -166,7 +166,7 @@ const AdditionalInfoModalContent = (props: AdditionalInfoModalContentProps) => {
       addInfoType === AdditionalInfoSubject.value
         ? ({
             role: subjectData.role,
-            personalData: subjectData.personalData,
+            subject: subjectData.subject,
           } as AdditionalInfoSubjectType)
         : addInfoType === AdditionalInfoDoc.value
         ? ({
@@ -216,8 +216,8 @@ const AdditionalInfoModalContent = (props: AdditionalInfoModalContentProps) => {
   };
 
   let subjectDetails = "";
-  const naturalPerson = subjectData.personalData as SubjectNaturalPersonData;
-  const giuridicalPerson = subjectData.personalData as SubjectGiuridicalPersonData;
+  const naturalPerson = subjectData.subject as SubjectNaturalPersonData;
+  const giuridicalPerson = subjectData.subject as SubjectGiuridicalPersonData;
 
   if (naturalPerson?.name?.length > 0) subjectDetails += naturalPerson.name;
   if (naturalPerson?.lastname?.length > 0) subjectDetails += " " + naturalPerson.lastname;
@@ -241,13 +241,13 @@ const AdditionalInfoModalContent = (props: AdditionalInfoModalContentProps) => {
             )}
             {subjectDetails !== "" && (
               <>
-                <Link to={"#"} onClick={() => handleEditSubject(subjectData.personalData)}>
+                <Link to={"#"} onClick={() => handleEditSubject(subjectData.subject?.id)}>
                   {subjectDetails}
                 </Link>
 
                 <ButtonDelete
                   children={"Elimina"}
-                  onClick={() => handleChangeSubject("personalData", null)}
+                  onClick={() => handleChangeSubject("subject", null)}
                   style={{ marginLeft: "2em" }}
                 />
               </>
@@ -387,7 +387,6 @@ const AdditionalInfoModalContent = (props: AdditionalInfoModalContentProps) => {
         <SubjectEditModal
           isOpen={editingSubject?.modalOpen}
           id={editingSubject?.id}
-          type={editingSubject?.type}
           onOk={() => {}}
           onCancel={() => handleCloseEditingSubject()}
         />

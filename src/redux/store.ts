@@ -1,16 +1,18 @@
 import { configureStore } from "@reduxjs/toolkit";
-import userReducer from "../redux/features/userSlice";
-import newClaimReducer from "../redux/features/newClaimSlice";
-import searchSubjetcSlice from "./features/subjectsSlice";
-import searchSlice from "./features/searchSlice";
+import user from "../redux/features/userSlice";
+import newClaim from "../redux/features/newClaimSlice";
+import subjects from "./features/subjectsSlice";
+import search from "./features/searchSlice";
+import policies from "./features/policySlice";
 import { localstorageMiddleware } from "./localstorageMiddleware";
 
 export const store = configureStore({
   reducer: {
-    user: userReducer,
-    newClaim: newClaimReducer,
-    subjects: searchSubjetcSlice,
-    search: searchSlice,
+    user,
+    newClaim,
+    subjects,
+    policies,
+    search,
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(localstorageMiddleware),
 });

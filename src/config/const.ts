@@ -91,7 +91,7 @@ export const VehicleTypeOptions = [
   { value: "S", label: "MACCHINE AGRICOLE" },
 ];
 
-export const plateFormats = [
+export const PlateFormats = [
   { value: "---", label: "---" },
   {
     value: "T",

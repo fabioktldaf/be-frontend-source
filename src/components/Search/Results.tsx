@@ -9,6 +9,7 @@ import {
   SearchResultItemPolicy,
   SearchResultItemSubjectGiuridicaPerson,
   SearchResultItemSubjectNaturalPerson,
+  SearchResultOnSelectTypes,
   SearchTypes,
 } from "../../types/search.types";
 import { IconBetween, IconBusiness, IconCar, IconDocument, IconFlash, IconUser } from "../../config/icons";
@@ -73,7 +74,7 @@ const ResultItemClaimItem = styled.div`
 `;
 
 interface ResultsProps {
-  onSelect: (value: any, type: string) => void;
+  onSelect: (value: any, type: SearchResultOnSelectTypes) => void;
   type: SearchTypes;
 }
 
@@ -81,15 +82,6 @@ const Results = (props: ResultsProps) => {
   //const app = useApplication();
   const { t } = useTranslation();
   const { isSearching, resultsGeneric: results } = useSelector((state: RootState) => state.search);
-
-  // const handleEditSubject = (subjectId: string, type: string) => {
-  //   console.log("editing ", subjectId);
-  //   const updatedEditingSubject = Object.assign({}, editingSubject);
-  //   updatedEditingSubject.modalOpen = true;
-  //   updatedEditingSubject.subjectId = subjectId;
-  //   updatedEditingSubject.type = type;
-  //   setEditingSubject(updatedEditingSubject);
-  // };
 
   const renderClaims = (claims: SearchResultItemClaim[]) => {
     return claims.map(({ created, received }, i) => (
@@ -117,7 +109,10 @@ const Results = (props: ResultsProps) => {
           <div style={{ display: "flex", alignItems: "center" }}>
             <IconDocument style={{ color: "#aaa", fontSize: "1.4em", margin: "-5px 0.25em 0 0 " }} />
             n°
-            <span style={{ margin: "0 2em 0 0.5em", width: "12em", cursor: "pointer", textDecoration: "underline" }}>
+            <span
+              style={{ margin: "0 2em 0 0.5em", width: "12em", cursor: "pointer", textDecoration: "underline" }}
+              onClick={() => props.onSelect(policy.id, "policy-selected")}
+            >
               {policy.policy_number}
             </span>
             <span>{policy.effect_date}</span>
@@ -143,7 +138,7 @@ const Results = (props: ResultsProps) => {
               <ButtonConfirm
                 size="small"
                 onClick={() => {
-                  props.onSelect(policy.policy_number, "new-claim");
+                  props.onSelect(policy.id, "new-claim");
                 }}
                 style={{ fontSize: "0.8em" }}
               >
@@ -198,7 +193,7 @@ const Results = (props: ResultsProps) => {
               </div>
               <span
                 style={{ fontSize: "1.2em", fontWeight: "400", cursor: "pointer", textDecoration: "underline" }}
-                onClick={() => props.onSelect(item.subject, "natural-person")}
+                onClick={() => props.onSelect(item.subject, "subject-selected")}
               >
                 {name} {lastname}
               </span>
@@ -232,13 +227,26 @@ const Results = (props: ResultsProps) => {
               </div>
               <span
                 style={{ fontSize: "1.2em", fontWeight: "400", cursor: "pointer", textDecoration: "underline" }}
-                onClick={() => props.onSelect(item.subject, "giuridical-person")}
+                onClick={() => props.onSelect(item.subject, "subject-selected")}
               >
                 {business_name} {type}
               </span>
               <span style={{ marginLeft: "2em", fontSize: "1.2em", fontWeight: "400" }}>{pIva}</span>
             </>
           )}
+          <div style={{ display: "flex", flex: 1, alignItems: "center", justifyContent: "flex-end" }}>
+            <ButtonConfirm
+              size="small"
+              onClick={() => {
+                props.onSelect(item.subject.id, "new-policy");
+              }}
+              style={{ fontSize: "0.8em" }}
+            >
+              <div style={{ display: "flex", width: "7em", justifyContent: "center" }}>
+                <IoMdAddCircleOutline style={{ fontSize: "1.4em", marginRight: "0.25em" }} /> Polizza
+              </div>
+            </ButtonConfirm>
+          </div>
         </ResultItemSubject>
         <ResultItemPolicies>{item.policies?.length > 0 && renderPolicies(item.policies)}</ResultItemPolicies>
       </ResultItem>
@@ -259,7 +267,7 @@ const Results = (props: ResultsProps) => {
       <ResultItem
         key={key}
         style={{ cursor: "pointer" }}
-        onClick={() => props.onSelect(item.subject.id, "subject-seleted")}
+        onClick={() => props.onSelect(item.subject.id, "subject-selected")}
       >
         <ResultItemSubject>
           {isNaturalPerson && (

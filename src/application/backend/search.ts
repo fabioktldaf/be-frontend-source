@@ -5,14 +5,10 @@ import { backend } from "../../config/const";
 import axios from "axios";
 
 export interface ISearch {
-  clear: () => void;
   search: (params: SearchParams) => void;
 }
 
 const Search: ISearch = {
-  clear: () => {
-    store.dispatch(clear());
-  },
   search: async (params: SearchParams) => {
     store.dispatch(search(params));
     const environment = store.getState().user.environment;

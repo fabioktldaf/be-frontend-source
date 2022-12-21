@@ -11,16 +11,17 @@ import { RootState } from "../../redux/store";
 import Results from "./Results";
 import { FormRow } from "../../style/form";
 import { InputTextStyled, SegmentedStyled, SelectStyled } from "../../style/Input";
-import { SearchParams, SearchResultItem, SearchTypes } from "../../types/search.types";
+import { SearchParams, SearchResultItem, SearchResultOnSelectTypes, SearchTypes } from "../../types/search.types";
 import { PersonType } from "../../types/new-claim.types";
 import { ButtonCancel, ButtonConfirm } from "../Layout/Buttons";
 import { GrAddCircle } from "react-icons/gr";
 import { IoMdAddCircleOutline } from "react-icons/io";
 import SubjectEditModal from "../SubjectsData/SubjectEditModal";
-import { AddNewClaimState, EditingSubjectState } from "../../types/uses-data.types";
+import { AddNewClaimState, EditingPolicyState, EditingSubjectState } from "../../types/uses-data.types";
 import NewClaimModal from "../NewClaim/NewClaimModal";
 import { GiConsoleController } from "react-icons/gi";
 import { insuranceCodesWithCodes } from "../../config/const";
+import PolicyEditModal from "../PolicyData/PolicyEditModal";
 
 const SearchContainer = styled.div<{ isTypeAll: boolean }>`
   padding: ${(props) => (props.isTypeAll ? "2em 2em 0 0" : "2em 4em  0 4em")};
@@ -45,7 +46,8 @@ const Search = (props: SearchProps) => {
   });
   const [subjectType, setSubjectType] = useState<PersonType>("Fisica");
   const [editingSubject, setEditingSubject] = useState<EditingSubjectState | undefined>();
-  const [addNewClaim, setAddNewClaim] = useState<AddNewClaimState>({ modalOpen: false, policyNumber: "" });
+  const [editingPolicy, setEditingPolicy] = useState<EditingPolicyState | undefined>();
+  const [addNewClaim, setAddNewClaim] = useState<AddNewClaimState>({ modalOpen: false, policyId: "" });
 
   const handleChangeParams = (val: any, field: string) => {
     const updatedParams = JSON.parse(JSON.stringify(searchParams)) as SearchParams;
@@ -93,7 +95,7 @@ const Search = (props: SearchProps) => {
   };
 
   const handleResetSearch = () => {
-    app.search.clear();
+    app.clearSearch();
     setSearchParams({
       term: "",
       type: props.type,
@@ -228,6 +230,16 @@ const Search = (props: SearchProps) => {
           placeholder="inserisci il numero polizza..."
           onChange={(num) => handleChangeParams(num, "policy-number")}
         />
+        <RowSpacer />
+        <SelectStyled
+          label="Compagnia Assicurativa"
+          tooltip="Seleziona la compagnia assicurativa della controparte"
+          defaultValue="---"
+          showSearch
+          filterOption={(input, option) => (option?.label.toLowerCase() ?? "").includes(input.toLocaleLowerCase())}
+          onChange={(val) => handleChangeParams(val, "insurance-cCode")}
+          options={insuranceCodesWithCodes}
+        />
       </FormRow>
 
       {renderSearchButtons()}
@@ -242,23 +254,6 @@ const Search = (props: SearchProps) => {
           tooltip="Ricerca per numero sinistro"
           placeholder="inserisci il numero sinistro..."
           onChange={(num) => handleChangeParams(num, "claim-number")}
-        />
-      </FormRow>
-      {renderSearchButtons()}
-    </SearchContainer>
-  );
-
-  const itemInsuranceChildren = (
-    <SearchContainer isTypeAll={props.type === "generic"}>
-      <FormRow>
-        <SelectStyled
-          label="Compagnia Assicurativa"
-          tooltip="Seleziona la compagnia assicurativa della controparte"
-          defaultValue="---"
-          showSearch
-          filterOption={(input, option) => (option?.label.toLowerCase() ?? "").includes(input.toLocaleLowerCase())}
-          onChange={(val) => handleChangeParams(val, "insurance-cCode")}
-          options={insuranceCodesWithCodes}
         />
       </FormRow>
       {renderSearchButtons()}
@@ -300,14 +295,7 @@ const Search = (props: SearchProps) => {
     type: "claim",
   };
 
-  const itemInsurance = {
-    label: "Assicurazione",
-    key: "6",
-    children: itemInsuranceChildren,
-    type: "insurance",
-  };
-
-  const items = [itemFullText, itemSubject, itemVehicle, itemPolicy, itemClaim, itemInsurance];
+  const items = [itemFullText, itemSubject, itemVehicle, itemPolicy, itemClaim];
 
   const handleChangeSearchType = (k: string) => {
     const searchType = items.find((i) => i.key === k)!.type;
@@ -329,8 +317,9 @@ const Search = (props: SearchProps) => {
     setSearchTitle(newSearchingFor);
   };
 
-  const handleEditSubject = (item: any, type: string) => {
-    console.log("editing ", item);
+  const handleEdit = (val: any, type: SearchResultOnSelectTypes) => {
+    console.log("editing ", val);
+    console.log("type ", type);
 
     if (type === "new-subject") {
       const updatedEditingSubject = Object.assign({}, editingSubject);
@@ -339,18 +328,30 @@ const Search = (props: SearchProps) => {
       updatedEditingSubject.type = "new-subject";
       updatedEditingSubject.modalOpen = true;
       setEditingSubject(updatedEditingSubject);
-    } else if (type === "giuridical-person" || type === "natural-person") {
+    } else if (type === "subject-selected") {
       const updatedEditingSubject = Object.assign({}, editingSubject);
-      updatedEditingSubject.id = item.id;
+      updatedEditingSubject.id = val.id;
       updatedEditingSubject.type = type;
       updatedEditingSubject.modalOpen = true;
       setEditingSubject(updatedEditingSubject);
     } else if (type === "new-claim") {
       const updatedAddNewClaim = Object.assign({}, addNewClaim);
       updatedAddNewClaim.modalOpen = true;
-      updatedAddNewClaim.policyNumber = item;
-      console.log("add new claim");
+      updatedAddNewClaim.policyId = val;
+
+      console.log("add new claim to policy ", val);
       setAddNewClaim(updatedAddNewClaim);
+    } else if (type === "policy-selected") {
+      const updatedEditingPolicy = Object.assign({}, editingPolicy);
+      updatedEditingPolicy.modalOpen = true;
+      updatedEditingPolicy.id = val;
+
+      console.log("editing policy id ", val);
+
+      setEditingPolicy(updatedEditingPolicy);
+    } else if (type === "new-policy") {
+      app.addNewPolicy(val);
+      console.log("add new policy to userID", val);
     }
   };
 
@@ -360,11 +361,17 @@ const Search = (props: SearchProps) => {
     setEditingSubject(updatedEditingSubject);
   };
 
-  const handleSelectSubject = (id: string, type: string) => {
+  const handleSelectSubject = (id: string, type: SearchResultOnSelectTypes) => {
     console.log("selected id", id);
     console.log("type", type);
 
-    if (type === "subject-seleted" && props.onSelect) props.onSelect({ id });
+    if (type === "subject-selected" && props.onSelect) props.onSelect({ id });
+  };
+
+  const handleCloseEditingPolicy = () => {
+    const updatedEditingPolicy = Object.assign({}, editingPolicy);
+    updatedEditingPolicy.modalOpen = false;
+    setEditingPolicy(updatedEditingPolicy);
   };
 
   const renderResultAll = () => (
@@ -381,11 +388,9 @@ const Search = (props: SearchProps) => {
         >
           <div style={{ fontSize: "1.2em", margin: "0 2em", flex: 1, textAlign: "left" }}>Risultati</div>
 
-          <ButtonConfirm onClick={() => {}}>nuova polizza</ButtonConfirm>
-          <div style={{ width: "1em" }}></div>
-          <ButtonConfirm onClick={() => handleEditSubject(undefined, "new-subject")}>nuovo soggetto</ButtonConfirm>
+          <ButtonConfirm onClick={() => handleEdit(undefined, "new-subject")}>nuovo soggetto</ButtonConfirm>
         </div>
-        <Results onSelect={handleEditSubject} type={props.type} />
+        <Results onSelect={handleEdit} type={props.type} />
       </div>
       <SubjectEditModal
         isOpen={editingSubject?.modalOpen}
@@ -396,14 +401,20 @@ const Search = (props: SearchProps) => {
       {console.log("addNewClaim ", addNewClaim)}
       <NewClaimModal
         isOpen={addNewClaim.modalOpen}
-        policyNumber={addNewClaim.policyNumber}
+        policyNumber={addNewClaim.policyId}
         onCancel={() => {
-          setAddNewClaim({ modalOpen: false, policyNumber: "" });
+          setAddNewClaim({ modalOpen: false, policyId: "" });
         }}
         onSent={() => {
-          setAddNewClaim({ modalOpen: false, policyNumber: "" });
+          setAddNewClaim({ modalOpen: false, policyId: "" });
           handleResetSearch();
         }}
+      />
+      <PolicyEditModal
+        isOpen={editingPolicy?.modalOpen}
+        id={editingPolicy?.id}
+        onOk={() => {}}
+        onCancel={() => handleCloseEditingPolicy()}
       />
     </>
   );
@@ -423,7 +434,7 @@ const Search = (props: SearchProps) => {
           <div style={{ fontSize: "1.2em", margin: "0 2em", flex: 1, textAlign: "left" }}>Risultati</div>
 
           <div style={{ width: "1em" }}></div>
-          <ButtonConfirm onClick={() => handleEditSubject(undefined, "new-subject")}>nuovo soggetto</ButtonConfirm>
+          <ButtonConfirm onClick={() => handleEdit(undefined, "new-subject")}>nuovo soggetto</ButtonConfirm>
         </div>
         <Results onSelect={(id, type) => handleSelectSubject(id, type)} type={props.type} />
       </div>
@@ -452,8 +463,6 @@ const Search = (props: SearchProps) => {
           itemPolicyChildren
         ) : props.type === "claim" ? (
           itemClaimChildren
-        ) : props.type === "insurance" ? (
-          itemInsuranceChildren
         ) : (
           <></>
         )}

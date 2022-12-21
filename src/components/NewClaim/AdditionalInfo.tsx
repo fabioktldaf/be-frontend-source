@@ -310,8 +310,8 @@ const AdditionalInfo = (props: AdditionalDataProps) => {
   };
 
   const renderResumeSubject = (subjetDetails: AdditionalInfoSubjectType) => {
-    const naturalPersonDetails = subjetDetails.personalData as SubjectNaturalPersonData;
-    const giuridicalPersonDetails = subjetDetails.personalData as SubjectGiuridicalPersonData;
+    const naturalPersonDetails = subjetDetails.subject as SubjectNaturalPersonData;
+    const giuridicalPersonDetails = subjetDetails.subject as SubjectGiuridicalPersonData;
 
     const role = AdditionalInfoSubjectRoles.find((r) => r.value === subjetDetails.role)?.label;
 
@@ -576,7 +576,6 @@ const AdditionalInfo = (props: AdditionalDataProps) => {
         <SubjectEditModal
           isOpen={editingSubject?.modalOpen}
           id={editingSubject?.id}
-          type={editingSubject?.type}
           onOk={() => {}}
           onCancel={() => handleCloseEditingSubject()}
         />

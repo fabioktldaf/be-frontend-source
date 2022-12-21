@@ -8,12 +8,17 @@ import { SubjectData } from "../../types/uses-data.types";
 import axios from "axios";
 
 export interface ISubject {
-  retrieve: (id: string) => Promise<SubjectData | undefined>;
+  retrieve: (id: string | undefined) => Promise<SubjectData | undefined>;
 }
 
 const Subject: ISubject = {
-  retrieve: async (id: string) => {
+  retrieve: async (id: string | undefined) => {
     store.dispatch(setRetrievingSubject(true));
+    if (!id || id === "") {
+      store.dispatch(editSubject({}));
+      return;
+    }
+
     const environment = store.getState().user.environment;
     const server = backend.envs.find((env) => env.label === environment)?.server;
 

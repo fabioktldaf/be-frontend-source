@@ -16,7 +16,6 @@ import {
   clearLocalStorage,
   setLoadingPolicyStatus,
 } from "../redux/features/newClaimSlice";
-import { defaultClaimPolicyData } from "../config/dummy-data";
 import {
   AdditionalInfoDataType,
   ClaimDataCounterpartDataType,
@@ -29,7 +28,6 @@ import {
   PartDamagedDetailsVehicle,
   ResponsabilityDataType,
   SelectPair,
-  AdditionalInfoPair,
   SteppedChangeDataType,
   StepperDataType,
   UpdateNewClaimDataFieldsType,
@@ -52,7 +50,9 @@ import {
   LocalStorageKeys,
 } from "../config/const";
 import { appendFile } from "fs";
-import Policy from "./backend/policy";
+import Policy from "./backend/policies";
+import { SubjectGiuridicalPersonData, SubjectNaturalPersonData } from "../types/uses-data.types";
+import { PolicyDataSubject } from "../types/policy.types";
 
 const isCardVehicle = (type: ClaimType) => CardVehicleTypes.indexOf(type) >= 0;
 
@@ -61,7 +61,25 @@ export default {
     store.dispatch(clear());
 
     if (!policyNumber || policyNumber.length < 1) return;
-    Policy.retrieve(policyNumber);
+    const policyData = await Policy.retrieve(policyNumber);
+
+    if (!policyData) return;
+
+    const policy: ClaimDataPolicyDataType = {
+      policy_number: policyData.policyData.number!,
+      effect_date: policyData.policyData.effectDate!,
+      expiration_date: policyData.policyData.expiringDate!,
+      owner: policyData.subject.owner,
+      contractor: policyData.subject.contractor,
+      ownerVehicle: {
+        type: policyData.goodInsured.vehicleType!,
+        plate: {
+          number: policyData.goodInsured.plate!,
+          format: policyData.goodInsured.plateType!,
+        },
+      },
+    };
+    store.dispatch(setPolicyData(policy));
     store.dispatch(setStatus(NewClaimStateType.MandatoryData));
   },
   clearLocalStorage: () => {

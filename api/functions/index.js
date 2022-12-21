@@ -50,6 +50,7 @@ const buildResultItem = (
 
   if (policies && policies.length > 0) {
     item.policies = policies.map((p) => ({
+      id: p.id,
       policy_number: p.policy_number,
       effect_date: p.effect_date,
       expiration_date: p.expiration_date,
@@ -105,7 +106,9 @@ exports.policy = functions.https.onRequest(async (req, res) => {
 
   console.log("req.body ", req.body);
 
-  const policy = policies.find((p) => p.policy_number === req.body.policyNumber);
+  const policy = policies.find((p) => p.id === req.body.id);
+
+  console.log(policy);
   res.json({ result: policy });
 });
 

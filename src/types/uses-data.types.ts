@@ -88,5 +88,10 @@ export type EditingSubjectState = {
 
 export type AddNewClaimState = {
   modalOpen: boolean;
-  policyNumber: string;
+  policyId: string;
+};
+
+export type EditingPolicyState = {
+  modalOpen: boolean;
+  id?: string;
 };
