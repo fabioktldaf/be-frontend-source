@@ -16,9 +16,6 @@ import "antd/dist/antd.css";
 import SubjectsData from "../../pages/subjects-data";
 import SubjectDetails from "../SubjectsData/SubjectDetails";
 import Home from "../../pages/home";
-import Authorized from "./Authorized";
-import AccessToken from "./AccessToken";
-import OAuthPopup from "./OAuthPopup";
 
 const LayoutStyled = styled(Layout)`
   height: 100vh;
@@ -71,11 +68,6 @@ const AppLayout: React.FC<Props> = (props: Props) => {
               <Route path={Urls.new_claim} element={<NewClaimPage />} />
               <Route path={Urls.subjects_data} element={<SubjectsData />} />
               <Route path={Urls.subject_details} element={<SubjectDetails />} />
-
-              <Route path={"/authorized/:server"} element={<Authorized />} />
-              <Route path={"/access-token/:server"} element={<AccessToken />} />
-
-              <Route path={"/callback"} element={<OAuthPopup />} />
             </Routes>
 
             {children}

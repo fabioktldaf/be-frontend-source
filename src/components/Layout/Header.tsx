@@ -4,7 +4,7 @@ import LanguageSelect from "./LaguageSelect";
 
 import styled from "styled-components";
 import { ButtonConfirm } from "./Buttons";
-import Login from "./Login";
+import AzureAD from "../Authentication/AzureAD";
 
 const HeaderStyled = styled(Layout.Header)`
   background-color: #fff;
@@ -41,7 +41,7 @@ const Header = () => {
   return (
     <HeaderStyled>
       <Content>
-        <Login />
+        <AzureAD />
       </Content>
       <Shadow />
     </HeaderStyled>
