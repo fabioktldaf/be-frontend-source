@@ -72,8 +72,18 @@ export const searchSlice = createSlice({
         if (r.subject.id === action.payload) {
           const today = moment().format("DD/MM/YYYY");
 
+          // I need an id even if the policy is not saved
+          // Negative id for new policy not already saved
+          const polices = [...r.policies];
+          const newPolicies = polices.filter((p: SearchResultItemPolicy) => parseInt(p.id) < 0);
+          const newPoliciesSorted = newPolicies.sort((a: SearchResultItemPolicy, b: SearchResultItemPolicy) =>
+            parseInt(a.id) <= parseInt(b.id) ? 1 : -1
+          );
+
+          const id = !!newPoliciesSorted && !!newPoliciesSorted[0] ? parseInt(newPoliciesSorted[0].id) - 1 : -1;
+
           r.policies.push({
-            id: "",
+            id: id.toString(),
             policy_number: "---",
             effect_date: today,
             expiration_date: today,

@@ -1,0 +1,121 @@
+openapi: 3.0.0
+info:
+  title: Sample API
+  description: Sample API
+  version: 1.0.0
+# servers:
+# - url: http://api.example.com/v1
+# description: Optional server description, e.g. Main (production) server
+# - url: http://staging-api.example.com
+# description: Optional server description, e.g. Internal staging server for testing
+paths:
+  /search/{filters}:
+    get:
+      summary: Advanced search.
+      parameters:
+        - in: path
+          name: filters
+          required: true
+          schema:
+            $ref: "#/components/schemas/SearchRequestItem"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SearchResultItem"
+components:
+  schemas:
+    SearchRequestItem:
+      type: object
+      properties:
+        Id:
+          type: integer
+          example: 1
+    SearchResultItem:
+      type: object
+      properties:
+        SearchResultItemSubject:
+          type: "#/components/schemas/SearchResultItemSubject"
+      # # Both properties are required
+      # required:
+      # - id
+      # - name
+    SearchResultItemSubject:
+      type: object
+      properties:
+        Id:
+          type: integer
+          example: 1
+        persontype:
+          type: string
+        name:
+          type: string
+        lastname:
+          type: string
+        fiscalCode:
+          type: string
+        business_name:
+          type: string
+        giuridalpersontype:
+          type: string
+        pIva:
+          type: string
+        proprietorship:
+          type: string
+    SearchResultItemPolicy:
+      type: object
+      properties:
+        Id:
+          type: integer
+          example: 1
+        policy_number:
+          type: string
+        effect_date:
+          type: string
+        expiration_date:
+          type: string
+        claims:
+          type: "#/components/schemas/SearchResultItemSubject"
+        vehicle:
+          type: "#/components/schemas/SearchResultItemSubject"
+    SearchResultItemVehicle:
+      type: object
+      properties:
+        vehicletype:
+          type: integer
+        plate:
+          type: "#/components/schemas/SearchResultItemVehiclePlate"
+    SearchResultItemClaim:
+      type: object
+      properties:
+        created:
+          type: "#/components/schemas/SearchResultItemClaimCreated"
+        received:
+          type: "#/components/schemas/SearchResultItemClaimReceived"
+    SearchResultItemClaimCreated:
+      type: object
+      properties:
+        number:
+          type: string
+        occurrenceDate:
+          type: string
+        occurrenceTime:
+          type: string
+    SearchResultItemClaimReceived:
+      type: object
+      properties:
+        number:
+          type: string
+        occurrenceDate:
+          type: string
+        occurrenceTime:
+          type: string
+    SearchResultItemVehiclePlate:
+      type: object
+      properties:
+        number:
+          type: string
+        format:
+          type: string

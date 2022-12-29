@@ -38,10 +38,10 @@ interface PolicySubjectProps {
 const PolicySubject = (props: PolicySubjectProps) => {
   const { policy } = props;
   const beneficiary = policy?.subject?.beneficiary;
-  const contractor = policy?.subject.contractor;
-  const driver = policy?.subject.driver;
-  const insured = policy?.subject.insured;
-  const owner = policy?.subject.owner;
+  const contractor = policy?.subject?.contractor;
+  const driver = policy?.subject?.driver;
+  const insured = policy?.subject?.insured;
+  const owner = policy?.subject?.owner;
 
   const app = useApplication();
   const [editingSubject, setEditingSubject] = useState<EditingPolicySubjectState | undefined>();

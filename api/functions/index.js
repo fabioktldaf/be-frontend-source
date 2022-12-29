@@ -6,6 +6,7 @@ const vehicles = require("./data/vehicles"); // --- 5
 const contacts = require("./data/contacts"); // --- 4 email / 4 phone
 const documents = require("./data/documents"); // - 2 cardId / 2 passport / 2 drivingLicense
 const claims = require("./data/claims");
+const { responsiveArray } = require("antd/lib/_util/responsiveObserve");
 
 const buildResultItem = (
   iSubjectNaturalPerson,
@@ -110,6 +111,41 @@ exports.policy = functions.https.onRequest(async (req, res) => {
 
   console.log(policy);
   res.json({ result: policy });
+});
+
+exports.authorized = functions.https.onRequest(async (req, res) => {
+  res.set("Access-Control-Allow-Origin", "*");
+  res.set("Access-Control-Allow-Headers", "*");
+
+  const server = req.query.server;
+
+  if (server.toLowerCase() === "github") {
+    const code = req.query.code;
+    const clientId = req.query.clientId;
+    const clientSecret = req.query.clientSecret;
+
+    console.log("githubcode ", code);
+
+    res.json({ result: { code: code } });
+  }
+
+  res.json({ result: { authorized: false } });
+});
+
+exports.token = functions.https.onRequest(async (req, res) => {
+  const CLIENT_SECRET = "";
+  const AUTHORIZATION_SERVER_TOKEN_URL = "";
+
+  const { code, client_id, redirect_uri } = req.query;
+  const url = `${AUTHORIZATION_SERVER_TOKEN_URL}?grant_type=authorization_code&client_id=${client_id}&client_secret=${client_secret}&redirect_uri=${recirec_uri}&code=${code}`;
+
+  console.log("url ", url);
+  const data = await fetch(url, { method: "POST" });
+
+  const result = await data.json();
+  console.log("result ", result);
+
+  res.json({ result });
 });
 
 /*

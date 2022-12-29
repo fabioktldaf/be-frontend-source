@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@reduxjs/toolkit": "^1.9.0",
+    "@rtk-query/codegen-openapi": "^1.0.0",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
@@ -40,7 +41,8 @@
     "git-docker-nc": "docker run -ti -v $(pwd):/root/be-frontend be-frontend:1.0",
     "homepage": "https://fabioktldaf.github.io/be-frontend",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -b master -d build"
+    "deploy": "gh-pages -b master -d build",
+    "generate-openapi": "npx @rtk-query/codegen-openapi ./src/config/openApi/generateApi.ts"
   },
   "eslintConfig": {
     "extends": [
@@ -61,6 +63,7 @@
     ]
   },
   "devDependencies": {
-    "gh-pages": "^4.0.0"
+    "gh-pages": "^4.0.0",
+    "ts-node": "^10.9.1"
   }
 }

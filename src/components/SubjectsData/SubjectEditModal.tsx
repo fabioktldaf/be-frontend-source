@@ -19,9 +19,7 @@ const SubjectEditModal = (props: SubjectEditModalProps) => {
   const { id, isOpen, onOk, onCancel } = props;
 
   useEffect(() => {
-    if (id && id.length > 0) {
-      app._editSubject(id);
-    }
+    app._editSubject(props.id);
   }, [id]);
 
   return (
