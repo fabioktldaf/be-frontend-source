@@ -4,8 +4,8 @@ export const authorizationServers = [
     label: "Github",
     config: {
       url: "https://github.com/login/oauth/authorize",
-      client_id: "8535d7fa6c46cff320d8",
-      client_secret: "9493ae1a475178991de5d4380fba743991ba38b6",
+      client_id: "",
+      client_secret: "",
       redirect_uri: "http://localhost:3000",
       login: "",
       scope: "",
@@ -20,8 +20,8 @@ export const authorizationServers = [
     label: "Google",
     config: {
       authorizeUrl: "",
-      clientId: "634934568956-vip3huvgisug23jkv4cl9vdh33o32bec.apps.googleusercontent.com",
-      secret: "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",
+      clientId: "",
+      secret: "",
       redirectUri: "",
       scope: "",
     },
