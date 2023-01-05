@@ -1,3 +1,4 @@
+import { AddressResultType } from "../components/Address";
 import { SubjectGiuridicalPersonData, SubjectNaturalPersonData } from "./uses-data.types";
 
 export type ClaimDataOwnerVehiclePlateType = {
@@ -35,7 +36,7 @@ export type ClaimDataType = {
   dateOfReceiptDekra: string;
   occurrenceDate: string;
   occurrenceTime: string;
-  occurrencePlace: string;
+  occurrencePlace?: AddressResultType;
   policeIntervention: boolean;
   witnesses: boolean;
   note: string;

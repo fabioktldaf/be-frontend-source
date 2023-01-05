@@ -243,7 +243,7 @@ const CheckSic = (props: CheckSicProps) => {
       <FormRow>
         <InputAddress
           label="Luogo di Accadimento"
-          value={claimData?.occurrencePlace || ""}
+          value={claimData?.occurrencePlace?.fullAddress || ""}
           onEdit={() => {
             setIsDataModified(true);
           }}

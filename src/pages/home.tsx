@@ -4,6 +4,7 @@ import useApplication from "../hooks/useApplication";
 import { useNavigate } from "react-router-dom";
 import Search from "../components/Search";
 import styled from "styled-components";
+import Address from "../components/Address";
 
 const HomeContainer = styled.div`
   display: flex;

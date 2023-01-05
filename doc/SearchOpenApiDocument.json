@@ -1,0 +1,175 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Sample API",
+    "description": "Sample API",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/search": {
+      "post": {
+        "summary": "Advanced Search",
+        "operationId": "advancedSearch",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SearchRequestItem"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SearchResultItem"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "SearchRequestItem": {
+        "type": "object",
+        "properties": null
+      },
+      "SearchResultItem": {
+        "type": "object",
+        "properties": {
+          "Subjects": {
+            "$ref": "#/components/schemas/SearchResultItemSubject"
+          }
+        }
+      },
+      "SearchResultItemSubject": {
+        "type": "object",
+        "properties": {
+          "Id": {
+            "type": "integer",
+            "example": 1
+          },
+          "persontype": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "lastname": {
+            "type": "string"
+          },
+          "fiscalCode": {
+            "type": "string"
+          },
+          "business_name": {
+            "type": "string"
+          },
+          "giuridalpersontype": {
+            "type": "string"
+          },
+          "pIva": {
+            "type": "string"
+          },
+          "proprietorship": {
+            "type": "string"
+          },
+          "policies": {
+            "$ref": "#/components/schemas/SearchResultItemPolicy"
+          }
+        }
+      },
+      "SearchResultItemPolicy": {
+        "type": "object",
+        "properties": {
+          "Id": {
+            "type": "integer",
+            "example": 1
+          },
+          "policy_number": {
+            "type": "string"
+          },
+          "effect_date": {
+            "type": "string"
+          },
+          "expiration_date": {
+            "type": "string"
+          },
+          "claims": {
+            "$ref": "#/components/schemas/SearchResultItemSubject"
+          },
+          "vehicle": {
+            "$ref": "#/components/schemas/SearchResultItemSubject"
+          }
+        }
+      },
+      "SearchResultItemVehicle": {
+        "type": "object",
+        "properties": {
+          "vehicletype": {
+            "type": "integer"
+          },
+          "plate": {
+            "$ref": "#/components/schemas/SearchResultItemVehiclePlate"
+          }
+        }
+      },
+      "SearchResultItemClaim": {
+        "type": "object",
+        "properties": {
+          "created": {
+            "$ref": "#/components/schemas/SearchResultItemClaimCreated"
+          },
+          "received": {
+            "$ref": "#/components/schemas/SearchResultItemClaimReceived"
+          }
+        }
+      },
+      "SearchResultItemClaimCreated": {
+        "type": "object",
+        "properties": {
+          "number": {
+            "type": "string"
+          },
+          "occurrenceDate": {
+            "type": "string"
+          },
+          "occurrenceTime": {
+            "type": "string"
+          }
+        }
+      },
+      "SearchResultItemClaimReceived": {
+        "type": "object",
+        "properties": {
+          "number": {
+            "type": "string"
+          },
+          "occurrenceDate": {
+            "type": "string"
+          },
+          "occurrenceTime": {
+            "type": "string"
+          }
+        }
+      },
+      "SearchResultItemVehiclePlate": {
+        "type": "object",
+        "properties": {
+          "number": {
+            "type": "string"
+          },
+          "format": {
+            "type": "integer"
+          }
+        }
+      }
+    }
+  }
+}

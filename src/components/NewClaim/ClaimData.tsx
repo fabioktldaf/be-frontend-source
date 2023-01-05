@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { Switch, Collapse, Modal } from "antd";
+import { Switch, Collapse, Modal, Tooltip } from "antd";
 import { RowSpacer } from "../../style/containers";
 import { FormRow, FormInput, FormTextArea } from "../../style/form";
 import CardData from "./CardData";
@@ -9,7 +9,7 @@ import moment from "moment";
 import { RootState } from "../../redux/store";
 import { useSelector } from "react-redux";
 import useApplication from "../../hooks/useApplication";
-import { DatePickerStyled, InputTextStyled, TimePickerStyled } from "../../style/Input";
+import { DatePickerStyled, InputTextStyled, TimePickerStyled, FormItemStyled } from "../../style/Input";
 import { TabContentStyled } from ".";
 import {
   EditingSubjectState,
@@ -20,6 +20,7 @@ import {
 import SubjectDetails from "../SubjectsData/SubjectDetails";
 import { IconCheck, IconNoSafe, IconSafe } from "../../config/icons";
 import SubjectEditModal from "../SubjectsData/SubjectEditModal";
+import Address from "../Address";
 
 const CollapseStyled = styled(Collapse)``;
 
@@ -315,7 +316,10 @@ const ClaimData = () => {
       </FormRow>
       {checkDataAccadimento()}
       <FormRow>
-        <InputTextStyled
+        <FormItemStyled tooltip={"Luogo di accadimento"} label={"Luogo Accadimento Sinistro"}>
+          <Address onSelect={(address) => app.updateClaimData(address, "occurrencePlace")} />
+        </FormItemStyled>
+        {/* <InputTextStyled
           label="Luogo Accadimento Sinistro"
           tooltip="Inserisci il luogo di accadimento del sinistro"
           rules={[
@@ -324,7 +328,7 @@ const ClaimData = () => {
           placeholder="luogo del sinistro ..."
           onChange={(txt) => app.updateClaimData(txt, "occurrencePlace")}
           value={claimData?.occurrencePlace}
-        />
+        /> */}
       </FormRow>
       <FormRow>
         <FormInput

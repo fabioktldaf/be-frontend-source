@@ -132,7 +132,6 @@ export default {
   },
   updateClaimData: (val: any, fieldName: UpdateNewClaimDataFieldsType) => {
     const updatedClaimData = Object.assign({}, store.getState().newClaim.claimData, { [fieldName]: val });
-
     store.dispatch(updateClaimData(updatedClaimData));
     checkClaimDataCompleted();
   },
@@ -333,7 +332,7 @@ const checkClaimDataCompleted = () => {
     notEmpty(clamiData?.receiptDate) &&
     notEmpty(clamiData?.occurrenceDate) &&
     notEmpty(clamiData?.occurrenceTime) &&
-    notEmpty(clamiData?.occurrencePlace);
+    !!clamiData?.occurrencePlace;
 
   store.dispatch(
     updateTabsCompletedState([

@@ -34,7 +34,6 @@ const AzureAD = () => {
     }
 
     if (!resp) return;
-
     const data = await callMsGraph(resp.accessToken);
     if (data) {
       setGraphData(data);

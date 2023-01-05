@@ -44,7 +44,7 @@
     "homepage": "https://fabioktldaf.github.io/be-frontend",
     "predeploy": "npm run build",
     "deploy": "gh-pages -b master -d build",
-    "generate-openapi": "npx @rtk-query/codegen-openapi ./src/config/openApi/generateApi.ts"
+    "build-api": "npx @rtk-query/codegen-openapi ./src/redux/queries/generateApi.ts"
   },
   "eslintConfig": {
     "extends": [

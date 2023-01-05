@@ -61,7 +61,7 @@ const buildInitialState = () => {
       registrationDate: today,
       occurrenceDate: today,
       occurrenceTime: "00:00",
-      occurrencePlace: "",
+      occurrencePlace: undefined,
       policeIntervention: false,
       witnesses: false,
       note: "",

@@ -64,6 +64,7 @@ export const InputTextStyled = (props: InputTextProps) => {
         value={props.value}
         defaultValue={props.defaultValue}
         placeholder={props.placeholder}
+        readOnly={props.readOnly}
       />
       <Hidden>{props.value}</Hidden>
     </FormItemStyled>
